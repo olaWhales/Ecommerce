@@ -1,39 +1,41 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.configuration;
 
-import com.semicolon.ecommerceTask.application.port.output.KeycloakSuperAdminClient;
-import com.semicolon.ecommerceTask.application.port.output.UserRepository;
+import com.semicolon.ecommerceTask.application.port.output.persistence.UserPersistenceOutPort;
+import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserRole;
-import com.semicolon.ecommerceTask.domain.model.UsersModel;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.superAdmin.KeycloakUserDto;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
-public class DataSeeder {
+public class SuperAdminSeeder {
 
-    private final UserRepository userRepository;
-    private final KeycloakSuperAdminClient keycloakAdminClient;
+    private final UserPersistenceOutPort userPersistenceOutPort;
 
     @PostConstruct
     public void seedSuperAdmin() {
-        if (userRepository.findByEmail("superadmin@ecommerce.com").isEmpty()) {
-            UsersModel superAdmin = new UsersModel(
-                "Super Admin",
-                "superadmin@ecommerce.com",
-                "superSecurePassword123",
-                UserRole.SUPERADMIN
-            );
-            userRepository.save(superAdmin);
-
-            KeycloakUserDto dto = new KeycloakUserDto(
-                    superAdmin.getName(),
-                    superAdmin.getEmail(),
-                    superAdmin.getPassword(),
-                    superAdmin.getRole().name()
-            );
-            keycloakAdminClient.createUserWithRole(dto);
+        // Check if SuperAdmin already exists
+        if (userPersistenceOutPort.existsByEmail("superadmin@example.com")) {
+            return;
         }
+
+        // Create SuperAdmin user
+        UserDomainObject superAdmin = new UserDomainObject();
+        superAdmin.setName("Super Admin");
+        superAdmin.setEmail("superadmin@example.com");
+        superAdmin.setPassword("1111");
+        superAdmin.setRoles(List.of(UserRole.SUPERADMIN));
+//        UserDomainObject superAdmin = UserDomainObject.builder()
+//                .name("Super Admin")
+//                .email()
+//                .password("supersecurepassword") // should be hashed if not handled automatically
+//                .roles(List.of(UserRole.SUPERADMIN)
+//                .build());
+
+        userPersistenceOutPort.saveUser(superAdmin);
+        System.out.println("✅ SuperAdmin seeded.");
     }
 }
