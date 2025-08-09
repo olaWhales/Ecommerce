@@ -1,26 +1,57 @@
+//package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper;
+//
+//import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
+//import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserEntity;
+//import org.springframework.stereotype.Component;
+//
+//@Component
+//public class UserAdapterMapper {
+//    public  UserDomainObject mapToUserDomainObject(UserEntity userEntity){
+//        return UserDomainObject.builder()
+////            .id(userEntity.getId())
+//            .name(userEntity.getName())
+//            .email(userEntity.getEmail())
+//            .password(userEntity.getPassword())
+//            .role(userEntity.getRoles())
+//            .build();
+//    }
+//    public UserEntity mapToUserEntity(UserDomainObject userDomainObject){
+//        return UserEntity.builder()
+//            .name(userDomainObject.getName())
+//            .email(userDomainObject.getEmail())
+//            .roles(userDomainObject.getRole())
+//            .password(userDomainObject.getPassword())
+//            .build();
+//    }
+//}
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper;
 
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+
 @Component
 public class UserAdapterMapper {
-    public  UserDomainObject mapToUserDomainObject(UserEntity userEntity){
-        return UserDomainObject.builder()
-//            .id(userEntity.getId())
-            .name(userEntity.getName())
-            .email(userEntity.getEmail())
-            .password(userEntity.getPassword())
-            .roles(userEntity.getRoles())
+
+    public UserEntity toEntity(UserDomainObject domainObject) {
+        return UserEntity.builder()
+            .firstName(domainObject.getFirstName())
+            .lastName(domainObject.getLastName())
+            .email(domainObject.getEmail())
+            .password(domainObject.getPassword())
             .build();
     }
-    public UserEntity mapToUserEntity(UserDomainObject userDomainObject){
-        return UserEntity.builder()
-            .name(userDomainObject.getName())
-            .email(userDomainObject.getEmail())
-            .roles(userDomainObject.getRoles())
-            .password(userDomainObject.getPassword())
+
+    public UserDomainObject toDomain(UserEntity entity) {
+        return UserDomainObject.builder()
+            .firstName(entity.getFirstName())
+            .lastName(entity.getLastName())
+            .email(entity.getEmail())
+            .password(entity.getPassword())
+            .roles(entity.getRoles() != null ? entity.getRoles() : null)
+            .keycloakId(entity.getKeycloakId())
             .build();
     }
 }

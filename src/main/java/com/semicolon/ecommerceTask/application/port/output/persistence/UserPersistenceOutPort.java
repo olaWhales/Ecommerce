@@ -9,4 +9,7 @@ public interface UserPersistenceOutPort {
     UserDomainObject saveUser(UserDomainObject userDomainObject);
 
     boolean existsByEmail(String mail);
+
 }
+
+

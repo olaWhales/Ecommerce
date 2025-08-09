@@ -1,18 +1,15 @@
-package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request;
+package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response;
 
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserRole;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 public class UpdateUserRequest {
     private String username;
     private String email;
-    private List<UserRole> role;
-
+    private List<UserRole> roles;
 }

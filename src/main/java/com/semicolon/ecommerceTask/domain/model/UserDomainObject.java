@@ -6,7 +6,7 @@ import jakarta.persistence.Enumerated;
 import lombok.*;
 
 import java.util.List;
-import java.util.UUID;
+
 
 @Getter
 @Setter
@@ -14,14 +14,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDomainObject {
-//    private UUID id;
-//    private String keycloakId;
-    private String name;
+    private String firstName;
+    private String lastName;
+    private String username ;
     private String email;
     private String password;
-
-    @Enumerated(EnumType.STRING)
     private List<UserRole> roles;
-
+    private String keycloakId ;
 
 }

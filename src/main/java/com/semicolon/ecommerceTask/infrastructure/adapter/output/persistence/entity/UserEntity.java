@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
 @Builder
 @Getter
 @Setter
@@ -21,11 +20,11 @@ public class UserEntity {
 
     private String keycloakId ;
 
-    private String name;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password;
 
-    @ElementCollection(targetClass = UserRole.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private List<UserRole> roles;
 }

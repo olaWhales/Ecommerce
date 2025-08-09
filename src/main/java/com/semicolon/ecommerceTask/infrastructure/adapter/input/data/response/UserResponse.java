@@ -1,18 +1,20 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response;
 
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserRole;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
+@Builder
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserResponse {
-    private String userId;
-    private String username ;
+//    private String userId;
+    private String name ;
     private String email ;
-    private List<UserRole> roles ;
+    private String keycloakId ;
     private String message ;
 
 //    public UserRegistrationResponse(String message){

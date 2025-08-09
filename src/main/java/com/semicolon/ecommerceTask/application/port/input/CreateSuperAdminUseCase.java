@@ -4,5 +4,6 @@ import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.Cre
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.CreateSuperAdminResponse;
 
 public interface CreateSuperAdminUseCase {
-    CreateSuperAdminResponse createSuperAdmin(CreateSuperAdminRequest request);
+    void createSuperAdmin();
 }
+
