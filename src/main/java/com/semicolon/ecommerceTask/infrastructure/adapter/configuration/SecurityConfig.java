@@ -33,6 +33,11 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/public").permitAll()
                 .requestMatchers("/superAdmin/**").hasRole("SUPERADMIN")
+                .requestMatchers("/admin/initiate").hasRole("SUPERADMIN")
+                .requestMatchers("/admin/delete").hasRole("SUPERADMIN")
+                .requestMatchers("/admin/update").hasRole("SUPERADMIN")
+                .requestMatchers("/admin/all").hasRole("SUPERADMIN")
+                .requestMatchers("/admin/register").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2

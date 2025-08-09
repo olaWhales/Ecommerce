@@ -1,4 +1,4 @@
-package com.semicolon.ecommerceTask.infrastructure.adapter.output.repositories;
+package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repository;
 
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.AdminEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

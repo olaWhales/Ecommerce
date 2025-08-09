@@ -1,4 +1,5 @@
 package com.semicolon.ecommerceTask.application.port.output;
 
-public class EmailOutPort {
+public interface EmailOutPort {
+    void sendEmail(String to, String subject, String body);
 }
