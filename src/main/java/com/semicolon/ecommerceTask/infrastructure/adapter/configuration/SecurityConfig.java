@@ -31,13 +31,17 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/public").permitAll()
+                .requestMatchers("/auth/login").permitAll()
+//                .requestMatchers("/api/public").permitAll()
+
                 .requestMatchers("/superAdmin/**").hasRole("SUPERADMIN")
                 .requestMatchers("/admin/initiate").hasRole("SUPERADMIN")
                 .requestMatchers("/admin/delete").hasRole("SUPERADMIN")
                 .requestMatchers("/admin/update").hasRole("SUPERADMIN")
                 .requestMatchers("/admin/all").hasRole("SUPERADMIN")
                 .requestMatchers("/admin/register").permitAll()
+
+
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2
