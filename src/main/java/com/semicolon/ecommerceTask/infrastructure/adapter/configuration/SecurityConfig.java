@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtValidators;
@@ -15,6 +16,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,26 +66,28 @@ public class SecurityConfig {
         System.out.println("JwtAuthenticationConverter initialized");
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
-            Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
-            if (resourceAccess == null || !resourceAccess.containsKey("ecommerce-app")) {return List.of();}
+            Collection<GrantedAuthority> authorities = new ArrayList<>();
 
-            @SuppressWarnings("unchecked")
-            Map<String, Object> ecommerceAppAccess = (Map<String, Object>) resourceAccess.get("ecommerce-app");
-            Object rolesObj = ecommerceAppAccess.get("roles");
-
-            List<String> roles = new ArrayList<>();
-            if (rolesObj instanceof List<?>) {
-                for (Object role : (List<?>) rolesObj) {
-                    if (role instanceof String) {
-                        roles.add((String) role);
-                    }
-                }
+            // Realm roles
+            Map<String, Object> realmAccess = jwt.getClaim("realm_access");
+            if (realmAccess != null && realmAccess.containsKey("roles")) {
+                List<String> realmRoles = (List<String>) realmAccess.get("roles");
+                authorities.addAll(realmRoles.stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                        .toList());
             }
-
-        return roles.stream()
-            .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-            .collect(Collectors.toList());
+            // Client roles
+            Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
+            if (resourceAccess != null && resourceAccess.containsKey("ecommerce-app")) {
+                Map<String, Object> appAccess = (Map<String, Object>) resourceAccess.get("ecommerce-app");
+                List<String> appRoles = (List<String>) appAccess.get("roles");
+                authorities.addAll(appRoles.stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                        .toList());
+            }
+            return authorities;
         });
+
         return converter;
     }
 }

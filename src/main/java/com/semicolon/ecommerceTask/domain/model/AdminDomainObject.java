@@ -1,13 +1,15 @@
 package com.semicolon.ecommerceTask.domain.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AdminDomainObject {
     private UUID id;
     private String keycloakId;

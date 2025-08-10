@@ -1,10 +1,12 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ErrorResponseDto {
     private String message;
     private int status;

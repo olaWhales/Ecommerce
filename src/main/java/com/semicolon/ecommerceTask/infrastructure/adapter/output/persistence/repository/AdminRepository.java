@@ -2,10 +2,12 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.re
 
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.AdminEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public interface AdminRepository extends JpaRepository<AdminEntity, UUID> {
     boolean existsByEmail(String email);
     Optional<AdminEntity> findByEmail(String email);

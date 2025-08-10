@@ -9,15 +9,12 @@ import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.ent
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.PendingRegistrationEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface AdminMapper {
-    AdminMapper INSTANCE = Mappers.getMapper(AdminMapper.class);
-
     @Mapping(target = "adminEmail", source = "adminEmail")
     AdminInitiationDto toInitiationDto(String adminEmail);
 
@@ -47,9 +44,18 @@ public interface AdminMapper {
     @Mapping(target = "email", source = "email")
     @Mapping(target = "firstName", source = "firstName")
     @Mapping(target = "lastName", source = "lastName")
-    @Mapping(target = "password", source = "password")
+    // @Mapping(target = "password", source = "password") <-- Removed this line
     @Mapping(target = "roles", source = "roles")
     AdminDomainObject toDomainObject(AdminEntity entity);
+
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "keycloakId", source = "keycloakId")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "firstName", source = "firstName")
+    @Mapping(target = "lastName", source = "lastName")
+    // @Mapping(target = "password", source = "password") <-- Removed this line
+    @Mapping(target = "roles", source = "roles")
+    AdminEntity toEntity(AdminDomainObject admin);
 
     List<AdminDomainObject> toDomainObjectList(List<AdminEntity> entities);
 

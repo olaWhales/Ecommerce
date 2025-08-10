@@ -13,12 +13,4 @@
 //    private String password;
 //    private String role;
 //
-////    public UserRegistrationCommand toCommand() {
-////        return new UserRegistrationCommand(
-////            userName,
-////            email,
-////            password,
-////            UserRole.valueOf(role.toUpperCase())
-////        );
-////    }
 //}

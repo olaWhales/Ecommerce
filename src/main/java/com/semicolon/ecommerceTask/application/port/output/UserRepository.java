@@ -6,9 +6,9 @@ import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.ent
 import java.util.Optional;
 
 public interface UserRepository{
-    void save(UserEntity user);
-    boolean existsByEmail(String email);
+//    void save(UserEntity user);
+//    boolean existsByEmail(String email);
 
 //    CharSequence findByEmail(String mail);
-    Optional<UserEntity> findByEmail(String email);
+//    Optional<UserEntity> findByEmail(String email);
 }

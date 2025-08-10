@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface AdminPersistenceOutPort {
     boolean existsByEmail(String email);
     void savePendingRegistration(String email, String token, LocalDateTime expiration);
-    Optional<PendingRegistration> findPendingTokenByEmail(String email); // Updated to use top-level PendingRegistration    void saveAdmin(AdminDomainObject admin);
+    Optional<PendingRegistration> findPendingTokenByEmail(String email);
 
     void saveAdmin(AdminDomainObject admin);
 

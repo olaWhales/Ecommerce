@@ -5,6 +5,7 @@ import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.Adm
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.AdminRegistrationDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.AdminUpdateDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.AdminResponseDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.ResponseMessageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -27,22 +28,11 @@ public class AdminController {
     }
 
     @GetMapping("/register")
-    public String showRegistrationForm(@RequestParam String token, @RequestParam String email) {
-        return """
-                <html>
-                    <body>
-                        <h2>Complete Your Admin Registration</h2>
-                        <form action="/admin/register" method="post">
-                            <input type="hidden" name="token" value="%s">
-                            <input type="hidden" name="email" value="%s">
-                            <label>First Name:</label><input type="text" name="firstName" required><br>
-                            <label>Last Name:</label><input type="text" name="lastName" required><br>
-                            <label>Password:</label><input type="password" name="password" required><br>
-                            <button type="submit">Register</button>
-                        </form>
-                    </body>
-                </html>
-                """.formatted(token, email);
+    public ResponseMessageDto showRegistrationForm(@RequestParam String token, @RequestParam String email) {
+        return new ResponseMessageDto(
+                "Proceed to complete your registration.",
+                token,
+                email);
     }
 
     @PostMapping("/register")
@@ -58,24 +48,24 @@ public class AdminController {
         return "Admin with email " + email + " deleted.";
     }
 
-    @PutMapping("/update")
-    @PreAuthorize("hasRole('SUPERADMIN')")
-    public String updateAdmin(@RequestBody AdminUpdateDto dto) {
-        createAdminUseCase.updateAdmin(dto.getEmail(), dto.getFirstName(), dto.getLastName());
-        return "Admin with email " + dto.getEmail() + " updated.";
-    }
-
-    @GetMapping("/all")
-    @PreAuthorize("hasRole('SUPERADMIN')")
-    public List<AdminResponseDto> getAllAdmins() {
-        return createAdminUseCase.getAllAdmins().stream()
-                .map(admin -> AdminResponseDto.builder()
-                        .id(admin.getId())
-                        .email(admin.getEmail())
-                        .firstName(admin.getFirstName())
-                        .lastName(admin.getLastName())
-                        .roles(admin.getRoles())
-                        .build())
-                .collect(Collectors.toList());
-    }
+//    @PutMapping("/update")
+//    @PreAuthorize("hasRole('SUPERADMIN')")
+//    public String updateAdmin(@RequestBody AdminUpdateDto dto) {
+//        createAdminUseCase.updateAdmin(dto.getEmail(), dto.getFirstName(), dto.getLastName());
+//        return "Admin with email " + dto.getEmail() + " updated.";
+//    }
+//
+//    @GetMapping("/all")
+//    @PreAuthorize("hasRole('SUPERADMIN')")
+//    public List<AdminResponseDto> getAllAdmins() {
+//        return createAdminUseCase.getAllAdmins().stream()
+//                .map(admin -> AdminResponseDto.builder()
+//                        .id(admin.getId())
+//                        .email(admin.getEmail())
+//                        .firstName(admin.getFirstName())
+//                        .lastName(admin.getLastName())
+//                        .roles(admin.getRoles())
+//                        .build())
+//                .collect(Collectors.toList());
+//    }
 }

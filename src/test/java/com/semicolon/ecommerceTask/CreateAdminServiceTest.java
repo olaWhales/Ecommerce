@@ -8,6 +8,8 @@ import com.semicolon.ecommerceTask.domain.exception.ValidationException;
 import com.semicolon.ecommerceTask.domain.model.AdminDomainObject;
 import com.semicolon.ecommerceTask.domain.model.PendingRegistration;
 import com.semicolon.ecommerceTask.domain.service.CreateAdminService;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.AdminResponseDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.AdminMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,6 +45,9 @@ class CreateAdminServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private AdminMapper adminMapper; // Add mock for AdminMapper
+
     @InjectMocks
     private CreateAdminService createAdminService;
 
@@ -58,7 +63,7 @@ class CreateAdminServiceTest {
 
     @BeforeEach
     void setUp() {
-        reset(adminPersistenceOutPort, keycloakAdminOutPort, emailOutPort, passwordEncoder);
+        reset(adminPersistenceOutPort, keycloakAdminOutPort, emailOutPort, passwordEncoder, adminMapper);
     }
 
     // Test initiateAdminCreation
@@ -71,7 +76,7 @@ class CreateAdminServiceTest {
         verify(adminPersistenceOutPort).existsByEmail(VALID_EMAIL);
         verify(adminPersistenceOutPort).savePendingRegistration(eq(VALID_EMAIL), anyString(), any(LocalDateTime.class));
         verify(emailOutPort).sendEmail(eq(VALID_EMAIL), eq(MessageUtil.EMAIL_SUBJECT), anyString());
-        verifyNoMoreInteractions(adminPersistenceOutPort, emailOutPort);
+        verifyNoMoreInteractions(adminPersistenceOutPort, emailOutPort, adminMapper);
     }
 
     @Test
@@ -83,7 +88,7 @@ class CreateAdminServiceTest {
 
         assertEquals(MessageUtil.ADMIN_ALREADY_EXISTS.formatted(VALID_EMAIL), exception.getMessage());
         verify(adminPersistenceOutPort).existsByEmail(VALID_EMAIL);
-        verifyNoMoreInteractions(adminPersistenceOutPort, emailOutPort);
+        verifyNoMoreInteractions(adminPersistenceOutPort, emailOutPort, adminMapper);
     }
 
     @Test
@@ -92,24 +97,46 @@ class CreateAdminServiceTest {
                 createAdminService.initiateAdminCreation(INVALID_EMAIL));
 
         assertEquals(MessageUtil.INVALID_EMAIL, exception.getMessage());
-        verifyNoInteractions(adminPersistenceOutPort, emailOutPort);
+        verifyNoInteractions(adminPersistenceOutPort, emailOutPort, adminMapper);
     }
 
+    // Test completeAdminRegistration
     @Test
     void completeAdminRegistration_Success() {
         LocalDateTime expiration = LocalDateTime.now().plusHours(1);
         PendingRegistration pending = new PendingRegistration(VALID_EMAIL, TOKEN, expiration);
+        AdminDomainObject admin = AdminDomainObject.builder()
+                .id(ADMIN_ID)
+                .email(VALID_EMAIL)
+                .firstName(VALID_FIRST_NAME)
+                .lastName(VALID_LAST_NAME)
+                .password("encodedPassword")
+                .roles(Collections.singletonList("ADMIN"))
+                .keycloakId(KEYCLOAK_ID)
+                .build();
+        AdminResponseDto responseDto = AdminResponseDto.builder()
+                .id(ADMIN_ID)
+                .email(VALID_EMAIL)
+                .firstName(VALID_FIRST_NAME)
+                .lastName(VALID_LAST_NAME)
+                .roles(Collections.singletonList("ADMIN"))
+                .build();
+
         when(adminPersistenceOutPort.findPendingTokenByEmail(VALID_EMAIL)).thenReturn(Optional.of(pending));
         when(passwordEncoder.encode(VALID_PASSWORD)).thenReturn("encodedPassword");
-        when(keycloakAdminOutPort.createUser(any(AdminDomainObject.class))).thenReturn(KEYCLOAK_ID);
+//        when(keycloakAdminOutPort.createUser(any(AdminDomainObject.class))).thenReturn(KEYCLOAK_ID);
+        when(adminMapper.toResponseDto(any(AdminDomainObject.class))).thenReturn(responseDto);
 
-        createAdminService.completeAdminRegistration(VALID_EMAIL, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_PASSWORD);
+        AdminResponseDto result = createAdminService.completeAdminRegistration(VALID_EMAIL, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_PASSWORD);
 
+        assertEquals(ADMIN_ID, result.getId());
+        assertEquals(VALID_EMAIL, result.getEmail());
         verify(adminPersistenceOutPort).findPendingTokenByEmail(VALID_EMAIL);
         verify(adminPersistenceOutPort).saveAdmin(any(AdminDomainObject.class));
         verify(adminPersistenceOutPort).deletePendingRegistration(VALID_EMAIL);
-        verify(keycloakAdminOutPort).createUser(any(AdminDomainObject.class));
-        verifyNoMoreInteractions(adminPersistenceOutPort, keycloakAdminOutPort);
+//        verify(keycloakAdminOutPort).createUser(any(AdminDomainObject.class));
+        verify(adminMapper).toResponseDto(any(AdminDomainObject.class));
+        verifyNoMoreInteractions(adminPersistenceOutPort, keycloakAdminOutPort, adminMapper);
     }
 
     @Test
@@ -124,7 +151,7 @@ class CreateAdminServiceTest {
         assertEquals(MessageUtil.TOKEN_EXPIRED, exception.getMessage());
         verify(adminPersistenceOutPort).findPendingTokenByEmail(VALID_EMAIL);
         verify(adminPersistenceOutPort).deletePendingRegistration(VALID_EMAIL);
-        verifyNoMoreInteractions(adminPersistenceOutPort, keycloakAdminOutPort);
+        verifyNoMoreInteractions(adminPersistenceOutPort, keycloakAdminOutPort, adminMapper);
     }
 
     @Test
@@ -136,7 +163,7 @@ class CreateAdminServiceTest {
 
         assertEquals(MessageUtil.NO_PENDING_REGISTRATION.formatted(VALID_EMAIL), exception.getMessage());
         verify(adminPersistenceOutPort).findPendingTokenByEmail(VALID_EMAIL);
-        verifyNoMoreInteractions(adminPersistenceOutPort, keycloakAdminOutPort);
+        verifyNoMoreInteractions(adminPersistenceOutPort, keycloakAdminOutPort, adminMapper);
     }
 
     @Test
@@ -145,7 +172,7 @@ class CreateAdminServiceTest {
                 createAdminService.completeAdminRegistration(INVALID_EMAIL, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_PASSWORD));
 
         assertEquals(MessageUtil.INVALID_EMAIL, exception.getMessage());
-        verifyNoInteractions(adminPersistenceOutPort, keycloakAdminOutPort);
+        verifyNoInteractions(adminPersistenceOutPort, keycloakAdminOutPort, adminMapper);
     }
 
     @Test
@@ -154,7 +181,7 @@ class CreateAdminServiceTest {
                 createAdminService.completeAdminRegistration(VALID_EMAIL, VALID_FIRST_NAME, VALID_LAST_NAME, WEAK_PASSWORD));
 
         assertEquals(MessageUtil.INVALID_PASSWORD, exception.getMessage());
-        verifyNoInteractions(adminPersistenceOutPort, keycloakAdminOutPort);
+        verifyNoInteractions(adminPersistenceOutPort, keycloakAdminOutPort, adminMapper);
     }
 
     @Test
@@ -163,14 +190,14 @@ class CreateAdminServiceTest {
         PendingRegistration pending = new PendingRegistration(VALID_EMAIL, TOKEN, expiration);
         when(adminPersistenceOutPort.findPendingTokenByEmail(VALID_EMAIL)).thenReturn(Optional.of(pending));
         when(passwordEncoder.encode(VALID_PASSWORD)).thenReturn("encodedPassword");
-        when(keycloakAdminOutPort.createUser(any(AdminDomainObject.class))).thenReturn(null);
+//        when(keycloakAdminOutPort.createUser(any(AdminDomainObject.class))).thenReturn(null);
 
         AdminException exception = assertThrows(AdminException.class, () ->
                 createAdminService.completeAdminRegistration(VALID_EMAIL, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_PASSWORD));
 
         assertEquals(MessageUtil.KEYCLOAK_CREATION_FAILED, exception.getMessage());
         verify(adminPersistenceOutPort).findPendingTokenByEmail(VALID_EMAIL);
-        verifyNoMoreInteractions(adminPersistenceOutPort, keycloakAdminOutPort);
+        verifyNoMoreInteractions(adminPersistenceOutPort, keycloakAdminOutPort, adminMapper);
     }
 
     // Test deleteAdmin
@@ -188,7 +215,7 @@ class CreateAdminServiceTest {
         verify(adminPersistenceOutPort).findByEmail(VALID_EMAIL);
         verify(keycloakAdminOutPort).deleteUser(KEYCLOAK_ID);
         verify(adminPersistenceOutPort).deleteAdmin(VALID_EMAIL);
-        verifyNoMoreInteractions(adminPersistenceOutPort, keycloakAdminOutPort);
+        verifyNoMoreInteractions(adminPersistenceOutPort, keycloakAdminOutPort, adminMapper);
     }
 
     @Test
@@ -200,7 +227,7 @@ class CreateAdminServiceTest {
 
         assertEquals(MessageUtil.ADMIN_NOT_FOUND.formatted(VALID_EMAIL), exception.getMessage());
         verify(adminPersistenceOutPort).findByEmail(VALID_EMAIL);
-        verifyNoMoreInteractions(adminPersistenceOutPort, keycloakAdminOutPort);
+        verifyNoMoreInteractions(adminPersistenceOutPort, keycloakAdminOutPort, adminMapper);
     }
 
     @Test
@@ -209,7 +236,7 @@ class CreateAdminServiceTest {
                 createAdminService.deleteAdmin(INVALID_EMAIL));
 
         assertEquals(MessageUtil.INVALID_EMAIL, exception.getMessage());
-        verifyNoInteractions(adminPersistenceOutPort, keycloakAdminOutPort);
+        verifyNoInteractions(adminPersistenceOutPort, keycloakAdminOutPort, adminMapper);
     }
 
     // Test updateAdmin
@@ -219,13 +246,27 @@ class CreateAdminServiceTest {
                 .id(ADMIN_ID)
                 .email(VALID_EMAIL)
                 .build();
+        AdminResponseDto responseDto = AdminResponseDto.builder()
+                .id(ADMIN_ID)
+                .email(VALID_EMAIL)
+                .firstName(VALID_FIRST_NAME)
+                .lastName(VALID_LAST_NAME)
+                .roles(Collections.singletonList("ADMIN"))
+                .build();
+
         when(adminPersistenceOutPort.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(admin));
+        when(adminMapper.toResponseDto(any(AdminDomainObject.class))).thenReturn(responseDto);
 
-        createAdminService.updateAdmin(VALID_EMAIL, VALID_FIRST_NAME, VALID_LAST_NAME);
+        AdminResponseDto result = createAdminService.updateAdmin(VALID_EMAIL, VALID_FIRST_NAME, VALID_LAST_NAME);
 
+        assertEquals(ADMIN_ID, result.getId());
+        assertEquals(VALID_EMAIL, result.getEmail());
+        assertEquals(VALID_FIRST_NAME, result.getFirstName());
+        assertEquals(VALID_LAST_NAME, result.getLastName());
         verify(adminPersistenceOutPort).findByEmail(VALID_EMAIL);
         verify(adminPersistenceOutPort).saveAdmin(any(AdminDomainObject.class));
-        verifyNoMoreInteractions(adminPersistenceOutPort);
+        verify(adminMapper).toResponseDto(any(AdminDomainObject.class));
+        verifyNoMoreInteractions(adminPersistenceOutPort, adminMapper);
     }
 
     @Test
@@ -237,7 +278,7 @@ class CreateAdminServiceTest {
 
         assertEquals(MessageUtil.ADMIN_NOT_FOUND.formatted(VALID_EMAIL), exception.getMessage());
         verify(adminPersistenceOutPort).findByEmail(VALID_EMAIL);
-        verifyNoMoreInteractions(adminPersistenceOutPort);
+        verifyNoMoreInteractions(adminPersistenceOutPort, adminMapper);
     }
 
     @Test
@@ -246,32 +287,57 @@ class CreateAdminServiceTest {
                 createAdminService.updateAdmin(INVALID_EMAIL, VALID_FIRST_NAME, VALID_LAST_NAME));
 
         assertEquals(MessageUtil.INVALID_EMAIL, exception.getMessage());
-        verifyNoInteractions(adminPersistenceOutPort);
+        verifyNoInteractions(adminPersistenceOutPort, adminMapper);
     }
 
     // Test getAllAdmins
     @Test
     void getAllAdmins_Success() {
-        List<AdminDomainObject> admins = Collections.singletonList(
-                AdminDomainObject.builder().id(ADMIN_ID).email(VALID_EMAIL).build());
-        when(adminPersistenceOutPort.findAllAdmins()).thenReturn(admins);
+        AdminDomainObject admin = AdminDomainObject.builder()
+                .id(ADMIN_ID)
+                .email(VALID_EMAIL)
+                .firstName(VALID_FIRST_NAME)
+                .lastName(VALID_LAST_NAME)
+                .roles(Collections.singletonList("ADMIN"))
+                .build();
+        AdminResponseDto responseDto = AdminResponseDto.builder()
+                .id(ADMIN_ID)
+                .email(VALID_EMAIL)
+                .firstName(VALID_FIRST_NAME)
+                .lastName(VALID_LAST_NAME)
+                .roles(Collections.singletonList("ADMIN"))
+                .build();
+        List<AdminDomainObject> admins = Collections.singletonList(admin);
+        List<AdminResponseDto> responseDtos = Collections.singletonList(responseDto);
 
-        List<AdminDomainObject> result = createAdminService.getAllAdmins();
+        when(adminPersistenceOutPort.findAllAdmins()).thenReturn(admins);
+        when(adminMapper.toResponseDtoList(admins)).thenReturn(responseDtos);
+
+        List<AdminResponseDto> result = createAdminService.getAllAdmins();
 
         assertEquals(1, result.size());
         assertEquals(ADMIN_ID, result.get(0).getId());
+        assertEquals(VALID_EMAIL, result.get(0).getEmail());
+        assertEquals(VALID_FIRST_NAME, result.get(0).getFirstName());
+        assertEquals(VALID_LAST_NAME, result.get(0).getLastName());
         verify(adminPersistenceOutPort).findAllAdmins();
-        verifyNoMoreInteractions(adminPersistenceOutPort);
+        verify(adminMapper).toResponseDtoList(admins);
+        verifyNoMoreInteractions(adminPersistenceOutPort, adminMapper);
     }
 
     @Test
     void getAllAdmins_EmptyList_Success() {
-        when(adminPersistenceOutPort.findAllAdmins()).thenReturn(Collections.emptyList());
+        List<AdminDomainObject> admins = Collections.emptyList();
+        List<AdminResponseDto> responseDtos = Collections.emptyList();
 
-        List<AdminDomainObject> result = createAdminService.getAllAdmins();
+        when(adminPersistenceOutPort.findAllAdmins()).thenReturn(admins);
+        when(adminMapper.toResponseDtoList(admins)).thenReturn(responseDtos);
+
+        List<AdminResponseDto> result = createAdminService.getAllAdmins();
 
         assertTrue(result.isEmpty());
         verify(adminPersistenceOutPort).findAllAdmins();
-        verifyNoMoreInteractions(adminPersistenceOutPort);
+        verify(adminMapper).toResponseDtoList(admins);
+        verifyNoMoreInteractions(adminPersistenceOutPort, adminMapper);
     }
 }

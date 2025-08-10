@@ -10,7 +10,7 @@ public class KeycloakConfig {
     @Bean
     public Keycloak keycloak(KeycloakAdminProperties properties) {
         if (properties.getRealm() == null || properties.getClientId() == null || properties.getClientSecret() == null) {
-            throw new IllegalStateException("Keycloak properties (realm, clientId, clientSecret) must not be null");
+            throw new IllegalArgumentException("Keycloak properties (realm, clientId, clientSecret) must not be null");
         }
 
         return KeycloakBuilder.builder()
