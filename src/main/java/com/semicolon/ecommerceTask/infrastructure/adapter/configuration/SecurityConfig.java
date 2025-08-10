@@ -34,7 +34,6 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/login").permitAll()
-//                .requestMatchers("/api/public").permitAll()
 
                 .requestMatchers("/superAdmin/**").hasRole("SUPERADMIN")
                 .requestMatchers("/admin/initiate").hasRole("SUPERADMIN")
@@ -43,7 +42,7 @@ public class SecurityConfig {
                 .requestMatchers("/admin/all").hasRole("SUPERADMIN")
                 .requestMatchers("/admin/register").permitAll()
 
-
+                .requestMatchers("/customer/register").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2

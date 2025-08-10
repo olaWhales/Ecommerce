@@ -1,0 +1,15 @@
+package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
+public class CustomerResponseDto {
+    private String id;
+    private String firstName;
+    private String lastName;
+    private String email;
+}
