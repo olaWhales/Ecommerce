@@ -177,6 +177,7 @@ import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.AdminResponseDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.AdminMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
+import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -202,6 +203,7 @@ public class CreateAdminService implements CreateAdminUseCase {
     private final PasswordEncoder passwordEncoder;
     private final AdminMapper adminMapper;
     private final UserRegistrationService userRegistrationService;
+    private final ValidationUtil validationUtil;
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*?])(?=\\S+$).{8,}$");

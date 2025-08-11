@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class UserRepositoryAdaptor implements UserPersistenceOutPort {
     private final JpaUserRepository jpaUserRepository;
-//    private final UserAdapterMapper userAdapterMapper;
 
     @Override
     public void saveLocalUser(String keycloakId, UserDomainObject userDomainObject) {
@@ -25,23 +24,6 @@ public class UserRepositoryAdaptor implements UserPersistenceOutPort {
             .build();
         jpaUserRepository.save(userEntity);
     }
-
-//    @Override
-//    public void deleteLocalUser(String keycloakId) {
-//        jpaUserRepository.findByKeycloakId(keycloakId)
-//                .ifPresent(jpaUserRepository::delete);
-//    }
-//
-//    @Override
-//    public UserDomainObject saveUser(UserDomainObject userDomainObject) {
-//        if (userDomainObject == null) {
-//            throw new IllegalArgumentException("UserDomainObject cannot be null");
-//        }
-////        UserEntity userEntity = userAdapterMapper.mapToUserEntity(userDomainObject);
-////        userEntity = jpaUserRepository.save(userEntity);
-////        return userAdapterMapper.mapToUserDomainObject(userEntity);
-//        return null ;
-//    }
 
     @Override
     public boolean existsByEmail(String email) {

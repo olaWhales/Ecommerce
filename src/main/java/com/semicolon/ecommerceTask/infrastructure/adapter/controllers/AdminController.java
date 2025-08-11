@@ -1,17 +1,12 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.controllers;
 
 import com.semicolon.ecommerceTask.application.port.input.CreateAdminUseCase;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.AdminInitiationDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.AdminRegistrationDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.AdminUpdateDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.AdminResponseDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminInitiationDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminRegistrationDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.ResponseMessageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin")

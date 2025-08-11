@@ -1,9 +1,9 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper;
 
 import com.semicolon.ecommerceTask.domain.model.AdminDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.AdminInitiationDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.AdminRegistrationDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.AdminUpdateDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminInitiationDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminRegistrationDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminUpdateDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.AdminResponseDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.AdminEntity;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.PendingRegistrationEntity;

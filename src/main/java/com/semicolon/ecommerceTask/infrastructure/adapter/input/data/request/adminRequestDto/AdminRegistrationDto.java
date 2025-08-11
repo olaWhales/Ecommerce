@@ -1,8 +1,12 @@
-package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request;
+package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class AdminRegistrationDto {
     private String token;
     private String email;

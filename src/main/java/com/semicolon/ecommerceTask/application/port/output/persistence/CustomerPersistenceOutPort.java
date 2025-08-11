@@ -4,5 +4,4 @@ import com.semicolon.ecommerceTask.domain.model.CustomerDomainObject;
 
 public interface CustomerPersistenceOutPort {
     void saveCustomer(CustomerDomainObject customer);
-    // You can add more methods here like find, delete, etc.
 }

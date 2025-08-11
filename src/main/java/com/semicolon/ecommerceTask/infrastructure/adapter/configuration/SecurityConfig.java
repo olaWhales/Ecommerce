@@ -29,26 +29,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/login").permitAll()
-
-                .requestMatchers("/superAdmin/**").hasRole("SUPERADMIN")
-                .requestMatchers("/admin/initiate").hasRole("SUPERADMIN")
-                .requestMatchers("/admin/delete").hasRole("SUPERADMIN")
-                .requestMatchers("/admin/update").hasRole("SUPERADMIN")
-                .requestMatchers("/admin/all").hasRole("SUPERADMIN")
-                .requestMatchers("/admin/register").permitAll()
-
-                .requestMatchers("/customer/register").permitAll()
-                .anyRequest().authenticated()
-            )
-            .oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(jwt -> jwt.decoder(jwtDecoder())
-                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-            );
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/login", "/customer/register").permitAll()
+                        .requestMatchers("/seller/request-registration").hasRole("BUYER")
+                        .requestMatchers("/admin/initiate", "/admin/delete", "/admin/update", "/admin/all", "/superAdmin/**").hasRole("SUPERADMIN")
+                        .anyRequest().authenticated()
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt
+                                .decoder(jwtDecoder())
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                        )
+                );
         return http.build();
     }
     @Bean
@@ -56,14 +51,18 @@ public class SecurityConfig {
         String issuerUri = "http://localhost:8080/realms/ecommerce-realm";
         NimbusJwtDecoder decoder = NimbusJwtDecoder.withIssuerLocation(issuerUri).build();
         decoder.setJwtValidator(JwtValidators.createDefaultWithIssuer(issuerUri));
-        System.out.println("JwtDecoder initialized with issuer: " + issuerUri);
+        log.info("JwtDecoder initialized with issuer: {}", issuerUri);
         return decoder;
     }
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
-        System.out.println("JwtAuthenticationConverter initialized");
+        log.info("JwtAuthenticationConverter initialized");
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+
+        // This is the critical line that was missing
+        converter.setPrincipalClaimName("email");
+
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
             Collection<GrantedAuthority> authorities = new ArrayList<>();
 

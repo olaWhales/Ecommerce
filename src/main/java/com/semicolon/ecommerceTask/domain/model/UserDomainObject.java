@@ -21,5 +21,4 @@ public class UserDomainObject {
     private String password;
     private List<UserRole> roles;
     private String keycloakId ;
-
 }

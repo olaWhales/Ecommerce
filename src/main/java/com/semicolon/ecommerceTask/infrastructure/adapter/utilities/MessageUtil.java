@@ -41,5 +41,8 @@ public class MessageUtil {
     public static String USER_ALREADY_EXIST_IN_KEYCLOAK = "User or email already exists in Keycloak";
 
     public static String USER_DATA_CANNOT_BE_NULL = "User data cannot be null";
+    public static String CUSTOMER_NOT_FOUND = "Customer not found ";
+    public static String A_SELLER_REGISTRATION_REQUEST_IS_ALREADY_PENDING = "A seller registration request is already pending for %s";
+    public static String SELLER_REGISTRATION_REQUEST_SUBMITTED_SUCCESSFULLY = "Seller registration request submitted successfully for %s. It is now pending admin approval.";
 
 }

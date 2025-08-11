@@ -1,9 +1,11 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.utilities;
 
 import com.semicolon.ecommerceTask.domain.exception.ValidationException;
+import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
 
+@Component
 public class ValidationUtil {
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
