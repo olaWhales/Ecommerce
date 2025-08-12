@@ -3,6 +3,7 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.configuration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,11 +20,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
 @Slf4j
+@EnableMethodSecurity // CRITICAL: This was missing and is needed for @PreAuthorize
 public class SecurityConfig {
 
     @Bean
@@ -33,19 +34,23 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/customer/register").permitAll()
-                        .requestMatchers("/seller/request-registration").hasRole("BUYER")
-                        .requestMatchers("/admin/initiate", "/admin/delete", "/admin/update", "/admin/all", "/superAdmin/**").hasRole("SUPERADMIN")
+                        // All public endpoints are explicitly listed here
+                        .requestMatchers("/auth/login",
+                                "/customer/register",
+                                "/admin/register",
+                                "/admin/register?*").permitAll()
+                        // All other requests must be authenticated
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
-                                .decoder(jwtDecoder())
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                            .decoder(jwtDecoder())
+                            .jwtAuthenticationConverter(jwtAuthenticationConverter())
                         )
                 );
         return http.build();
     }
+
     @Bean
     public JwtDecoder jwtDecoder() {
         String issuerUri = "http://localhost:8080/realms/ecommerce-realm";
@@ -59,14 +64,10 @@ public class SecurityConfig {
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         log.info("JwtAuthenticationConverter initialized");
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-
-        // This is the critical line that was missing
         converter.setPrincipalClaimName("email");
 
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
             Collection<GrantedAuthority> authorities = new ArrayList<>();
-
-            // Realm roles
             Map<String, Object> realmAccess = jwt.getClaim("realm_access");
             if (realmAccess != null && realmAccess.containsKey("roles")) {
                 List<String> realmRoles = (List<String>) realmAccess.get("roles");
@@ -74,7 +75,6 @@ public class SecurityConfig {
                         .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                         .toList());
             }
-            // Client roles
             Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
             if (resourceAccess != null && resourceAccess.containsKey("ecommerce-app")) {
                 Map<String, Object> appAccess = (Map<String, Object>) resourceAccess.get("ecommerce-app");
@@ -85,7 +85,6 @@ public class SecurityConfig {
             }
             return authorities;
         });
-
         return converter;
     }
 }

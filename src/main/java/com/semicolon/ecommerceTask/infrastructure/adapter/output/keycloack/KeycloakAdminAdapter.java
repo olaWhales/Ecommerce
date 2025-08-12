@@ -57,40 +57,22 @@ public class KeycloakAdminAdapter implements KeycloakAdminOutPort {
         keycloakAdminClient.realm(realm).users().delete(keycloakId);
     }
 
-//    @Override
-//    public Optional<String> findUserByEmail(String email) {
-//        List<UserRepresentation> users = keycloakAdminClient.realm(realm).users().searchByEmail(email, true);
-//        if (users != null && !users.isEmpty()) {
-//            // Find a user with an exact email match, as searchByEmail can return partial matches
-//            return users.stream()
-//                    .filter(user -> email.equals(user.getEmail()))
-//                    .findFirst()
-//                    .map(UserRepresentation::getId);
-//        }
-//        return Optional.empty();
-//    }
     @Override
-    public Optional<String> findUserByEmail(String email) {
-//        log.info("KeycloakAdminAdapter: Searching for user with email '{}' in realm '{}'", email, realm);
+    public Optional<UserRepresentation> findUserByEmail(String email) {
+        log.info("KeycloakAdminAdapter: Searching for user with email '{}' in realm '{}'", email, realm);
 
         UsersResource usersResource = keycloakAdminClient.realm(realm).users();
 
         // Use the general search method which is often more reliable
         List<UserRepresentation> users = usersResource.search(email, true);
 
-        if (users != null && !users.isEmpty()) {
-//            log.info("KeycloakAdminAdapter: Found {} user(s) matching the email.", users.size());
+        log.info("KeycloakAdminAdapter: Found {} user(s) matching the email.", users.size());
 
-            // Filter for an exact match
-            return users.stream()
-                    .filter(user -> email.equalsIgnoreCase(user.getEmail())) // Use equalsIgnoreCase for robustness
-                    .findFirst()
-                    .map(UserRepresentation::getId);
-        }
-
-//    log.warn("KeycloakAdminAdapter: No user found for email '{}'.", email);
-    return Optional.empty();
-}
+        // Filter for an exact match and return the first result
+        return users.stream()
+                .filter(user -> email.equalsIgnoreCase(user.getEmail())) // Use equalsIgnoreCase for robustness
+                .findFirst();
+    }
 
     @Override
     public void assignRealmRoles(String keycloakId, List<String> roleNames) {

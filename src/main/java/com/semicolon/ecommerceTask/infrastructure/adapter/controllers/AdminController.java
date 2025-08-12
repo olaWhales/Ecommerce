@@ -1,5 +1,6 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.controllers;
 
+import com.semicolon.ecommerceTask.application.port.input.ApproveSellerUseCase;
 import com.semicolon.ecommerceTask.application.port.input.CreateAdminUseCase;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminInitiationDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminRegistrationDto;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final CreateAdminUseCase createAdminUseCase;
+    private final ApproveSellerUseCase approveSellerUseCase;
+
 
     @PostMapping("/initiate")
     @PreAuthorize("hasRole('SUPERADMIN')")
@@ -43,6 +46,23 @@ public class AdminController {
         return "Admin with email " + email + " deleted.";
     }
 
+
+//    @PostMapping("/actions-seller-registration/{registrationId}")
+//    @PreAuthorize("hasRole('ADMIN'/SUPERADMIN)")
+//    public ResponseEntity<UserDomainObject> handleSellerRegistration(
+//            @PathVariable UUID registrationId,
+//            @RequestBody ApprovalRequest request) {
+//
+//        UserDomainObject result = approveSellerUseCase.approveSeller(registrationId, request);
+//
+//        if (result != null) {
+//            return ResponseEntity.ok(result);
+//        } else {
+//            // Return an empty body with a successful status code for rejection
+//            return ResponseEntity.noContent().build();
+//        }
+
+
 //    @PutMapping("/update")
 //    @PreAuthorize("hasRole('SUPERADMIN')")
 //    public String updateAdmin(@RequestBody AdminUpdateDto dto) {
@@ -62,5 +82,6 @@ public class AdminController {
 //                        .roles(admin.getRoles())
 //                        .build())
 //                .collect(Collectors.toList());
+//    }
 //    }
 }

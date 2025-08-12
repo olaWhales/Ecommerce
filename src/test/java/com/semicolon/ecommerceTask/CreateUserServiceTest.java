@@ -4,7 +4,7 @@
 //import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 //import com.semicolon.ecommerceTask.domain.service.ManageUserService;
 //
-//import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserRole;
+//import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.mockito.ArgumentCaptor;

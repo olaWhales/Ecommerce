@@ -1,6 +1,6 @@
-package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response;
+package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request;
 
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

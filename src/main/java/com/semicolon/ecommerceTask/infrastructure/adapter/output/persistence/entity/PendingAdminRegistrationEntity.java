@@ -3,25 +3,26 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.en
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import lombok.Setter;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "pending_registrations") // Ensure table name is specified
-@Data
+@Table(name = "pending_registration")
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PendingRegistrationEntity {
+public class PendingAdminRegistrationEntity {
     @Id
-    @Column(name = "email", length = 255, nullable = false, updatable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     private String email;
-
-    @Column(name = "token", nullable = false)
+    private String firstName;
+    private String lastName;
     private String token;
-
-    @Column(name = "expiration", nullable = false)
     private LocalDateTime expiration;
 }

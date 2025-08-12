@@ -1,5 +1,6 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity;
 
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 

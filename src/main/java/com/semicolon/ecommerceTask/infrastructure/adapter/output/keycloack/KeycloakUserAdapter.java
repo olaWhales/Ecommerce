@@ -3,7 +3,7 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.keycloack;
 import com.semicolon.ecommerceTask.application.port.output.KeycloakUserPort;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.configuration.keyCloakProperties.KeycloakAdminProperties;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.admin.client.Keycloak;
@@ -76,9 +76,9 @@ public class KeycloakUserAdapter implements KeycloakUserPort {
         userRepresentation.setCredentials(Collections.singletonList(credential));
 
         try (Response response = keycloak.realm(properties.getRealm()).users().create(userRepresentation)) {
-            if (response.getStatus() == 409) { // Conflict
+            if (response.getStatus() == 409) {
 //                logger.info("User or email {} already exists in Keycloak", userDomainObject.getEmail());
-                return USER_ALREADY_EXIST_IN_KEYCLOAK; // Indicate conflict without throwing an exception
+                return USER_ALREADY_EXIST_IN_KEYCLOAK;
             } else if (response.getStatus() != 201) {
 //                logger.error("Keycloak user creation failed: Status {}, Info: {}", response.getStatus(), response.getStatusInfo());
                 throw new IllegalArgumentException(KEYCLOAK_USER_CREATION_FAILED + response.getStatusInfo());
@@ -86,7 +86,6 @@ public class KeycloakUserAdapter implements KeycloakUserPort {
 
             String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
             assignRoles(userId, userDomainObject.getRoles());
-//            logger.info("User created in Keycloak with ID: {}", userId);
             return userId;
         } catch (Exception e) {
             logger.error(EXCEPTION_DURING_USER_CREATION, e);
@@ -102,7 +101,6 @@ public class KeycloakUserAdapter implements KeycloakUserPort {
                             .roles().get(role.name()).toRepresentation();
                     keycloak.realm(properties.getRealm()).users().get(userId).roles()
                             .realmLevel().add(Collections.singletonList(roleRepresentation));
-//                    logger.info("Assigned role {} to user {}", role.name(), userId);
                 } catch (Exception e) {
                     logger.warn(FAILED_TO_ASSIGN_ROLE_USER, role.name(), userId, e.getMessage());
                 }

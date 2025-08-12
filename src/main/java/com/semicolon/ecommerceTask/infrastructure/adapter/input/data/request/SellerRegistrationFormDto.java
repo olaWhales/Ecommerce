@@ -9,3 +9,4 @@ public class SellerRegistrationFormDto {
     private String name;
     private String details;
 }
+

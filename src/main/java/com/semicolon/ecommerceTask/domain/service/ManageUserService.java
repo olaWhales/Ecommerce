@@ -3,10 +3,10 @@
 //import com.semicolon.ecommerceTask.application.port.input.ManageUserUsecase;
 //import com.semicolon.ecommerceTask.application.port.output.persistence.UserPersistenceOutPort;
 //import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-//import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.UpdateUserRequest;
+//import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.UpdateUserRequest;
 //import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.UserResponse;
 //import com.semicolon.ecommerceTask.infrastructure.adapter.output.keycloack.KeycloakUserAdapter;
-//import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserRole;
+//import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
 //import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.mail.SimpleMailMessage;

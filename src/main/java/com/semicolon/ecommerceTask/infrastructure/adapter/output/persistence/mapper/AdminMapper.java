@@ -6,7 +6,7 @@ import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adm
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminUpdateDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.AdminResponseDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.AdminEntity;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.PendingRegistrationEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.PendingAdminRegistrationEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -62,5 +62,5 @@ public interface AdminMapper {
     @Mapping(target = "email", source = "email")
     @Mapping(target = "token", source = "token")
     @Mapping(target = "expiration", source = "expiration")
-    PendingRegistrationEntity toPendingEntity(String email, String token, LocalDateTime expiration);
+    PendingAdminRegistrationEntity toPendingEntity(String email, String token, LocalDateTime expiration);
 }

@@ -2,15 +2,14 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence;
 
 import com.semicolon.ecommerceTask.application.port.output.persistence.AdminPersistenceOutPort;
 import com.semicolon.ecommerceTask.domain.model.AdminDomainObject;
-import com.semicolon.ecommerceTask.domain.model.PendingRegistration;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.AdminEntity;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.PendingRegistrationEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.PendingAdminRegistrationEntity;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.AdminMapper;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.PendingRegistrationMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repository.AdminRepository;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repository.PendingRegistrationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,6 +22,7 @@ public class AdminPersistenceAdapter implements AdminPersistenceOutPort {
     private final AdminRepository adminRepository;
     private final PendingRegistrationRepository pendingRegistrationRepository;
     private final AdminMapper adminMapper;
+    private final PendingRegistrationMapper pendingRegistrationMapper;
 
     @Override
     public boolean existsByEmail(String email) {
@@ -30,57 +30,55 @@ public class AdminPersistenceAdapter implements AdminPersistenceOutPort {
     }
 
     @Override
-    @Transactional
-    public void savePendingRegistration(String email, String token, LocalDateTime expiration) {
-        // Check if a pending registration already exists
-        Optional<PendingRegistrationEntity> existing = pendingRegistrationRepository.findById(email);
-        PendingRegistrationEntity entity = adminMapper.toPendingEntity(email, token, expiration);
-
-        if (existing.isPresent()) {
-            // Update existing entity
-            PendingRegistrationEntity existingEntity = existing.get();
-            existingEntity.setToken(token);
-            existingEntity.setExpiration(expiration);
-            pendingRegistrationRepository.save(existingEntity);
-        } else {
-            // Save new entity
-            pendingRegistrationRepository.save(entity);
-        }
-    }
-
-    @Override
-    public Optional<PendingRegistration> findPendingTokenByEmail(String email) {
-        return pendingRegistrationRepository.findById(email)
-                .map(pe -> new PendingRegistration(pe.getEmail(), pe.getToken(), pe.getExpiration()));
-    }
-
-    @Override
-    @Transactional
-    public void deletePendingRegistration(String email) {
-        pendingRegistrationRepository.deleteById(email);
-    }
-
-    @Override
-    @Transactional
-    public void saveAdmin(AdminDomainObject admin) {
+    public AdminDomainObject saveAdmin(AdminDomainObject admin) {
         AdminEntity entity = adminMapper.toEntity(admin);
-        adminRepository.save(entity);
+        return adminMapper.toDomainObject(adminRepository.save(entity));
     }
 
     @Override
-    public Optional<AdminDomainObject> findByEmail(String email) {
-        return adminRepository.findByEmail(email)
-                .map(adminMapper::toDomainObject);
-    }
-
-    @Override
-    @Transactional
     public void deleteAdmin(String email) {
         adminRepository.deleteByEmail(email);
     }
 
     @Override
+    public Optional<AdminDomainObject> findByEmail(String email) {
+        return adminRepository.findByEmail(email).map(adminMapper::toDomainObject);
+    }
+
+    @Override
     public List<AdminDomainObject> findAllAdmins() {
         return adminMapper.toDomainObjectList(adminRepository.findAll());
+    }
+
+    @Override
+    public void createPendingRegistration(String email, String token, LocalDateTime expiration) {
+        PendingAdminRegistrationEntity entity = PendingAdminRegistrationEntity.builder()
+                .email(email)
+                .token(token)
+                .expiration(expiration)
+                .build();
+        pendingRegistrationRepository.save(entity);
+    }
+
+    @Override
+    public Optional<AdminEntity.PendingRegistrationDomainObject> findPendingRegistrationByEmail(String email) {
+        return pendingRegistrationRepository.findByEmail(email)
+                .map(pendingRegistrationMapper::toDomain);
+    }
+
+    @Override
+    public void updatePendingRegistration(String email, String token, LocalDateTime expiration) {
+        PendingAdminRegistrationEntity entity = pendingRegistrationRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("Pending registration not found for update"));
+
+        entity.setToken(token);
+        entity.setExpiration(expiration);
+
+        pendingRegistrationRepository.save(entity);
+    }
+
+    @Override
+    public void deletePendingRegistration(String email) {
+        pendingRegistrationRepository.deleteByEmail(email); // <-- Changed deleteById to deleteByEmail
     }
 }

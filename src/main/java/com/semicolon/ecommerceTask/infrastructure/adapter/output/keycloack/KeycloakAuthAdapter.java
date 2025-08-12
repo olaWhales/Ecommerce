@@ -78,14 +78,12 @@ public class KeycloakAuthAdapter implements AuthOutPort {
         HttpEntity<String> request = new HttpEntity<>(headers);
 
         try {
-//            logger.debug("Fetching user details with URL: {}", url);
             ResponseEntity<String> response = restTemplate.exchange(
                     url,
                     HttpMethod.GET,
                     request,
                     String.class
             );
-
             String responseBody = response.getBody();
 //            logger.debug("Userinfo response: {}", responseBody);
 
@@ -104,5 +102,4 @@ public class KeycloakAuthAdapter implements AuthOutPort {
             throw new IllegalArgumentException(MessageUtil.ADMIN_NOT_FOUND);
         }
     }
-
 }

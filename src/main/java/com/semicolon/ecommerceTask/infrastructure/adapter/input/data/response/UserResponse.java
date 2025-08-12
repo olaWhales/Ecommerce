@@ -13,5 +13,4 @@ public class UserResponse {
     private String email ;
     private String keycloakId ;
     private String message ;
-
 }

@@ -5,7 +5,7 @@ import com.semicolon.ecommerceTask.application.port.output.persistence.UserPersi
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.configuration.superAdminProperties.SuperadminProperties;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.keycloack.KeycloakUserAdapter;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
