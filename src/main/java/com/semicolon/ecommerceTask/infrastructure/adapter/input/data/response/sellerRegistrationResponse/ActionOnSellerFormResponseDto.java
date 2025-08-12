@@ -8,6 +8,6 @@ import java.util.UUID;
 @Builder
 public class ActionOnSellerFormResponseDto {
     private String message;
-    private UUID registrationId; // Changed to UUID
-    private String keycloakUserId; // Keycloak user ID for testing
+    private UUID registrationId;
+    private String keycloakUserId;
 }

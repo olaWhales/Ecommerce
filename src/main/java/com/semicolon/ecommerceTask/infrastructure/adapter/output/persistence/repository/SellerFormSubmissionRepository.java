@@ -1,6 +1,6 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repository;
 
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.SellerFormSubmissionEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.userEntity.SellerFormSubmissionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
 package com.semicolon.ecommerceTask;
 
-import com.semicolon.ecommerceTask.application.port.output.persistence.SellerPersistenceOutPort;
+import com.semicolon.ecommerceTask.application.port.output.persistence.SellerFormSubmissionPersistenceOutPort;
 import com.semicolon.ecommerceTask.domain.model.SellerDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.SellerResponseDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,7 @@ public class SellerFormSubmissionTest {
     }
 
     @Mock
-    private SellerPersistenceOutPort sellerPersistenceOutPort;
+    private SellerFormSubmissionPersistenceOutPort sellerPersistenceOutPort;
     private SellerResponseDto sellerResponseDto;
     private SellerDomainObject sellerDomainObject;
 

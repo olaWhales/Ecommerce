@@ -1,7 +1,7 @@
 package com.semicolon.ecommerceTask.domain.service;
 
 import com.semicolon.ecommerceTask.application.port.input.CreateSellerUseCase;
-import com.semicolon.ecommerceTask.application.port.input.SellerFormSubmissionOutPort;
+import com.semicolon.ecommerceTask.application.port.output.persistence.SellerFormSubmissionPersistenceOutPort;
 import com.semicolon.ecommerceTask.application.port.output.KeycloakAdminOutPort;
 import com.semicolon.ecommerceTask.domain.exception.ValidationException;
 import com.semicolon.ecommerceTask.domain.model.SellerFormSubmissionDomain;
@@ -26,13 +26,13 @@ import static com.semicolon.ecommerceTask.infrastructure.adapter.utilities.Messa
 @Service
 @RequiredArgsConstructor
 public class CreateSellerSubmissionService implements CreateSellerUseCase {
-    private final SellerFormSubmissionOutPort sellerFormSubmissionOutPort;
+    private final SellerFormSubmissionPersistenceOutPort sellerFormSubmissionPersistenceOutPort;
     private final KeycloakAdminOutPort keycloakAdminOutPort;
     @Transactional
     @Override
     public ActionOnSellerFormResponseDto requestSellerRegistration(SellerRegistrationFormDto registrationDto) {
         String customerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (sellerFormSubmissionOutPort.findByEmail(customerEmail).isPresent()) {
+        if (sellerFormSubmissionPersistenceOutPort.findByEmail(customerEmail).isPresent()) {
             throw new ValidationException(A_SELLER_REGISTRATION_REQUEST_IS_ALREADY_PENDING.formatted(customerEmail));
         }
 // Fetch the user and get Keycloak ID
@@ -52,7 +52,7 @@ public class CreateSellerSubmissionService implements CreateSellerUseCase {
                 .submissionDate(LocalDateTime.now())
                 .keycloakUserId(keycloakUserId)
                 .build();
-        SellerFormSubmissionDomain savedRegistration = sellerFormSubmissionOutPort.savePendingRegistration(pendingRegistration);
+        SellerFormSubmissionDomain savedRegistration = sellerFormSubmissionPersistenceOutPort.savePendingRegistration(pendingRegistration);
         log.info("===> this is saved registration user {}", savedRegistration.getDetails());
 
         return ActionOnSellerFormResponseDto.builder()

@@ -1,7 +1,7 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence;
 
 import com.semicolon.ecommerceTask.application.port.output.PendingRegistrationOutPort;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.AdminEntity;
+import com.semicolon.ecommerceTask.domain.model.PendingRegistrationDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.PendingRegistrationMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repository.PendingRegistrationRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class PendingRegistrationPersistenceAdapter implements PendingRegistratio
     private final PendingRegistrationMapper mapper;
 
     @Override
-    public Optional<AdminEntity.PendingRegistrationDomainObject> findById(UUID registrationId) {
+    public Optional<PendingRegistrationDomainObject> findById(UUID registrationId) {
         return repository.findById(registrationId)
                 .map(mapper::toDomain);
     }

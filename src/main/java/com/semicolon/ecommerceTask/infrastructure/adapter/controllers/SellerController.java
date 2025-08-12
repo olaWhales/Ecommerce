@@ -21,4 +21,3 @@ public class SellerController {
         return ResponseEntity.ok(response);
     }
 }
-//</registrationresponsedto>

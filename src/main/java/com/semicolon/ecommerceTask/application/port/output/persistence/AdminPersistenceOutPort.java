@@ -1,7 +1,7 @@
 package com.semicolon.ecommerceTask.application.port.output.persistence;
 
 import com.semicolon.ecommerceTask.domain.model.AdminDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.AdminEntity;
+import com.semicolon.ecommerceTask.domain.model.PendingRegistrationDomainObject;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,7 +15,7 @@ public interface AdminPersistenceOutPort {
     List<AdminDomainObject> findAllAdmins();
     // New and updated methods for pending registrations
     void createPendingRegistration(String email, String token, LocalDateTime expiration);
-    Optional<AdminEntity.PendingRegistrationDomainObject> findPendingRegistrationByEmail(String email);
+    Optional<PendingRegistrationDomainObject> findPendingRegistrationByEmail(String email);
     void updatePendingRegistration(String email, String token, LocalDateTime expiration);
     void deletePendingRegistration(String email); // Re-added this method
 

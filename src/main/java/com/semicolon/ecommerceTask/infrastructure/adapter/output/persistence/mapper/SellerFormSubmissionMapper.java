@@ -1,7 +1,7 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper;
 
 import com.semicolon.ecommerceTask.domain.model.SellerFormSubmissionDomain;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.SellerFormSubmissionEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.userEntity.SellerFormSubmissionEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

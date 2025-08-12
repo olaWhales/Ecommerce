@@ -8,6 +8,5 @@ import lombok.Getter;
 @Builder
 public class ActionOnSellerApprovalResponse {
     private boolean approved;
-    private UserDomainObject user;
     private String message;
 }

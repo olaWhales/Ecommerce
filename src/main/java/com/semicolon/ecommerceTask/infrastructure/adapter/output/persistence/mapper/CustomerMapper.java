@@ -2,7 +2,7 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.ma
 
 import com.semicolon.ecommerceTask.domain.model.CustomerDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.CustomerResponseDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.CustomerEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.userEntity.CustomerEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

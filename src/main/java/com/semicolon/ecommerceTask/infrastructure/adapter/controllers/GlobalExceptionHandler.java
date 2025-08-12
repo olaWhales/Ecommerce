@@ -6,6 +6,7 @@ import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.Er
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -20,16 +21,15 @@ public class GlobalExceptionHandler {
     public ErrorResponseDto handleValidationException(ValidationException ex) {
         log.warn("Validation error occurred: {}", ex.getMessage());
         return ErrorResponseDto.builder()
-                .message("Validation Error: " + ex.getMessage())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .timestamp(LocalDateTime.now().toString())
-                .build();
+            .message("Validation Error: " + ex.getMessage())
+            .status(HttpStatus.BAD_REQUEST.value())
+            .timestamp(LocalDateTime.now().toString())
+            .build();
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponseDto handleGenericException(Exception ex) {
-        // Log the full stack trace for unexpected errors
         log.error("An unexpected error occurred: ", ex);
         return ErrorResponseDto.builder()
             .message("An unexpected error occurred. Please try again later.")
@@ -38,13 +38,10 @@ public class GlobalExceptionHandler {
             .build();
     }
 
-
-    // Inside your GlobalExceptionHandler.java
     @ExceptionHandler(AdminException.class)
     public ResponseEntity<ErrorResponseDto> handleAdminException(AdminException ex) {
         HttpStatus status;
 
-        // Check the message content to determine the correct status code
         if (ex.getMessage().contains("not found")) {
             status = HttpStatus.NOT_FOUND;
         } else if (ex.getMessage().contains("already exists")) {
@@ -61,5 +58,19 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errorResponse, status);
     }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<String> handleOptimisticLockingFailure(ObjectOptimisticLockingFailureException ex) {
+        log.error("Optimistic locking failure: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("The record was modified by another user. Please try again.");
+    }
+
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<String> handleGenericException(Exception ex) {
+//        log.error("An unexpected error occurred: ", ex);
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                .body("An unexpected error occurred. Please contact support.");
+//    }
 }
 

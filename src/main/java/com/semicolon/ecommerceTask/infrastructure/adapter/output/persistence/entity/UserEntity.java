@@ -3,6 +3,7 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.en
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UserEntity {
     @Id
-    @GeneratedValue
+    @UuidGenerator
     @Column(columnDefinition = "BINARY(16)", updatable = false, nullable = false)
     private UUID id;
 
@@ -23,7 +24,10 @@ public class UserEntity {
 
     private String firstName;
     private String lastName;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
     private String password;
 
     @Enumerated(EnumType.STRING)

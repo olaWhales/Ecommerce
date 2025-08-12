@@ -1,4 +1,4 @@
-package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity;
+package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.userEntity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

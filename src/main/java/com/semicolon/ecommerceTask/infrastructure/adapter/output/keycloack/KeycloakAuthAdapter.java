@@ -21,7 +21,6 @@ import java.util.Map;
 import static com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil.*;
 
 @Component
-//@Slf4j
 public class KeycloakAuthAdapter implements AuthOutPort {
 
     private static final Logger logger = LoggerFactory.getLogger(KeycloakAuthAdapter.class);

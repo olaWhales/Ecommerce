@@ -41,14 +41,12 @@ public class KeycloakAdminAdapter implements KeycloakAdminOutPort {
         Response response = keycloakAdminClient.realm(realm).users().create(userRepresentation);
         String keycloakId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
 
-        // Set password
         CredentialRepresentation passwordCred = new CredentialRepresentation();
         passwordCred.setType(CredentialRepresentation.PASSWORD);
         passwordCred.setValue(password);
         passwordCred.setTemporary(false);
 
         keycloakAdminClient.realm(realm).users().get(keycloakId).resetPassword(passwordCred);
-
         return keycloakId;
     }
 
@@ -65,24 +63,21 @@ public class KeycloakAdminAdapter implements KeycloakAdminOutPort {
 
         // Use the general search method which is often more reliable
         List<UserRepresentation> users = usersResource.search(email, true);
-
         log.info("KeycloakAdminAdapter: Found {} user(s) matching the email.", users.size());
-
         // Filter for an exact match and return the first result
         return users.stream()
-                .filter(user -> email.equalsIgnoreCase(user.getEmail())) // Use equalsIgnoreCase for robustness
-                .findFirst();
+            .filter(user -> email.equalsIgnoreCase(user.getEmail())) // Use equalsIgnoreCase for robustness
+            .findFirst();
     }
 
     @Override
     public void assignRealmRoles(String keycloakId, List<String> roleNames) {
         List<RoleRepresentation> roles = keycloakAdminClient.realm(realm).roles().list();
         List<RoleRepresentation> realmRoles = roles.stream()
-                .filter(role -> roleNames.contains(role.getName()))
-                .toList();
+            .filter(role -> roleNames.contains(role.getName()))
+            .toList();
 
         UserResource userResource = keycloakAdminClient.realm(realm).users().get(keycloakId);
-        // Corrected API call
         userResource.roles().realmLevel().add(realmRoles);
     }
 

@@ -1,12 +1,15 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductResponseDto {
     private UUID id;
     private String name;

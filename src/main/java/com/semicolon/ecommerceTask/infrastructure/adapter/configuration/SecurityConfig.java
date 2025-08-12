@@ -24,7 +24,7 @@ import java.util.Map;
 @Configuration
 @EnableWebSecurity
 @Slf4j
-@EnableMethodSecurity // CRITICAL: This was missing and is needed for @PreAuthorize
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -32,21 +32,20 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // All public endpoints are explicitly listed here
-                        .requestMatchers("/auth/login",
-                                "/customer/register",
-                                "/admin/register",
-                                "/admin/register?*").permitAll()
-                        // All other requests must be authenticated
-                        .anyRequest().authenticated()
+                    .requestMatchers(
+                            "/auth/login",
+                            "/customer/register",
+                            "/admin/register",
+                            "/admin/register?*").permitAll()
+                    .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt
-                            .decoder(jwtDecoder())
-                            .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                        )
+                    .jwt(jwt -> jwt
+                        .decoder(jwtDecoder())
+                        .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                    )
                 );
         return http.build();
     }
@@ -72,16 +71,16 @@ public class SecurityConfig {
             if (realmAccess != null && realmAccess.containsKey("roles")) {
                 List<String> realmRoles = (List<String>) realmAccess.get("roles");
                 authorities.addAll(realmRoles.stream()
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                        .toList());
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                    .toList());
             }
             Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
             if (resourceAccess != null && resourceAccess.containsKey("ecommerce-app")) {
                 Map<String, Object> appAccess = (Map<String, Object>) resourceAccess.get("ecommerce-app");
                 List<String> appRoles = (List<String>) appAccess.get("roles");
                 authorities.addAll(appRoles.stream()
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                        .toList());
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                    .toList());
             }
             return authorities;
         });

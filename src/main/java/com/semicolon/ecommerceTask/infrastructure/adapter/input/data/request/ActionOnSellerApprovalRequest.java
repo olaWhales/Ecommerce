@@ -1,6 +1,6 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request;
 
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.ApprovalAction;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -9,5 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActionOnSellerApprovalRequest {
-    private ApprovalAction action;
+
+    @NotNull(message = "Approval decision must be provided")
+    private Boolean isApprove;
 }

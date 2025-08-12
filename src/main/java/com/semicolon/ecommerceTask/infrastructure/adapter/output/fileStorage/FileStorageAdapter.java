@@ -45,7 +45,6 @@ public class FileStorageAdapter implements FileStorageOutPort {
 
             log.info("File uploaded to: {}", filePath.toAbsolutePath());
 
-            // Return the unique file name or a URL to the file
             return "/uploads/" + uniqueFileName;
 
         } catch (IOException e) {

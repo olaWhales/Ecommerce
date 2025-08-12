@@ -5,8 +5,8 @@ import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adm
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminRegistrationDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminUpdateDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.AdminResponseDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.AdminEntity;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.PendingAdminRegistrationEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.userEntity.AdminEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.userEntity.PendingAdminRegistrationEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -18,7 +18,7 @@ public interface AdminMapper {
     @Mapping(target = "adminEmail", source = "adminEmail")
     AdminInitiationDto toInitiationDto(String adminEmail);
 
-    @Mapping(target = "token", source = "token")
+//    @Mapping(target = "token", source = "token")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "firstName", source = "firstName")
     @Mapping(target = "lastName", source = "lastName")
@@ -30,7 +30,7 @@ public interface AdminMapper {
     @Mapping(target = "lastName", source = "lastName")
     AdminUpdateDto toUpdateDto(String email, String firstName, String lastName);
 
-    @Mapping(target = "id", source = "id")
+//    @Mapping(target = "id", source = "id")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "firstName", source = "firstName")
     @Mapping(target = "lastName", source = "lastName")
@@ -39,7 +39,7 @@ public interface AdminMapper {
 
     List<AdminResponseDto> toResponseDtoList(List<AdminDomainObject> admins);
 
-    @Mapping(target = "id", source = "id")
+//    @Mapping(target = "id", source = "id")
     @Mapping(target = "keycloakId", source = "keycloakId")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "firstName", source = "firstName")
@@ -48,7 +48,7 @@ public interface AdminMapper {
     @Mapping(target = "roles", source = "roles")
     AdminDomainObject toDomainObject(AdminEntity entity);
 
-    @Mapping(target = "id", source = "id")
+//    @Mapping(target = "id", source = "id")
     @Mapping(target = "keycloakId", source = "keycloakId")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "firstName", source = "firstName")

@@ -46,8 +46,6 @@ public class KeycloakUserAdapter implements KeycloakUserPort {
                 .search(userDomainObject.getEmail(), null, null, null, 0, 1);
         if (!existingUsers.isEmpty()) {
             String existingUserId = existingUsers.get(0).getId();
-//            logger.info("User or email {} already exists in Keycloak with ID: {}",
-//                    userDomainObject.getEmail(), existingUserId);
             assignRoles(existingUserId, userDomainObject.getRoles());
             return existingUserId; // Return existing user ID
         }
@@ -98,9 +96,9 @@ public class KeycloakUserAdapter implements KeycloakUserPort {
             roles.forEach(role -> {
                 try {
                     RoleRepresentation roleRepresentation = keycloak.realm(properties.getRealm())
-                            .roles().get(role.name()).toRepresentation();
+                        .roles().get(role.name()).toRepresentation();
                     keycloak.realm(properties.getRealm()).users().get(userId).roles()
-                            .realmLevel().add(Collections.singletonList(roleRepresentation));
+                        .realmLevel().add(Collections.singletonList(roleRepresentation));
                 } catch (Exception e) {
                     logger.warn(FAILED_TO_ASSIGN_ROLE_USER, role.name(), userId, e.getMessage());
                 }

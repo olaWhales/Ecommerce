@@ -1,5 +1,7 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Setter
@@ -8,5 +10,8 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class AdminInitiationDto {
+
+    @Email(message = "Invalid email")
+    @NotBlank(message = "Admin email is required")
     private String adminEmail;
 }

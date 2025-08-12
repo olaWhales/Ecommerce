@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ManageProductUseCase {
-    ProductDomainObject createProduct(ProductUploadDto productDto, MultipartFile imageFile);
+    ProductDomainObject createProduct(ProductUploadDto productDto, MultipartFile imageFile, UUID sellerId);
     ProductDomainObject getProduct(UUID productId);
     List<ProductDomainObject> getAllProductsBySeller(UUID sellerId);
     ProductDomainObject updateProduct(UUID productId, ProductUpdateDto productDto);
