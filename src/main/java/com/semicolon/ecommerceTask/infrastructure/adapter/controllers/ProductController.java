@@ -13,10 +13,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigDecimal;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,50 +27,26 @@ public class ProductController {
 
     private final ManageProductUseCase manageProductUseCase;
 
-    /**
-     * Retrieves the seller's UUID from the security context.
-     * @return The UUID of the currently authenticated seller.
-     */
     private UUID getAuthenticatedSellerId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // Assuming the principal is a JWT with a 'sub' claim containing the UUID.
-        // You may need to adjust this depending on your JWT token structure.
         return UUID.fromString(authentication.getName());
     }
 
     // CREATE
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<String> createProduct(
-            @RequestPart("name") String name,
-            @RequestPart("description") String description,
-            @RequestPart("price") String price,
-            @RequestPart("inStockQuantity") String inStockQuantity,
-            @RequestPart("imageFile") MultipartFile imageFile) {
-
+    public ResponseEntity<String> createProduct(@Valid @ModelAttribute ProductUploadDto productDto) {
         try {
-            // Get the authenticated seller's ID dynamically
             UUID sellerId = getAuthenticatedSellerId();
-
-            ProductUploadDto productDto = ProductUploadDto.builder()
-                    .name(name)
-                    .description(description)
-                    .price(new BigDecimal(price))
-                    .inStockQuantity(Integer.parseInt(inStockQuantity))
-                    .build();
-
-            manageProductUseCase.createProduct(productDto, imageFile, sellerId);
+            manageProductUseCase.createProduct(productDto, sellerId);
             return new ResponseEntity<>("Product uploaded successfully", HttpStatus.CREATED);
-        } catch (NumberFormatException e) {
-            log.error("Invalid number format for price or stock quantity", e);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid number format for price or stock quantity");
         } catch (Exception e) {
             log.error("Product upload failed for seller: {}", getAuthenticatedSellerId(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Product upload failed: " + e.getMessage());
         }
     }
 
-    // READ (Single Product)
+    // THIS ENDPOINT TO READ (Single Product)
     @GetMapping("/{productId}")
     @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<ProductDomainObject> getProduct(@PathVariable UUID productId) {

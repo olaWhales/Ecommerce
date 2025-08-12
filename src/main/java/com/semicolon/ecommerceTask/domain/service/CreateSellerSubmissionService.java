@@ -35,7 +35,7 @@ public class CreateSellerSubmissionService implements CreateSellerUseCase {
         if (sellerFormSubmissionPersistenceOutPort.findByEmail(customerEmail).isPresent()) {
             throw new ValidationException(A_SELLER_REGISTRATION_REQUEST_IS_ALREADY_PENDING.formatted(customerEmail));
         }
-// Fetch the user and get Keycloak ID
+
         UserRepresentation keycloakUser = keycloakAdminOutPort.findUserByEmail(customerEmail)
                 .orElseThrow(() -> new ValidationException(MessageUtil.CUSTOMER_NOT_FOUND.formatted(customerEmail)));
 

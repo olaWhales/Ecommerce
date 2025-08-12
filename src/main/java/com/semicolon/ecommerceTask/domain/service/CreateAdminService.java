@@ -213,60 +213,33 @@ public class CreateAdminService implements CreateAdminUseCase {
     @Transactional
     public String initiateAdminCreation(String adminEmail) {
         validateEmail(adminEmail);
-        if (adminPersistenceOutPort.existsByEmail(adminEmail)) {
-            throw new AdminException(MessageUtil.ADMIN_ALREADY_EXISTS.formatted(adminEmail));
-        }
-        if (keycloakAdminOutPort.findUserByEmail(adminEmail).isPresent()) {
-            throw new AdminException(MessageUtil.ADMIN_ALREADY_EXISTS_IN_KEYCLOAK.formatted(adminEmail));
-        }
-
+        if (adminPersistenceOutPort.existsByEmail(adminEmail)) {throw new AdminException(MessageUtil.ADMIN_ALREADY_EXISTS.formatted(adminEmail));}
+        if (keycloakAdminOutPort.findUserByEmail(adminEmail).isPresent()) {throw new AdminException(MessageUtil.ADMIN_ALREADY_EXISTS_IN_KEYCLOAK.formatted(adminEmail));}
         var existingPendingRegistration = adminPersistenceOutPort.findPendingRegistrationByEmail(adminEmail);
 
         String token = UUID.randomUUID().toString();
         LocalDateTime expiration = LocalDateTime.now().plusHours(24);
-
-        if (existingPendingRegistration.isPresent()) {
-            adminPersistenceOutPort.updatePendingRegistration(adminEmail, token, expiration);
+        if (existingPendingRegistration.isPresent()) {adminPersistenceOutPort.updatePendingRegistration(adminEmail, token, expiration);
         } else {
             adminPersistenceOutPort.createPendingRegistration(adminEmail, token, expiration);
         }
-
         sendRegistrationEmail(adminEmail, token);
         return "Admin initiation successful. Verification email sent to %s".formatted(adminEmail);
     }
-
-// ... other methods remain unchanged
-
-// Inside your CreateAdminService.java
 
     @Transactional
     @Override
     public AdminResponseDto completeAdminRegistration(String email, String firstName, String lastName, String password) {
         validateRegistrationInput(email, firstName, lastName, password);
-
-        // CORRECTED: Use the new method name and getExpiration()
         var pending = adminPersistenceOutPort.findPendingRegistrationByEmail(email)
                 .orElseThrow(() -> new AdminException(MessageUtil.NO_PENDING_REGISTRATION.formatted(email)));
-
-//        if (LocalDateTime.now().isAfter(pending.getExpiration())) {
-//            adminPersistenceOutPort.deletePendingRegistration(email);
-//            throw new AdminException(MessageUtil.TOKEN_EXPIRED);
-//        }
-
-        // ... rest of the method remains the same
-        // ...
-
-        // Your code continues here
         UserDomainObject user = UserDomainObject.builder()
                 .email(email)
                 .firstName(firstName)
                 .lastName(lastName)
                 .build();
-
         String keycloakId = userRegistrationService.registerUserInKeycloak(user, password);
-
         keycloakAdminOutPort.assignRealmRoles(keycloakId, Collections.singletonList("ADMIN"));
-
         AdminDomainObject admin = AdminDomainObject.builder()
                 .keycloakId(keycloakId)
                 .email(email)
@@ -275,10 +248,8 @@ public class CreateAdminService implements CreateAdminUseCase {
                 .roles(Collections.singletonList("ADMIN"))
                 .password(passwordEncoder.encode(password))
                 .build();
-
         adminPersistenceOutPort.saveAdmin(admin);
         adminPersistenceOutPort.deletePendingRegistration(email);
-
         return adminMapper.toResponseDto(admin);
     }
 
@@ -310,7 +281,6 @@ public class CreateAdminService implements CreateAdminUseCase {
         admin.setFirstName(firstName);
         admin.setLastName(lastName);
         adminPersistenceOutPort.saveAdmin(admin);
-
         return adminMapper.toResponseDto(admin);
     }
 
@@ -318,33 +288,20 @@ public class CreateAdminService implements CreateAdminUseCase {
     public List<AdminResponseDto> getAllAdmins() {
         return adminMapper.toResponseDtoList(adminPersistenceOutPort.findAllAdmins());
     }
-
     private void validateEmail(String email) {
-        if (email == null || email.trim().isEmpty() || !EMAIL_PATTERN.matcher(email).matches()) {
-            throw new ValidationException(MessageUtil.INVALID_EMAIL);
-        }
+        if (email == null || email.trim().isEmpty() || !EMAIL_PATTERN.matcher(email).matches()) {throw new ValidationException(MessageUtil.INVALID_EMAIL);}
     }
 
     private void validateRegistrationInput(String email, String firstName, String lastName, String password) {
         validateEmail(email);
-        if (firstName == null || firstName.trim().isEmpty()) {
-            throw new ValidationException(MessageUtil.FIRST_NAME_REQUIRED);
-        }
-        if (lastName == null || lastName.trim().isEmpty()) {
-            throw new ValidationException(MessageUtil.LAST_NAME_REQUIRED);
-        }
-        if (password == null || !PASSWORD_PATTERN.matcher(password).matches()) {
-            throw new ValidationException(MessageUtil.INVALID_PASSWORD);
-        }
+        if (firstName == null || firstName.trim().isEmpty()) {throw new ValidationException(MessageUtil.FIRST_NAME_REQUIRED);}
+        if (lastName == null || lastName.trim().isEmpty()) {throw new ValidationException(MessageUtil.LAST_NAME_REQUIRED);}
+        if (password == null || !PASSWORD_PATTERN.matcher(password).matches()) {throw new ValidationException(MessageUtil.INVALID_PASSWORD);}
     }
 
     private void validateUpdateInput(String email, String firstName, String lastName) {
         validateEmail(email);
-        if (firstName == null || firstName.trim().isEmpty()) {
-            throw new ValidationException(MessageUtil.FIRST_NAME_REQUIRED);
-        }
-        if (lastName == null || lastName.trim().isEmpty()) {
-            throw new ValidationException(MessageUtil.LAST_NAME_REQUIRED);
-        }
+        if (firstName == null || firstName.trim().isEmpty()) {throw new ValidationException(MessageUtil.FIRST_NAME_REQUIRED);}
+        if (lastName == null || lastName.trim().isEmpty()) {throw new ValidationException(MessageUtil.LAST_NAME_REQUIRED);}
     }
 }

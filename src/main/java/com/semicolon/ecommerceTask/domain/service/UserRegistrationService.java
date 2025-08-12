@@ -19,30 +19,20 @@ public class UserRegistrationService {
     @Transactional
     // This is the original method signature, kept for compatibility
     public String registerUserInKeycloak(UserDomainObject user, String password) {
-        if (keycloakAdminOutPort.findUserByEmail(user.getEmail()).isPresent()) {
-            throw new AdminException(MessageUtil.ADMIN_ALREADY_EXISTS_IN_KEYCLOAK.formatted(user.getEmail()));
-        }
-
+        if (keycloakAdminOutPort.findUserByEmail(user.getEmail()).isPresent()) {throw new AdminException(MessageUtil.ADMIN_ALREADY_EXISTS_IN_KEYCLOAK.formatted(user.getEmail()));}
         String keycloakId = keycloakAdminOutPort.createUser(user, password);
-        if (keycloakId == null) {
-            throw new AdminException(KEYCLOAK_CREATION_FAILED);
-        }
-
+        if (keycloakId == null) {throw new AdminException(KEYCLOAK_CREATION_FAILED);}
         return keycloakId;
     }
 
     @Transactional
     // This is the new method for ApproveSellerService, which returns the full object
     public UserDomainObject registerUserInKeycloakAndReturnObject(UserDomainObject user, String password) {
-        if (keycloakAdminOutPort.findUserByEmail(user.getEmail()).isPresent()) {
-            throw new AdminException(MessageUtil.ADMIN_ALREADY_EXISTS_IN_KEYCLOAK.formatted(user.getEmail()));
-        }
+        if (keycloakAdminOutPort.findUserByEmail(user.getEmail()).isPresent()) {throw new AdminException(MessageUtil.ADMIN_ALREADY_EXISTS_IN_KEYCLOAK.formatted(user.getEmail()));}
         String keycloakId = keycloakAdminOutPort.createUser(user, password);
-        if (keycloakId == null) {
-            throw new AdminException(KEYCLOAK_CREATION_FAILED);
-        }
+        if (keycloakId == null) {throw new AdminException(KEYCLOAK_CREATION_FAILED);}
         return user.toBuilder()
-                .keycloakId(keycloakId)
-                .build();
+            .keycloakId(keycloakId)
+            .build();
     }
 }

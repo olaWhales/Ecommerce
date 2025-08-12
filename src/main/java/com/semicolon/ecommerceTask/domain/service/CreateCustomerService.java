@@ -37,21 +37,16 @@ public class CreateCustomerService implements CreateCustomerUseCase {
     @Override
     public CustomerResponseDto registerCustomer(CustomerRegistrationDto dto) {
         validateRegistrationInput(dto);
-
-        // Map DTO to generic UserDomainObject
         UserDomainObject user = UserDomainObject.builder()
             .email(dto.getEmail())
             .firstName(dto.getFirstName())
             .lastName(dto.getLastName())
             .build();
 
-        // Delegate core registration to the generic service
         String keycloakId = userRegistrationService.registerUserInKeycloak(user, dto.getPassword());
 
-        // Customer-specific logic: assign the default BUYER role
         keycloakAdminOutPort.assignRealmRoles(keycloakId, Collections.singletonList("BUYER"));
 
-        // Save to local customer database
         CustomerDomainObject customer = CustomerDomainObject.builder()
                 .keycloakId(keycloakId)
                 .email(dto.getEmail())

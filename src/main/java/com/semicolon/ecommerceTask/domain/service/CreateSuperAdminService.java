@@ -45,12 +45,10 @@ public class CreateSuperAdminService implements CreateSuperAdminUseCase {
                     superAdminEmail, superAdminFirstName, superAdminLastName, superAdminPassword);
             throw new IllegalArgumentException("Superadmin configuration properties are missing in application.properties");
         }
-
         if (userPersistenceOutPort.existsByEmail(superAdminEmail)) {
             logger.info("User or email {} already exists in local DB", superAdminEmail);
             return;
         }
-
         UserDomainObject superAdmin = UserDomainObject.builder()
                 .firstName(superAdminFirstName)
                 .lastName(superAdminLastName)
@@ -58,7 +56,6 @@ public class CreateSuperAdminService implements CreateSuperAdminUseCase {
                 .password(superAdminPassword)
                 .roles(Collections.singletonList(UserRole.SUPERADMIN))
                 .build();
-
         String keycloakId;
         try {
             keycloakId = keycloakUserAdapter.createUser(superAdmin);
@@ -71,7 +68,6 @@ public class CreateSuperAdminService implements CreateSuperAdminUseCase {
             logger.error("Failed to create superadmin in Keycloak", e);
             throw new IllegalArgumentException("Failed to create superadmin in Keycloak: " + e.getMessage(), e);
         }
-
         superAdmin.setPassword(passwordEncoder.encode(superAdminPassword));
         superAdmin.setKeycloakId(keycloakId); // Set the Keycloak ID
         userPersistenceOutPort.saveLocalUser(keycloakId, superAdmin); // Pass the updated object
