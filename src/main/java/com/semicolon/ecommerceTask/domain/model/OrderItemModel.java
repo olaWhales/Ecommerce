@@ -15,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderItemModel {
-    @Id
+//    @Id
     private UUID id;
 
     @NotNull
@@ -24,7 +24,7 @@ public class OrderItemModel {
 
     @NotNull
     @ManyToOne
-    private ProductDomainObject productEntity;
+    private ManageProductDomainObject productEntity;
 
     @NotNull
     @DecimalMin("0.0")

@@ -18,7 +18,7 @@ public class AdminController {
     private final AdminActionOnSellerUseCase adminActionOnSellerUseCase;
 
     @PostMapping("/initiate")
-    @PreAuthorize("hasRole('SUPERADMIN')")
+//    @PreAuthorize("hasRole('SUPERADMIN')")
     public String initiateAdminCreation(@RequestBody AdminInitiationDto dto) {
         createAdminUseCase.initiateAdminCreation(dto.getAdminEmail());
         return "Admin registration initiated. An email has been sent to " + dto.getAdminEmail();

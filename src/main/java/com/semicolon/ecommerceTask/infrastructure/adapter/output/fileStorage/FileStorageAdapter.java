@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,34 +20,35 @@ public class FileStorageAdapter implements FileStorageOutPort {
     private String uploadDir;
 
     @Override
-    public String uploadImage(MultipartFile file) throws IOException {
+    public String storeFile(MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             throw new IOException("Failed to store empty file");
         }
 
-        // Ensure the upload directory exists
-        Path uploadPath = Paths.get(uploadDir);
+        // Validate file type (e.g., images only)
+        String contentType = file.getContentType();
+        assert contentType != null;
+        if (!contentType.startsWith("image/")) {
+            throw new IOException("Only image files are allowed");
+        }
+
+        Path uploadPath = Paths.get(uploadDir).toAbsolutePath();
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
-        try {
+        try (InputStream inputStream = file.getInputStream()) {
             String originalFileName = file.getOriginalFilename();
-            String fileExtension = "";
-            if (originalFileName != null && originalFileName.contains(".")) {
-                fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-            }
+            String fileExtension = originalFileName != null && originalFileName.contains(".")
+                    ? originalFileName.substring(originalFileName.lastIndexOf("."))
+                    : ".jpg"; // Default extension if none
             String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
 
             Path filePath = uploadPath.resolve(uniqueFileName);
+            Files.copy(inputStream, filePath);
 
-            // Save the file to the local disk
-            Files.copy(file.getInputStream(), filePath);
-
-            log.info("File uploaded to: {}", filePath.toAbsolutePath());
-
+            log.info("File uploaded to: {}", filePath);
             return "/uploads/" + uniqueFileName;
-
         } catch (IOException e) {
             log.error("Could not upload file: {}", file.getOriginalFilename(), e);
             throw new IOException("Could not upload file: " + file.getOriginalFilename(), e);

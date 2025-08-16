@@ -22,4 +22,11 @@ public class ValidationUtil {
             throw new ValidationException(MessageUtil.INVALID_PASSWORD);
         }
     }
+
+//    public boolean isValidEmail(String email, Pattern emailPattern) {
+//        if (email == null || emailPattern == null) {
+//            throw new ValidationException("Email pattern is wrong ");
+//        }
+//        return isValidEmail(email, emailPattern);
+//    }
 }

@@ -1,56 +1,35 @@
-//package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper;
-//
-//import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-//import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserEntity;
-//import org.springframework.stereotype.Component;
-//
-//@Component
-//public class UserPersistenceMapper {
-//
-//    public UserEntity toEntity(UserDomainObject domainObject) {
-//        if (domainObject == null) {
-//            return null;
-//        }
-//        return UserEntity.builder()
-//                .id(domainObject.getId())
-//                .keycloakId(domainObject.getKeycloakId())
-//                .firstName(domainObject.getFirstName())
-//                .lastName(domainObject.getLastName())
-//                .email(domainObject.getEmail())
-//                .password(domainObject.getPassword())
-//                .roles(domainObject.getRoles()) // Assuming roles is a list
-//                .build();
-//    }
-//
-//    public UserDomainObject toDomain(UserEntity entity) {
-//        if (entity == null) {
-//            return null;
-//        }
-//        return UserDomainObject.builder()
-//                .id(entity.getId())
-//                .keycloakId(entity.getKeycloakId())
-//                .firstName(entity.getFirstName())
-//                .lastName(entity.getLastName())
-//                .email(entity.getEmail())
-//                .password(entity.getPassword())
-//                .roles(entity.getRoles()) // Assuming roles is a list
-//                .build();
-//    }
-//}
+// UserPersistenceMapper.java
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper;
 
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.UserRegistrationRequest;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring") // This makes it a Spring bean
+import java.util.List;
+
+
+@Mapper(componentModel = "spring")
+@Component
 public interface UserPersistenceMapper {
 
-    // Map a UserDomainObject to a UserEntity
-    @Mapping(target = "password", ignore = true) // Password should not be mapped
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "firstName", source = "firstName")
+    @Mapping(target = "lastName", source = "lastName")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "roles", source = "roles", qualifiedByName = "mapRolesFromDomain")
     UserEntity toEntity(UserDomainObject domainObject);
 
-    // Map a UserEntity to a UserDomainObject
+    @Mapping(target = "username", ignore = true)
+    @Mapping(target = "password", ignore = true)
     UserDomainObject toDomain(UserEntity entity);
+
+    @Named("mapRolesFromDomain")
+    default List<UserRole> mapRolesFromDomain(List<UserRole> roles) {
+        return roles != null ? roles : List.of();
+    }
 }

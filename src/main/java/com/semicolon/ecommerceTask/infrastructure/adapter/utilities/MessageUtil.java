@@ -1,13 +1,22 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.utilities;
 
 public class MessageUtil {
+    public static final String AUTHENTICATED_USER_EMAIL_MISSING = "Authentication user email missing ";
+    public static final String INVALID_AUTHENTICATION_PRINCIPAL = "Invalid authentication principal";
+    public static final String AUTHENTICATED_USER_ID_MISSING = "Authentication user id is missing";
+    public static final String AUTHENTICATED_USER_NOT_FOUND = "Authenticated user not found ";
     public static String ADMIN_ALREADY_EXISTS_IN_KEYCLOAK = "Admin already exist in keycloak";
     public static String ADMIN_ALREADY_EXISTS = "Admin with email %s already exists";
     public static String NO_PENDING_REGISTRATION = "No pending registration for email %s";
     public static String TOKEN_EXPIRED = "Registration token has expired";
     public static String KEYCLOAK_CREATION_FAILED = "Failed to create admin in Keycloak";
+    public static String FAILED_TO_CREATE_SUPERADMIN_IN_KEYCLOAK = "Failed to create superAdmin in Keycloak";
+    public static String SUPER_CONFIG_PROPERTY_ARE_MISSING_IN_APPLICATION_PROPERTIES = "Superadmin configuration properties are missing in application.properties";
     public static String ADMIN_NOT_FOUND = "Admin with email %s not found";
+    public static String ADMIN_INITIATION_SUCCESSFUL_VERIFICATION_EMAIL_SENT_TO_ = "Admin initiation successful. Verification email sent to %s";
     public static String INVALID_EMAIL = "Invalid email address format";
+    public static String REGISTRATION_EMAIL_SENT_TO = "Registration email sent to %s";
+    public static String ADMIN_WITH_EMAIL_DELETED_SUCCESSFUL = "Admin with email %s deleted successfully";
     public static String FIRST_NAME_REQUIRED = "First name is required";
     public static String LAST_NAME_REQUIRED = "Last name is required";
     public static String INVALID_PASSWORD = "Password must be at least 8 characters long, with at least one uppercase letter, one lowercase letter, one number, and one special character";
@@ -44,5 +53,16 @@ public class MessageUtil {
     public static String CUSTOMER_NOT_FOUND = "Customer not found ";
     public static String A_SELLER_REGISTRATION_REQUEST_IS_ALREADY_PENDING = "A seller registration request is already pending for %s";
     public static String SELLER_REGISTRATION_REQUEST_SUBMITTED_SUCCESSFULLY = "Seller registration request submitted successfully for %s. It is now pending admin approval.";
+    public static String PRODUCT_NOT_FOUND = "Product not found";
+    public static String FAILED_TO_UPLOAD_IMAGE = "Failed to upload image";
+    public static final String SELLER_FORM_NOT_FOUND = "Seller form not found";
+    public static final String HI = "Hi ";
+    public static final String USER_IS_NOT_AUTHORIZED_TO_UPDATE_THIS_PRODUCT = "User is not authorized to update this product";
+    public static final String USER_IS_NOT_AUTHORIZED_TO_DELETE_THIS_PRODUCT = "User is not authorized to delete this product";
+    public static final String PRODUCT_OWNERSHIP_MISMATCH = "Product ownership mismatch";
+    public static final String YOUR_FORM_TO_BECOME_A_SELLER_HAS_BEEN_REJECTED = ", your form to become a seller has been rejected";
+    public static final String YOUR_FORM_TO_BECOME_A_SELLER_HAS_BEEN_SUCCESSFULLY_APPROVE = ", your form to become a seller has been successfully approved";
+
+
 
 }

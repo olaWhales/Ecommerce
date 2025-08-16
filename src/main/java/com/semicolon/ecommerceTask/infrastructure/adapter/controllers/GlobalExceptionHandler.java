@@ -1,6 +1,6 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.controllers;
 
-import com.semicolon.ecommerceTask.domain.exception.AdminException;
+import com.semicolon.ecommerceTask.domain.exception.AdminNotException;
 import com.semicolon.ecommerceTask.domain.exception.ValidationException;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.ErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -38,8 +38,8 @@ public class GlobalExceptionHandler {
             .build();
     }
 
-    @ExceptionHandler(AdminException.class)
-    public ResponseEntity<ErrorResponseDto> handleAdminException(AdminException ex) {
+    @ExceptionHandler(AdminNotException.class)
+    public ResponseEntity<ErrorResponseDto> handleAdminException(AdminNotException ex) {
         HttpStatus status;
 
         if (ex.getMessage().contains("not found")) {

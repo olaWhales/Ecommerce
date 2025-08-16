@@ -23,5 +23,6 @@ public class CategoryEntity {
     private UUID id;
 
     @NotBlank
+    @Column(unique = true, length = 50)
     private String name;
 }

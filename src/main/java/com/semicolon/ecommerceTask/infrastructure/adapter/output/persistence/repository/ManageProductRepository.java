@@ -8,6 +8,5 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface ProductRepository extends JpaRepository<ProductEntity, UUID>{
-    List<ProductEntity> findAllBySellerId(UUID sellerId);
+public interface ManageProductRepository extends JpaRepository<ProductEntity, UUID>{
 }

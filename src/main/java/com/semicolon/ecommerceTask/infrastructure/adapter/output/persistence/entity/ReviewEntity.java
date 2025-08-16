@@ -1,6 +1,5 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity;
 
-import com.semicolon.ecommerceTask.domain.model.ProductDomainObject;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

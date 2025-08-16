@@ -1,21 +1,19 @@
-package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request;
+package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.manageProductDto;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Getter
 @Setter
 @Builder
-public class ProductUploadDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class ProductUpdateDto {
 
     @NotBlank(message = "Product name is required")
     private String name;
@@ -27,10 +25,9 @@ public class ProductUploadDto {
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
     private BigDecimal price;
 
-    @NotNull(message = "Stock quantity is required")
     @PositiveOrZero(message = "Stock quantity cannot be negative")
     private int inStockQuantity;
 
-    @NotNull(message = "Image file is required")
-    private MultipartFile imageFile;
+    @NotBlank(message = "Image URL is required")
+    private String imageUrl;
 }

@@ -1,97 +1,86 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.controllers;
 
+import com.nimbusds.jwt.JWT;
 import com.semicolon.ecommerceTask.application.port.input.ManageProductUseCase;
-import com.semicolon.ecommerceTask.domain.model.ProductDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.ProductUploadDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.ProductUpdateDto;
+import com.semicolon.ecommerceTask.domain.model.ManageProductDomainObject;
+import com.semicolon.ecommerceTask.domain.model.User;
+import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.manageProductDto.ProductUploadDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.manageProductDto.ProductUpdateDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.ProductResponseDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.ProductEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.ProductPersistenceMapper;
+import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
+import jakarta.mail.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import jakarta.validation.Valid;
-import java.util.List;
+import java.io.IOException;
 import java.util.UUID;
 
-@Slf4j
 @RestController
-@RequestMapping("/seller/products")
+@RequestMapping("/api/products")
 @RequiredArgsConstructor
+@Slf4j
 public class ProductController {
-
     private final ManageProductUseCase manageProductUseCase;
+    private final ProductPersistenceMapper mapper;
 
-    private UUID getAuthenticatedSellerId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return UUID.fromString(authentication.getName());
-    }
-
-    // CREATE
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping("/upload")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<String> createProduct(@Valid @ModelAttribute ProductUploadDto productDto) {
-        try {
-            UUID sellerId = getAuthenticatedSellerId();
-            manageProductUseCase.createProduct(productDto, sellerId);
-            return new ResponseEntity<>("Product uploaded successfully", HttpStatus.CREATED);
-        } catch (Exception e) {
-            log.error("Product upload failed for seller: {}", getAuthenticatedSellerId(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Product upload failed: " + e.getMessage());
+    public ResponseEntity<ProductResponseDto> createProduct(@ModelAttribute ProductUploadDto dto, @AuthenticationPrincipal Jwt principal) throws IOException {
+        if (principal == null) {throw new SecurityException(MessageUtil.AUTHENTICATED_USER_NOT_FOUND);}
+        String keycloakUserId = principal.getClaimAsString("sub");
+        ManageProductDomainObject domain = mapper.toDomain(mapper.toEntity(dto));
+        ManageProductDomainObject savedProduct = manageProductUseCase.createProduct(domain, dto.getImageFile(), keycloakUserId);
+        return ResponseEntity.ok(mapper.toResponse(savedProduct));
+    }
+//        @PreAuthorize("hasRole('SELLER')")
+//        @PostMapping("/upload")
+//        public ResponseEntity<ProductResponseDto> createProduct(@ModelAttribute ProductUploadDto dto, @AuthenticationPrincipal UserDomainObject user) throws IOException {
+//            log.info("User Email ======>>>>> {}", user != null ? user.getEmail() : "null");
+//            if (user == null) {
+//                throw new SecurityException("Authenticated user not found");
+//            }
+//            ManageProductDomainObject domain = mapper.toDomain(mapper.toEntity(dto));
+//            ManageProductDomainObject savedProduct = manageProductUseCase.createProduct(domain, dto.getImageFile(), user.getId());
+//            log.info("Saved product =====> {}", savedProduct);
+//            return ResponseEntity.ok(mapper.toResponse(savedProduct));
+//        }
+//        public ResponseEntity<ProductResponseDto> createProduct(@ModelAttribute ProductUploadDto dto, @AuthenticationPrincipal UserEntity user) throws IOException {
+//            log.info("User Email ======>>>>> {}",user);
+//            ManageProductDomainObject domain = mapper.toDomain(mapper.toEntity(dto));
+//            ManageProductDomainObject savedProduct = manageProductUseCase.createProduct(domain, dto.getImageFile(), UUID.fromString(user.getEmail()));
+//            log.info("Saved product =====> {}",savedProduct);
+//            return ResponseEntity.ok(mapper.toResponse(savedProduct));
+//        }
+
+//            ManageProductDomainObject domain = mapper.toDomain(mapper.toEntity(dto));
+//            ManageProductDomainObject savedProduct = manageProductUseCase.createProduct(domain, dto.getImageFile(), jwt);
+//            return ResponseEntity.ok(mapper.toResponse(savedProduct));
+//        }
+
+        @PreAuthorize("hasRole('SELLER')")
+        @PutMapping("/{productId}")
+        public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable UUID productId, @RequestBody ProductUpdateDto dto) {
+            UUID sellerId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+            ManageProductDomainObject domain = mapper.toDomain(mapper.toEntity(dto, new ProductEntity()));
+            ManageProductDomainObject updatedProduct = manageProductUseCase.updateProduct(productId, domain, UUID.fromString(String.valueOf(sellerId)));
+            return ResponseEntity.ok(mapper.toResponse(updatedProduct));
+        }
+
+        @PreAuthorize("hasRole('SELLER')")
+        @DeleteMapping("/{productId}")
+        public ResponseEntity<Void> deleteProduct(@PathVariable UUID productId) {
+            UUID sellerId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+            manageProductUseCase.deleteProduct(productId, sellerId);
+            return ResponseEntity.noContent().build();
         }
     }
-
-    // THIS ENDPOINT TO READ (Single Product)
-    @GetMapping("/{productId}")
-    @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<ProductDomainObject> getProduct(@PathVariable UUID productId) {
-        UUID sellerId = getAuthenticatedSellerId();
-        ProductDomainObject product = manageProductUseCase.getProduct(productId);
-        if (!product.getSellerId().equals(sellerId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to this product.");
-        }
-        return new ResponseEntity<>(product, HttpStatus.OK);
-    }
-
-    // READ (All Products by Seller)
-    @GetMapping
-    @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<List<ProductDomainObject>> getAllProducts() {
-        UUID sellerId = getAuthenticatedSellerId();
-        List<ProductDomainObject> products = manageProductUseCase.getAllProductsBySeller(sellerId);
-        return new ResponseEntity<>(products, HttpStatus.OK);
-    }
-
-    // UPDATE
-    @PutMapping("/{productId}")
-    @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<ProductDomainObject> updateProduct(
-            @PathVariable UUID productId,
-            @RequestBody ProductUpdateDto productDto) {
-        UUID sellerId = getAuthenticatedSellerId();
-        ProductDomainObject existingProduct = manageProductUseCase.getProduct(productId);
-        if (!existingProduct.getSellerId().equals(sellerId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to update this product.");
-        }
-        ProductDomainObject updatedProduct = manageProductUseCase.updateProduct(productId, productDto);
-        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
-    }
-
-    // DELETE
-    @DeleteMapping("/{productId}")
-    @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<Void> deleteProduct(@PathVariable UUID productId) {
-        UUID sellerId = getAuthenticatedSellerId();
-        ProductDomainObject product = manageProductUseCase.getProduct(productId);
-        if (!product.getSellerId().equals(sellerId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to delete this product.");
-        }
-        manageProductUseCase.deleteProduct(productId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-}

@@ -10,8 +10,9 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class CategoryDomainObject {
-    @Id
+//    @Id
     private UUID id;
 
     @NotBlank

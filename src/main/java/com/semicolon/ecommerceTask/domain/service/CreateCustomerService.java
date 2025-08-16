@@ -3,11 +3,12 @@ package com.semicolon.ecommerceTask.domain.service;
 import com.semicolon.ecommerceTask.application.port.input.CreateCustomerUseCase;
 import com.semicolon.ecommerceTask.application.port.output.KeycloakAdminOutPort;
 import com.semicolon.ecommerceTask.application.port.output.persistence.CustomerPersistenceOutPort;
+import com.semicolon.ecommerceTask.application.port.output.persistence.UserPersistenceOutPort;
 import com.semicolon.ecommerceTask.domain.exception.ValidationException;
-import com.semicolon.ecommerceTask.domain.model.CustomerDomainObject;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.CustomerRegistrationDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.CustomerResponseDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.UserDomainObjectResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.CustomerMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class CreateCustomerService implements CreateCustomerUseCase {
 
     private final UserRegistrationService userRegistrationService;
     private final KeycloakAdminOutPort keycloakAdminOutPort;
+    private final UserPersistenceOutPort userPersistenceOutPort;
     private final CustomerPersistenceOutPort customerPersistenceOutPort;
     private final PasswordEncoder passwordEncoder;
     private final CustomerMapper customerMapper;
@@ -35,28 +37,33 @@ public class CreateCustomerService implements CreateCustomerUseCase {
 
     @Transactional
     @Override
-    public CustomerResponseDto registerCustomer(CustomerRegistrationDto dto) {
+    public UserDomainObjectResponse registerCustomer(CustomerRegistrationDto dto) {
+        log.info("Registering customer with email: {}", dto.getEmail());
         validateRegistrationInput(dto);
         UserDomainObject user = UserDomainObject.builder()
-            .email(dto.getEmail())
-            .firstName(dto.getFirstName())
-            .lastName(dto.getLastName())
-            .build();
-
+                .email(dto.getEmail())
+                .firstName(dto.getFirstName())
+                .lastName(dto.getLastName())
+                .build();
+        log.debug("Created UserDomainObject for Keycloak: {}", user);
         String keycloakId = userRegistrationService.registerUserInKeycloak(user, dto.getPassword());
+        log.info("Created Keycloak user with ID: {}", keycloakId);
+        keycloakAdminOutPort.assignRealmRoles(keycloakId, Collections.singletonList(UserRole.BUYER));
 
-        keycloakAdminOutPort.assignRealmRoles(keycloakId, Collections.singletonList("BUYER"));
-
-        CustomerDomainObject customer = CustomerDomainObject.builder()
-                .keycloakId(keycloakId)
+        UserDomainObject customer = UserDomainObject.builder()
+                .id(keycloakId)
                 .email(dto.getEmail())
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
                 .password(passwordEncoder.encode(dto.getPassword()))
-                .roles(Collections.singletonList("BUYER"))
+                .roles(Collections.singletonList(UserRole.BUYER))
                 .build();
-        customerPersistenceOutPort.saveCustomer(customer);
-        return customerMapper.toResponseDto(customer);
+        log.debug("Saving customer: {}", customer);
+        UserDomainObject savedCustomer = userPersistenceOutPort.saveUser(customer);
+        log.info("Customer saved successfully for email: {}", dto.getEmail());
+        UserDomainObjectResponse response = customerMapper.toResponseDto(savedCustomer);
+        log.debug("Mapped to response DTO: {}", response);
+        return response;
     }
 
     private void validateRegistrationInput(CustomerRegistrationDto dto) {

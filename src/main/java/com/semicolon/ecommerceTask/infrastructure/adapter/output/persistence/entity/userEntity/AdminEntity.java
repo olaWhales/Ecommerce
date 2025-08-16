@@ -22,6 +22,7 @@ public class AdminEntity {
     private String email;
     private String firstName;
     private String lastName;
+    private String password ;
 
     @ElementCollection
     private List<String> roles;

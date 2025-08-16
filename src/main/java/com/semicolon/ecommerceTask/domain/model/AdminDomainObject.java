@@ -1,9 +1,9 @@
 package com.semicolon.ecommerceTask.domain.model;
 
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
 import lombok.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -11,12 +11,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdminDomainObject {
-    private UUID id;
-    private String keycloakId;
+    private String id;
     private String email;
     private String firstName;
     private String lastName;
     private String password;
-    private List<String> roles;
+    private List<UserRole> roles;
 }
 

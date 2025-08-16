@@ -1,16 +1,17 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity;
 
-import com.semicolon.ecommerceTask.domain.model.CategoryDomainObject;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
-
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -24,22 +25,27 @@ public class ProductEntity {
     @Column(columnDefinition = "BINARY(16)", updatable = false, nullable = false)
     private UUID id;
 
-    @NotNull
-    @ManyToOne
-    private CategoryEntity categoryEntity;
-
-    @NotNull
-    @ManyToOne
-    private UserEntity seller;
-
     @NotBlank
+    @Column(length = 100)
     private String name;
 
+    @NotBlank
+    @Column(length = 1000)
+    private String description;
+
     @NotNull
-    @DecimalMin("0.0")
     private BigDecimal price;
 
-    @Min(0)
-    private int stockQuantity;
-}
+    @NotNull
+    private int inStockQuantity;
 
+    private String sellerId;
+
+    @NotBlank
+    private String imageUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    @NotNull
+    private CategoryEntity categoryEntity;
+}

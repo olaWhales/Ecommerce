@@ -1,5 +1,6 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence;
 
+import ch.qos.logback.core.util.StringUtil;
 import com.semicolon.ecommerceTask.application.port.output.persistence.UserPersistenceOutPort;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserEntity;
@@ -8,35 +9,42 @@ import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.rep
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class UserRepositoryAdaptor implements UserPersistenceOutPort {
 
     private final JpaUserRepository jpaUserRepository;
-    private final UserPersistenceMapper userPersistenceMapper; // <-- The new mapper is injected here
+    private final UserPersistenceMapper userPersistenceMapper;
 
     @Override
     public void saveLocalUser(String keycloakId, UserDomainObject userDomainObject) {
         UserEntity userEntity = UserEntity.builder()
-                .keycloakId(keycloakId) // Set Keycloak ID
                 .firstName(userDomainObject.getFirstName())
                 .lastName(userDomainObject.getLastName())
                 .email(userDomainObject.getEmail())
-                .password(userDomainObject.getPassword())
                 .roles(userDomainObject.getRoles())
                 .build();
         jpaUserRepository.save(userEntity);
     }
 
     @Override
+    public UserDomainObject saveUser(UserDomainObject userDomainObject) {
+        UserEntity userEntity = UserEntity.builder()
+                .id(userDomainObject.getId())
+                .firstName(userDomainObject.getFirstName())
+                .lastName(userDomainObject.getLastName())
+                .email(userDomainObject.getEmail())
+                .roles(userDomainObject.getRoles())
+                .build();
+      return userPersistenceMapper.toDomain(jpaUserRepository.save(userEntity));
+    }
+
+    @Override
     public UserDomainObject save(UserDomainObject user) {
-        // Map the Domain Object to a JPA Entity using the mapper
         UserEntity userEntity = userPersistenceMapper.toEntity(user);
-
-        // Save the Entity to the database
         UserEntity savedEntity = jpaUserRepository.save(userEntity);
-
-        // Map the saved Entity back to a Domain Object and return it
         return userPersistenceMapper.toDomain(savedEntity);
     }
 
@@ -44,4 +52,31 @@ public class UserRepositoryAdaptor implements UserPersistenceOutPort {
     public boolean existsByEmail(String email) {
         return jpaUserRepository.existsByEmail(email);
     }
+
+    @Override
+    public Optional<UserEntity> findByEmail(String email) {
+        return jpaUserRepository.findByEmail(email);
+
+    }
+
+    @Override
+    public UserDomainObject findById(String userId) {
+        return userPersistenceMapper.toDomain(jpaUserRepository.findById(userId).orElseThrow(()-> new RuntimeException("User not Found")));
+    }
+//
+//    @Override
+//    public Optional<UserDomainObject> findById(UUID id) {
+//        return jpaUserRepository.findById(id)
+//                .map(userPersistenceMapper::toDomain);
+//    }
+
+    @Override
+    public UserDomainObject findUserByEmail(String email) {
+        if(StringUtil.isNullOrEmpty(email)){
+            throw new IllegalArgumentException("invalid email");
+        }
+        UserEntity userEntity = jpaUserRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("user not found"));
+        return userPersistenceMapper.toDomain(userEntity);
+    }
+
 }

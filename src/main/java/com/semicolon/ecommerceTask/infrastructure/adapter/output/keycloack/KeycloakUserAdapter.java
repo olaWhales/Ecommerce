@@ -33,15 +33,9 @@ public class KeycloakUserAdapter implements KeycloakUserPort {
 
     @Override
     public String createUser(UserDomainObject userDomainObject) {
-//        logger.info("Keycloak properties - Realm: {}, ClientId: {}, ClientSecret: {}",
-//                properties.getRealm(), properties.getClientId(), properties.getClientSecret());
-//        logger.info("Creating user with email: {}", userDomainObject.getEmail());
-
         if (userDomainObject.getEmail() == null || userDomainObject.getPassword() == null) {
             throw new IllegalArgumentException(USER_DATA_CANNOT_BE_NULL);
         }
-
-        // Check if user already exists by email
         List<UserRepresentation> existingUsers = keycloak.realm(properties.getRealm()).users()
                 .search(userDomainObject.getEmail(), null, null, null, 0, 1);
         if (!existingUsers.isEmpty()) {

@@ -1,181 +1,18 @@
-//package com.semicolon.ecommerceTask.domain.service;
-//
-//import com.semicolon.ecommerceTask.application.port.input.CreateAdminUseCase;
-//import com.semicolon.ecommerceTask.application.port.output.EmailOutPort;
-//import com.semicolon.ecommerceTask.application.port.output.KeycloakAdminOutPort;
-//import com.semicolon.ecommerceTask.application.port.output.persistence.AdminPersistenceOutPort;
-//import com.semicolon.ecommerceTask.domain.exception.AdminException;
-//import com.semicolon.ecommerceTask.domain.exception.ValidationException;
-//import com.semicolon.ecommerceTask.domain.model.AdminDomainObject;
-//import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.AdminResponseDto;
-//import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.AdminMapper;
-//import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import java.time.LocalDateTime;
-//import java.util.Collections;
-//import java.util.List;
-//import java.util.UUID;
-//import java.util.regex.Pattern;
-//
-//import static com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil.KEYCLOAK_CREATION_FAILED;
-//
-//@Slf4j
-//@Service
-//@RequiredArgsConstructor
-//public class CreateAdminService implements CreateAdminUseCase {
-//
-//    private final AdminPersistenceOutPort adminPersistenceOutPort;
-//    private final KeycloakAdminOutPort keycloakAdminOutPort;
-//    private final EmailOutPort emailOutPort;
-//    private final PasswordEncoder passwordEncoder;
-//    private final AdminMapper adminMapper;
-//
-//    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
-//    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*?])(?=\\S+$).{8,}$");
-//
-//    @Transactional
-//    public String initiateAdminCreation(String adminEmail) {
-//        validateEmail(adminEmail);
-//        if (adminPersistenceOutPort.existsByEmail(adminEmail)) {
-//            throw new AdminException(MessageUtil.ADMIN_ALREADY_EXISTS.formatted(adminEmail));
-//        }
-//
-//        // ADDED: Pre-check Keycloak here to prevent registration for existing Keycloak users.
-//        if (keycloakAdminOutPort.findUserByEmail(adminEmail).isPresent()) {
-//            throw new AdminException(MessageUtil.ADMIN_ALREADY_EXISTS_IN_KEYCLOAK.formatted(adminEmail));
-//        }
-//
-//        String token = UUID.randomUUID().toString();
-//        LocalDateTime expiration = LocalDateTime.now().plusHours(24);
-//        adminPersistenceOutPort.savePendingRegistration(adminEmail, token, expiration);
-//        sendRegistrationEmail(adminEmail, token);
-//        return "Admin initiation successful. Verification email sent to %s".formatted(adminEmail);
-//    }
-//
-//    @Transactional
-//    @Override
-//    public AdminResponseDto completeAdminRegistration(String email, String firstName, String lastName, String password) {
-//        validateRegistrationInput(email, firstName, lastName, password);
-//
-//        var pending = adminPersistenceOutPort.findPendingTokenByEmail(email)
-//                .orElseThrow(() -> new AdminException(MessageUtil.NO_PENDING_REGISTRATION.formatted(email)));
-//
-//        if (LocalDateTime.now().isAfter(pending.expiration())) {
-//            adminPersistenceOutPort.deletePendingRegistration(email);
-//            throw new AdminException(MessageUtil.TOKEN_EXPIRED);
-//        }
-//
-//        if (keycloakAdminOutPort.findUserByEmail(email).isPresent()) {
-//            throw new AdminException(MessageUtil.ADMIN_ALREADY_EXISTS_IN_KEYCLOAK.formatted(email));
-//        }
-//
-//        AdminDomainObject admin = AdminDomainObject.builder()
-//                .email(email)
-//                .firstName(firstName)
-//                .lastName(lastName)
-//                .roles(Collections.singletonList("ADMIN"))
-//                .build();
-//
-//        String keycloakId = keycloakAdminOutPort.createUser(admin, password);
-//        if (keycloakId == null) {
-//            throw new AdminException(KEYCLOAK_CREATION_FAILED);
-//        }
-//
-//        keycloakAdminOutPort.assignRealmRole(keycloakId, "ADMIN");
-//
-//        admin.setKeycloakId(keycloakId);
-//        // The password should be encoded before saving to your local database
-//        admin.setPassword(passwordEncoder.encode(password));
-//        adminPersistenceOutPort.saveAdmin(admin);
-//        adminPersistenceOutPort.deletePendingRegistration(email);
-//
-//        return adminMapper.toResponseDto(admin);
-//    }
-//
-//    @Override
-//    public String sendRegistrationEmail(String email, String token) {
-//        String subject = MessageUtil.EMAIL_SUBJECT;
-//        String body = MessageUtil.EMAIL_BODY.formatted(token, email);
-//        emailOutPort.sendEmail(email, subject, body);
-//        return "Registration email sent to %s".formatted(email);
-//    }
-//
-//    @Transactional
-//    @Override
-//    public String deleteAdmin(String email) {
-//        validateEmail(email);
-//        AdminDomainObject admin = adminPersistenceOutPort.findByEmail(email)
-//                .orElseThrow(() -> new AdminException(MessageUtil.ADMIN_NOT_FOUND.formatted(email)));
-//        keycloakAdminOutPort.deleteUser(admin.getKeycloakId());
-//        adminPersistenceOutPort.deleteAdmin(email);
-//        return "Admin with email %s deleted successfully".formatted(email);
-//    }
-//
-//    @Transactional
-//    @Override
-//    public AdminResponseDto updateAdmin(String email, String firstName, String lastName) {
-//        validateUpdateInput(email, firstName, lastName);
-//        AdminDomainObject admin = adminPersistenceOutPort.findByEmail(email)
-//                .orElseThrow(() -> new AdminException(MessageUtil.ADMIN_NOT_FOUND.formatted(email)));
-//        admin.setFirstName(firstName);
-//        admin.setLastName(lastName);
-//        adminPersistenceOutPort.saveAdmin(admin);
-//
-//        return adminMapper.toResponseDto(admin);
-//    }
-//
-//    @Override
-//    public List<AdminResponseDto> getAllAdmins() {
-//        return adminMapper.toResponseDtoList(adminPersistenceOutPort.findAllAdmins());
-//    }
-//
-//    private void validateEmail(String email) {
-//        if (email == null || email.trim().isEmpty() || !EMAIL_PATTERN.matcher(email).matches()) {
-//            throw new ValidationException(MessageUtil.INVALID_EMAIL);
-//        }
-//    }
-//
-//    private void validateRegistrationInput(String email, String firstName, String lastName, String password) {
-//        validateEmail(email);
-//        if (firstName == null || firstName.trim().isEmpty()) {
-//            throw new ValidationException(MessageUtil.FIRST_NAME_REQUIRED);
-//        }
-//        if (lastName == null || lastName.trim().isEmpty()) {
-//            throw new ValidationException(MessageUtil.LAST_NAME_REQUIRED);
-//        }
-//        if (password == null || !PASSWORD_PATTERN.matcher(password).matches()) {
-//            throw new ValidationException(MessageUtil.INVALID_PASSWORD);
-//        }
-//    }
-//
-//    private void validateUpdateInput(String email, String firstName, String lastName) {
-//        validateEmail(email);
-//        if (firstName == null || firstName.trim().isEmpty()) {
-//            throw new ValidationException(MessageUtil.FIRST_NAME_REQUIRED);
-//        }
-//        if (lastName == null || lastName.trim().isEmpty()) {
-//            throw new ValidationException(MessageUtil.LAST_NAME_REQUIRED);
-//        }
-//    }
-//}
-
 package com.semicolon.ecommerceTask.domain.service;
 
 import com.semicolon.ecommerceTask.application.port.input.CreateAdminUseCase;
 import com.semicolon.ecommerceTask.application.port.output.EmailOutPort;
 import com.semicolon.ecommerceTask.application.port.output.KeycloakAdminOutPort;
 import com.semicolon.ecommerceTask.application.port.output.persistence.AdminPersistenceOutPort;
-import com.semicolon.ecommerceTask.domain.exception.AdminException;
-import com.semicolon.ecommerceTask.domain.exception.ValidationException;
+import com.semicolon.ecommerceTask.domain.exception.AdminNotException;
+import com.semicolon.ecommerceTask.domain.exception.NameNotFoundException;
 import com.semicolon.ecommerceTask.domain.model.AdminDomainObject;
+import com.semicolon.ecommerceTask.domain.model.PendingRegistrationDomainObject;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.AdminResponseDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.AdminMapper;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.PendingRegistrationMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.ValidationUtil;
 import lombok.RequiredArgsConstructor;
@@ -187,67 +24,46 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CreateAdminService implements CreateAdminUseCase {
 
-    private final AdminPersistenceOutPort  adminPersistenceOutPort;
+    private final AdminPersistenceOutPort adminPersistenceOutPort;
     private final KeycloakAdminOutPort keycloakAdminOutPort;
     private final EmailOutPort emailOutPort;
     private final PasswordEncoder passwordEncoder;
     private final AdminMapper adminMapper;
-    private final UserRegistrationService userRegistrationService;
+    private final PendingRegistrationMapper pendingRegistrationMapper;
     private final ValidationUtil validationUtil;
 
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*?])(?=\\S+$).{8,}$");
-
-    // Inside your CreateAdminService.java
-
-    // Inside your CreateAdminService.java
+//    private static final String ADMIN_ROLE = "ADMIN";
+    private static final long REGISTRATION_TOKEN_VALIDITY_HOURS = 24;
 
     @Transactional
+    @Override
     public String initiateAdminCreation(String adminEmail) {
-        validateEmail(adminEmail);
-        if (adminPersistenceOutPort.existsByEmail(adminEmail)) {throw new AdminException(MessageUtil.ADMIN_ALREADY_EXISTS.formatted(adminEmail));}
-        if (keycloakAdminOutPort.findUserByEmail(adminEmail).isPresent()) {throw new AdminException(MessageUtil.ADMIN_ALREADY_EXISTS_IN_KEYCLOAK.formatted(adminEmail));}
-        var existingPendingRegistration = adminPersistenceOutPort.findPendingRegistrationByEmail(adminEmail);
-
-        String token = UUID.randomUUID().toString();
-        LocalDateTime expiration = LocalDateTime.now().plusHours(24);
-        if (existingPendingRegistration.isPresent()) {adminPersistenceOutPort.updatePendingRegistration(adminEmail, token, expiration);
-        } else {
-            adminPersistenceOutPort.createPendingRegistration(adminEmail, token, expiration);
-        }
+        ValidationUtil.validateEmail(adminEmail);
+        checkIfAdminExists(adminEmail);
+        String token = generateRegistrationToken();
+        LocalDateTime expiration = LocalDateTime.now().plusHours(REGISTRATION_TOKEN_VALIDITY_HOURS);
+        saveOrUpdatePendingRegistration(adminEmail, token, expiration);
         sendRegistrationEmail(adminEmail, token);
-        return "Admin initiation successful. Verification email sent to %s".formatted(adminEmail);
+        return MessageUtil.ADMIN_INITIATION_SUCCESSFUL_VERIFICATION_EMAIL_SENT_TO_.formatted(adminEmail);
     }
 
     @Transactional
     @Override
     public AdminResponseDto completeAdminRegistration(String email, String firstName, String lastName, String password) {
         validateRegistrationInput(email, firstName, lastName, password);
-        var pending = adminPersistenceOutPort.findPendingRegistrationByEmail(email)
-                .orElseThrow(() -> new AdminException(MessageUtil.NO_PENDING_REGISTRATION.formatted(email)));
-        UserDomainObject user = UserDomainObject.builder()
-                .email(email)
-                .firstName(firstName)
-                .lastName(lastName)
-                .build();
-        String keycloakId = userRegistrationService.registerUserInKeycloak(user, password);
-        keycloakAdminOutPort.assignRealmRoles(keycloakId, Collections.singletonList("ADMIN"));
-        AdminDomainObject admin = AdminDomainObject.builder()
-                .keycloakId(keycloakId)
-                .email(email)
-                .firstName(firstName)
-                .lastName(lastName)
-                .roles(Collections.singletonList("ADMIN"))
-                .password(passwordEncoder.encode(password))
-                .build();
+        PendingRegistrationDomainObject pendingRegistration = validateAndGetPendingRegistration(email);
+        UserDomainObject user = buildUserDomainObject(email, firstName, lastName);
+        String keycloakId = createUserInKeycloak(user, password);
+        assignAdminRole(keycloakId);
+        AdminDomainObject admin = buildAdminDomainObject(keycloakId, email, firstName, lastName, password);
         adminPersistenceOutPort.saveAdmin(admin);
         adminPersistenceOutPort.deletePendingRegistration(email);
         return adminMapper.toResponseDto(admin);
@@ -258,26 +74,28 @@ public class CreateAdminService implements CreateAdminUseCase {
         String subject = MessageUtil.EMAIL_SUBJECT;
         String body = MessageUtil.EMAIL_BODY.formatted(token, email);
         emailOutPort.sendEmail(email, subject, body);
-        return "Registration email sent to %s".formatted(email);
+        return MessageUtil.REGISTRATION_EMAIL_SENT_TO.formatted(email);
     }
 
     @Transactional
     @Override
     public String deleteAdmin(String email) {
-        validateEmail(email);
-        AdminDomainObject admin = adminPersistenceOutPort.findByEmail(email)
-                .orElseThrow(() -> new AdminException(MessageUtil.ADMIN_NOT_FOUND.formatted(email)));
-        keycloakAdminOutPort.deleteUser(admin.getKeycloakId());
+        ValidationUtil.validateEmail(email);
+        Optional<AdminDomainObject> adminOptional = adminPersistenceOutPort.findByEmail(email);
+        if (adminOptional.isEmpty()) {throw new AdminNotException(MessageUtil.ADMIN_NOT_FOUND.formatted(email));}
+        AdminDomainObject admin = adminOptional.get();
+        keycloakAdminOutPort.deleteUser(admin.getId());
         adminPersistenceOutPort.deleteAdmin(email);
-        return "Admin with email %s deleted successfully".formatted(email);
+        return MessageUtil.ADMIN_WITH_EMAIL_DELETED_SUCCESSFUL.formatted(email);
     }
 
     @Transactional
     @Override
     public AdminResponseDto updateAdmin(String email, String firstName, String lastName) {
         validateUpdateInput(email, firstName, lastName);
-        AdminDomainObject admin = adminPersistenceOutPort.findByEmail(email)
-                .orElseThrow(() -> new AdminException(MessageUtil.ADMIN_NOT_FOUND.formatted(email)));
+        Optional<AdminDomainObject> adminOptional = adminPersistenceOutPort.findByEmail(email);
+        if (adminOptional.isEmpty()) {throw new AdminNotException(MessageUtil.ADMIN_NOT_FOUND.formatted(email));}
+        AdminDomainObject admin = adminOptional.get();
         admin.setFirstName(firstName);
         admin.setLastName(lastName);
         adminPersistenceOutPort.saveAdmin(admin);
@@ -286,22 +104,80 @@ public class CreateAdminService implements CreateAdminUseCase {
 
     @Override
     public List<AdminResponseDto> getAllAdmins() {
-        return adminMapper.toResponseDtoList(adminPersistenceOutPort.findAllAdmins());
-    }
-    private void validateEmail(String email) {
-        if (email == null || email.trim().isEmpty() || !EMAIL_PATTERN.matcher(email).matches()) {throw new ValidationException(MessageUtil.INVALID_EMAIL);}
+        List<AdminDomainObject> admins = adminPersistenceOutPort.findAllAdmins();
+        return adminMapper.toResponseDtoList(admins);
     }
 
     private void validateRegistrationInput(String email, String firstName, String lastName, String password) {
-        validateEmail(email);
-        if (firstName == null || firstName.trim().isEmpty()) {throw new ValidationException(MessageUtil.FIRST_NAME_REQUIRED);}
-        if (lastName == null || lastName.trim().isEmpty()) {throw new ValidationException(MessageUtil.LAST_NAME_REQUIRED);}
-        if (password == null || !PASSWORD_PATTERN.matcher(password).matches()) {throw new ValidationException(MessageUtil.INVALID_PASSWORD);}
+        ValidationUtil.validateEmail(email);
+        if (firstName == null || firstName.trim().isEmpty()) {throw new NameNotFoundException(MessageUtil.FIRST_NAME_REQUIRED);}
+        if (lastName == null || lastName.trim().isEmpty()) {throw new NameNotFoundException(MessageUtil.LAST_NAME_REQUIRED);}
+        ValidationUtil.validatePassword(password);
     }
 
     private void validateUpdateInput(String email, String firstName, String lastName) {
-        validateEmail(email);
-        if (firstName == null || firstName.trim().isEmpty()) {throw new ValidationException(MessageUtil.FIRST_NAME_REQUIRED);}
-        if (lastName == null || lastName.trim().isEmpty()) {throw new ValidationException(MessageUtil.LAST_NAME_REQUIRED);}
+        ValidationUtil.validateEmail(email);
+        if (firstName == null || firstName.trim().isEmpty()) {throw new NameNotFoundException(MessageUtil.FIRST_NAME_REQUIRED);}
+        if (lastName == null || lastName.trim().isEmpty()) {throw new NameNotFoundException(MessageUtil.LAST_NAME_REQUIRED);}
+    }
+
+    private void checkIfAdminExists(String email) {
+        if (adminPersistenceOutPort.existsByEmail(email)) {throw new AdminNotException(MessageUtil.ADMIN_ALREADY_EXISTS.formatted(email));}
+        Optional<UserDomainObject> existingUser = keycloakAdminOutPort.findUserByEmail(email);
+        if (existingUser.isPresent()) {throw new AdminNotException(MessageUtil.ADMIN_ALREADY_EXISTS_IN_KEYCLOAK.formatted(email));}
+    }
+
+    private String generateRegistrationToken() {
+        return UUID.randomUUID().toString();
+    }
+
+    private void saveOrUpdatePendingRegistration(String email, String token, LocalDateTime expiration) {
+        Optional<PendingRegistrationDomainObject> existingPendingRegistration = adminPersistenceOutPort.findPendingRegistrationByEmail(email);
+        PendingRegistrationDomainObject pendingRegistration = PendingRegistrationDomainObject.builder()
+            .email(email)
+            .token(token)
+            .expiration(expiration)
+            .build();
+        if (existingPendingRegistration.isPresent()) {adminPersistenceOutPort.updatePendingRegistration(email, token, expiration);
+        } else {
+            adminPersistenceOutPort.createPendingRegistration(email, token, expiration);
+        }
+    }
+
+    private PendingRegistrationDomainObject validateAndGetPendingRegistration(String email) {
+        Optional<PendingRegistrationDomainObject> pendingOptional = adminPersistenceOutPort.findPendingRegistrationByEmail(email);
+        if (pendingOptional.isEmpty()) {throw new AdminNotException(MessageUtil.NO_PENDING_REGISTRATION.formatted(email));}
+        PendingRegistrationDomainObject pendingRegistration = pendingRegistrationMapper.toDomain(pendingOptional.get());
+        if (LocalDateTime.now().isAfter(pendingRegistration.getExpiration())) {
+            adminPersistenceOutPort.deletePendingRegistration(email);
+            throw new AdminNotException(MessageUtil.TOKEN_EXPIRED);
+        }
+        return pendingRegistration;
+    }
+
+    private UserDomainObject buildUserDomainObject(String email, String firstName, String lastName) {
+        return UserDomainObject.builder()
+            .email(email)
+            .firstName(firstName)
+            .lastName(lastName)
+            .build();
+    }
+
+    private String createUserInKeycloak(UserDomainObject user, String password) {
+        String keycloakId = keycloakAdminOutPort.createUser(user, password);
+        if (keycloakId == null) {throw new AdminNotException(MessageUtil.KEYCLOAK_CREATION_FAILED);}
+        return keycloakId;
+    }
+    private void assignAdminRole(String keycloakId) {keycloakAdminOutPort.assignRealmRoles(keycloakId, Collections.singletonList(UserRole.ADMIN));}
+
+    private AdminDomainObject buildAdminDomainObject(String keycloakId, String email, String firstName, String lastName, String password) {
+        return AdminDomainObject.builder()
+            .id(keycloakId)
+            .email(email)
+            .firstName(firstName)
+            .lastName(lastName)
+            .roles(Collections.singletonList(UserRole.ADMIN))
+            .password(passwordEncoder.encode(password))
+            .build();
     }
 }

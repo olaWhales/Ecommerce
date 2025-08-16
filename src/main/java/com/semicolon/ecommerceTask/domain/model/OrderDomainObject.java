@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDomainObject {
-    @Id
+//    @Id
     private UUID id;
 
     @NotNull

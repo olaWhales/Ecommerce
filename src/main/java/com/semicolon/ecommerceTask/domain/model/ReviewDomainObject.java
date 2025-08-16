@@ -17,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewDomainObject {
-    @Id
+//    @Id
     private UUID id;
 
     @NotNull
@@ -26,7 +26,7 @@ public class ReviewDomainObject {
 
     @NotNull
     @ManyToOne
-    private ProductDomainObject productEntity;
+    private ManageProductDomainObject productEntity;
 
     @Min(1)
     @Max(5)

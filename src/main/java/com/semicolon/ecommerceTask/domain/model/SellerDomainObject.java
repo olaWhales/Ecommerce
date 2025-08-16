@@ -1,5 +1,6 @@
 package com.semicolon.ecommerceTask.domain.model;
 
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +16,5 @@ public class SellerDomainObject {
     private String keycloakId;
     private String email;
     private String details;
-    private List<String> roles;
+    private List<UserRole> roles;
 }

@@ -3,10 +3,9 @@ package com.semicolon.ecommerceTask;
 import com.semicolon.ecommerceTask.application.port.output.EmailOutPort;
 import com.semicolon.ecommerceTask.application.port.output.KeycloakAdminOutPort;
 import com.semicolon.ecommerceTask.application.port.output.persistence.AdminPersistenceOutPort;
-import com.semicolon.ecommerceTask.domain.exception.AdminException;
+import com.semicolon.ecommerceTask.domain.exception.AdminNotException;
 import com.semicolon.ecommerceTask.domain.exception.ValidationException;
 import com.semicolon.ecommerceTask.domain.model.AdminDomainObject;
-import com.semicolon.ecommerceTask.domain.model.PendingRegistration;
 import com.semicolon.ecommerceTask.domain.service.CreateAdminService;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.AdminResponseDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.AdminMapper;
@@ -19,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +25,6 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,7 +80,7 @@ class CreateAdminServiceTest {
     void initiateAdminCreation_EmailAlreadyExists_ThrowsAdminException() {
         when(adminPersistenceOutPort.existsByEmail(VALID_EMAIL)).thenReturn(true);
 
-        AdminException exception = assertThrows(AdminException.class, () ->
+        AdminNotException exception = assertThrows(AdminNotException.class, () ->
                 createAdminService.initiateAdminCreation(VALID_EMAIL));
 
         assertEquals(MessageUtil.ADMIN_ALREADY_EXISTS.formatted(VALID_EMAIL), exception.getMessage());
@@ -204,9 +201,9 @@ class CreateAdminServiceTest {
     @Test
     void deleteAdmin_Success() {
         AdminDomainObject admin = AdminDomainObject.builder()
-                .id(ADMIN_ID)
+                .id(String.valueOf(ADMIN_ID))
                 .email(VALID_EMAIL)
-                .keycloakId(KEYCLOAK_ID)
+                .id(KEYCLOAK_ID)
                 .build();
         when(adminPersistenceOutPort.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(admin));
 
@@ -222,7 +219,7 @@ class CreateAdminServiceTest {
     void deleteAdmin_AdminNotFound_ThrowsAdminException() {
         when(adminPersistenceOutPort.findByEmail(VALID_EMAIL)).thenReturn(Optional.empty());
 
-        AdminException exception = assertThrows(AdminException.class, () ->
+        AdminNotException exception = assertThrows(AdminNotException.class, () ->
                 createAdminService.deleteAdmin(VALID_EMAIL));
 
         assertEquals(MessageUtil.ADMIN_NOT_FOUND.formatted(VALID_EMAIL), exception.getMessage());
@@ -243,7 +240,7 @@ class CreateAdminServiceTest {
     @Test
     void updateAdmin_Success() {
         AdminDomainObject admin = AdminDomainObject.builder()
-                .id(ADMIN_ID)
+                .id(String.valueOf(ADMIN_ID))
                 .email(VALID_EMAIL)
                 .build();
         AdminResponseDto responseDto = AdminResponseDto.builder()
@@ -273,7 +270,7 @@ class CreateAdminServiceTest {
     void updateAdmin_AdminNotFound_ThrowsAdminException() {
         when(adminPersistenceOutPort.findByEmail(VALID_EMAIL)).thenReturn(Optional.empty());
 
-        AdminException exception = assertThrows(AdminException.class, () ->
+        AdminNotException exception = assertThrows(AdminNotException.class, () ->
                 createAdminService.updateAdmin(VALID_EMAIL, VALID_FIRST_NAME, VALID_LAST_NAME));
 
         assertEquals(MessageUtil.ADMIN_NOT_FOUND.formatted(VALID_EMAIL), exception.getMessage());
@@ -294,7 +291,7 @@ class CreateAdminServiceTest {
     @Test
     void getAllAdmins_Success() {
         AdminDomainObject admin = AdminDomainObject.builder()
-                .id(ADMIN_ID)
+                .id(String.valueOf(ADMIN_ID))
                 .email(VALID_EMAIL)
                 .firstName(VALID_FIRST_NAME)
                 .lastName(VALID_LAST_NAME)

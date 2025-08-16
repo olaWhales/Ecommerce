@@ -6,6 +6,7 @@ import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.configuration.superAdminProperties.SuperadminProperties;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.keycloack.KeycloakUserAdapter;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +33,8 @@ public class CreateSuperAdminService implements CreateSuperAdminUseCase {
     @EventListener(ApplicationReadyEvent.class)
     @Transactional
     public void createSuperAdmin() {
-        logger.info("Loading superadmin properties: email={}, firstname={}, lastname={}, password={}",
-                properties.getEmail(), properties.getFirstname(), properties.getLastname(), properties.getPassword());
+//        logger.info("Loading superadmin properties: email={}, firstname={}, lastname={}, password={}",
+//                properties.getEmail(), properties.getFirstname(), properties.getLastname(), properties.getPassword());
 
         String superAdminEmail = properties.getEmail();
         String superAdminFirstName = properties.getFirstname();
@@ -41,12 +42,11 @@ public class CreateSuperAdminService implements CreateSuperAdminUseCase {
         String superAdminPassword = properties.getPassword();
 
         if (superAdminEmail == null || superAdminFirstName == null || superAdminLastName == null || superAdminPassword == null) {
-            logger.error("Superadmin properties are missing: email={}, firstname={}, lastname={}, password={}",
-                    superAdminEmail, superAdminFirstName, superAdminLastName, superAdminPassword);
-            throw new IllegalArgumentException("Superadmin configuration properties are missing in application.properties");
-        }
+//            logger.error("Superadmin properties are missing: email={}, firstname={}, lastname={}, password={}",
+//                    superAdminEmail, superAdminFirstName, superAdminLastName, superAdminPassword);
+            throw new IllegalArgumentException(MessageUtil.SUPER_CONFIG_PROPERTY_ARE_MISSING_IN_APPLICATION_PROPERTIES);}
         if (userPersistenceOutPort.existsByEmail(superAdminEmail)) {
-            logger.info("User or email {} already exists in local DB", superAdminEmail);
+//            logger.info("User or email {} already exists in local DB", superAdminEmail);
             return;
         }
         UserDomainObject superAdmin = UserDomainObject.builder()
@@ -60,18 +60,18 @@ public class CreateSuperAdminService implements CreateSuperAdminUseCase {
         try {
             keycloakId = keycloakUserAdapter.createUser(superAdmin);
             if (keycloakId == null) {
-                logger.info("User or email {} already exists in Keycloak", superAdminEmail);
+//                logger.info("User or email {} already exists in Keycloak", superAdminEmail);
                 return; // Exit without error if user already exists
             }
-            logger.info("Superadmin created or found in Keycloak with ID: {}", keycloakId);
+//            logger.info("Superadmin created or found in Keycloak with ID: {}", keycloakId);
         } catch (Exception e) {
-            logger.error("Failed to create superadmin in Keycloak", e);
-            throw new IllegalArgumentException("Failed to create superadmin in Keycloak: " + e.getMessage(), e);
+//            logger.error("Failed to create superadmin in Keycloak", e);
+            throw new IllegalArgumentException(MessageUtil.FAILED_TO_CREATE_SUPERADMIN_IN_KEYCLOAK + e.getMessage(), e);
         }
         superAdmin.setPassword(passwordEncoder.encode(superAdminPassword));
-        superAdmin.setKeycloakId(keycloakId); // Set the Keycloak ID
-        userPersistenceOutPort.saveLocalUser(keycloakId, superAdmin); // Pass the updated object
-        logger.info("Superadmin saved in local DB with email: {}, firstname: {}, lastname: {}",
-                superAdminEmail, superAdminFirstName, superAdminLastName);
+        superAdmin.setId(keycloakId); // Set the Keycloak ID
+        userPersistenceOutPort.saveUser(superAdmin); // Pass the updated object
+//        logger.info("Superadmin saved in local DB with email: {}, firstname: {}, lastname: {}",
+//                superAdminEmail, superAdminFirstName, superAdminLastName);
     }
 }

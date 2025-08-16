@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class CustomerResponseDto {
+public class UserDomainObjectResponse {
     private String id;
     private String firstName;
     private String lastName;

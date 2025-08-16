@@ -3,11 +3,11 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence;
 import com.semicolon.ecommerceTask.application.port.output.persistence.AdminPersistenceOutPort;
 import com.semicolon.ecommerceTask.domain.model.AdminDomainObject;
 import com.semicolon.ecommerceTask.domain.model.PendingRegistrationDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.userEntity.AdminEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserEntity;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.userEntity.PendingAdminRegistrationEntity;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.AdminMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.PendingRegistrationMapper;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repository.AdminRepository;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repository.JpaUserRepository;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repository.PendingRegistrationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AdminPersistenceAdapter implements AdminPersistenceOutPort {
 
-    private final AdminRepository adminRepository;
+    private final JpaUserRepository adminRepository;
     private final PendingRegistrationRepository pendingRegistrationRepository;
     private final AdminMapper adminMapper;
     private final PendingRegistrationMapper pendingRegistrationMapper;
@@ -32,7 +32,7 @@ public class AdminPersistenceAdapter implements AdminPersistenceOutPort {
 
     @Override
     public AdminDomainObject saveAdmin(AdminDomainObject admin) {
-        AdminEntity entity = adminMapper.toEntity(admin);
+        UserEntity entity = adminMapper.toEntity(admin);
         return adminMapper.toDomainObject(adminRepository.save(entity));
     }
 

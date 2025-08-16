@@ -11,8 +11,12 @@ import lombok.*;
 public class SellerRegistrationFormDto {
 
     @NotBlank(message = "Name is required")
-    private String name;
+    private String businessName;
 
     @NotBlank(message = "Details are required")
     private String details;
+
+    private String userId;
 }
+
+

@@ -1,12 +1,14 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper;
 
 import com.semicolon.ecommerceTask.domain.model.AdminDomainObject;
+import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminInitiationDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminRegistrationDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminUpdateDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.AdminResponseDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.userEntity.AdminEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserEntity;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.userEntity.PendingAdminRegistrationEntity;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -40,27 +42,28 @@ public interface AdminMapper {
     List<AdminResponseDto> toResponseDtoList(List<AdminDomainObject> admins);
 
 //    @Mapping(target = "id", source = "id")
-    @Mapping(target = "keycloakId", source = "keycloakId")
+
     @Mapping(target = "email", source = "email")
     @Mapping(target = "firstName", source = "firstName")
     @Mapping(target = "lastName", source = "lastName")
     // @Mapping(target = "password", source = "password") <-- Removed this line
     @Mapping(target = "roles", source = "roles")
-    AdminDomainObject toDomainObject(AdminEntity entity);
+    AdminDomainObject toDomainObject(UserEntity entity);
 
 //    @Mapping(target = "id", source = "id")
-    @Mapping(target = "keycloakId", source = "keycloakId")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "firstName", source = "firstName")
     @Mapping(target = "lastName", source = "lastName")
     // @Mapping(target = "password", source = "password") <-- Removed this line
     @Mapping(target = "roles", source = "roles")
-    AdminEntity toEntity(AdminDomainObject admin);
+    UserEntity toEntity(AdminDomainObject admin);
 
-    List<AdminDomainObject> toDomainObjectList(List<AdminEntity> entities);
+    List<AdminDomainObject> toDomainObjectList(List<UserEntity> entities);
 
     @Mapping(target = "email", source = "email")
     @Mapping(target = "token", source = "token")
     @Mapping(target = "expiration", source = "expiration")
     PendingAdminRegistrationEntity toPendingEntity(String email, String token, LocalDateTime expiration);
+
+    UserDomainObject mapToUserRepresentation(UserRepresentation userRepresentation);
 }

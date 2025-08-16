@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -14,8 +15,10 @@ public class PendingRegistrationDomainObject {
     private String firstName;
     private String lastName;
     private String email;
+    private String token;
+    private LocalDateTime expiration;
     private String password;
-    private UserRole role;
+    private List<UserRole> role;
     private String details;
     private LocalDateTime createdDate;
 }

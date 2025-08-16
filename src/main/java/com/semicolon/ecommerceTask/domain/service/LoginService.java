@@ -17,10 +17,8 @@ public class LoginService implements LoginUseCase {
     public String login(String username, String password) {
         if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
             throw new AuthenticationException(MessageUtil.INVALID_EMAIL);}
-
         String token = authOutPort.authenticate(username, password);
         if (token == null) {throw new AuthenticationException(MessageUtil.INVALID_CREDENTIALS);}
-
         User user = authOutPort.getUserDetails(token);
         if (user == null) {throw new AuthenticationException(MessageUtil.USER_NOT_FOUND);}
         return token;
