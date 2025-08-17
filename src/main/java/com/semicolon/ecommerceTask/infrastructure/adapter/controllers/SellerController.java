@@ -1,11 +1,10 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.controllers;
 
-import com.semicolon.ecommerceTask.application.port.input.CreateSellerUseCase;
+import com.semicolon.ecommerceTask.application.port.input.SellerUseCase;
 import com.semicolon.ecommerceTask.domain.model.SellerFormSubmissionDomain;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.SellerRegistrationFormDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.sellerRegistrationResponse.ActionOnSellerFormResponseDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.SellerRegistrationFormRequest;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.sellerRegistrationResponse.SellerFormSubmissionResponse;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.SellerFormSubmissionMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class SellerController {
-    private final CreateSellerUseCase createSellerUseCase;
+    private final SellerUseCase sellerUseCase;
     private final SellerFormSubmissionMapper sellerFormSubmissionMapper;
 
     @PostMapping("/request-registration")
-    public ResponseEntity<ActionOnSellerFormResponseDto> requestSellerRegistration(@AuthenticationPrincipal UserDomainObject user, @Valid @RequestBody SellerRegistrationFormDto dto) {
-//        log.info("Authenticated user =======.>>>>> {}",user);
+    public ResponseEntity<SellerFormSubmissionResponse> requestSellerRegistration(@AuthenticationPrincipal UserDomainObject user, @Valid @RequestBody SellerRegistrationFormRequest dto) {
         SellerFormSubmissionDomain sellerRegistrationFormDto = sellerFormSubmissionMapper.toDomainFromDto(dto);
-        ActionOnSellerFormResponseDto response = createSellerUseCase.requestSellerRegistration(sellerRegistrationFormDto);
+        SellerFormSubmissionDomain savedDomain = sellerUseCase.requestSellerRegistration(sellerRegistrationFormDto);
+        SellerFormSubmissionResponse response = sellerFormSubmissionMapper.toResponse(savedDomain);
+
+//        SellerFormSubmissionResponse response = sellerUseCase.requestSellerRegistration(sellerRegistrationFormDto);
         return ResponseEntity.ok(response);
     }
 }

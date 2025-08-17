@@ -1,10 +1,11 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.controllers;
 
 import com.semicolon.ecommerceTask.application.port.input.AdminActionOnSellerUseCase;
-import com.semicolon.ecommerceTask.application.port.input.CreateAdminUseCase;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminInitiationDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminRegistrationDto;
+import com.semicolon.ecommerceTask.application.port.input.AdminUseCase;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminInitiationRequest;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminRegistrationRequest;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.ResponseMessageDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -14,35 +15,32 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminController {
 
-    private final CreateAdminUseCase createAdminUseCase;
+    private final AdminUseCase adminUseCase;
     private final AdminActionOnSellerUseCase adminActionOnSellerUseCase;
 
     @PostMapping("/initiate")
 //    @PreAuthorize("hasRole('SUPERADMIN')")
-    public String initiateAdminCreation(@RequestBody AdminInitiationDto dto) {
-        createAdminUseCase.initiateAdminCreation(dto.getAdminEmail());
-        return "Admin registration initiated. An email has been sent to " + dto.getAdminEmail();
+    public String initiateAdminCreation(@RequestBody AdminInitiationRequest dto) {
+        adminUseCase.initiateAdminCreation(dto.getAdminEmail());
+        return MessageUtil.ADMIN_REGISTRATION_INITIATED_AN_EMAIL_HAS_BEEN_SENT_TO + dto.getAdminEmail();
     }
 
     @GetMapping("/register")
     public ResponseMessageDto showRegistrationForm(@RequestParam String token, @RequestParam String email) {
-        return new ResponseMessageDto(
-            "Proceed to complete your registration.",
-            token,
-            email);
+        return new ResponseMessageDto(MessageUtil.PROCEED_TO_COMPLETE_YOUR_REGISTRATION);
     }
 
     @PostMapping("/register")
-    public String completeAdminRegistration(@RequestBody AdminRegistrationDto dto) {
-        createAdminUseCase.completeAdminRegistration(dto.getEmail(), dto.getFirstName(), dto.getLastName(), dto.getPassword());
-        return "Registration complete. You can now log in.";
+    public String completeAdminRegistration(@RequestBody AdminRegistrationRequest dto) {
+        adminUseCase.completeAdminRegistration(dto);
+        return MessageUtil.REGISTRATION_COMPLETED_YOU_CAN_NOW_LOGIN;
     }
 
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public String deleteAdmin(@RequestParam String email) {
-        createAdminUseCase.deleteAdmin(email);
-        return "Admin with email " + email + " deleted.";
+        adminUseCase.deleteAdmin(email);
+        return MessageUtil.ADMIN_WITH_EMAIL + email + MessageUtil.DELETED;
     }
 
 }

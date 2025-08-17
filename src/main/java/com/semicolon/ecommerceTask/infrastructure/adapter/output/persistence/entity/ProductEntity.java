@@ -2,7 +2,6 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.en
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -22,7 +21,7 @@ import java.util.UUID;
 public class ProductEntity {
     @Id
     @UuidGenerator
-    @Column(columnDefinition = "BINARY(16)", updatable = false, nullable = false)
+    @Column(columnDefinition = "BINARY(16)", updatable = false)
     private UUID id;
 
     @NotBlank
@@ -45,7 +44,7 @@ public class ProductEntity {
     private String imageUrl;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id")
     @NotNull
     private CategoryEntity categoryEntity;
 }

@@ -12,30 +12,15 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewDomainObject {
-//    @Id
     private UUID id;
-
-    @NotNull
-    @ManyToOne
     private UserEntity user;
-
-    @NotNull
-    @ManyToOne
     private ManageProductDomainObject productEntity;
-
-    @Min(1)
-    @Max(5)
     private int rating;
-
-    @NotBlank
     private String comment;
-
-    @NotNull
     private LocalDateTime createdAt;
 
 }

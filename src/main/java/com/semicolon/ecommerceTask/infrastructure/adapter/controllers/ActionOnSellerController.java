@@ -27,10 +27,7 @@ public class ActionOnSellerController {
     @PostMapping("/actions-on-seller-registration/{registrationId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('SUPERADMIN')")
     public ResponseEntity<ActionOnSellerApprovalResponse> handleSellerRegistration(
-            @PathVariable UUID registrationId,
-            @Valid
-            @RequestBody ActionOnSellerApprovalRequest request) {
-
+            @PathVariable UUID registrationId, @Valid @RequestBody ActionOnSellerApprovalRequest request) {
         ActionOnSellerApproveDomainObject domainObject = mapper.toDomain(request);
         String message = adminActionOnSellerUseCase.approveSeller(registrationId, domainObject);
         ActionOnSellerApprovalResponse action = ActionOnSellerApprovalResponse.builder()

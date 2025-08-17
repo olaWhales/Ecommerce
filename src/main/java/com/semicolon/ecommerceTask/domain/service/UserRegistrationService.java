@@ -1,7 +1,7 @@
 package com.semicolon.ecommerceTask.domain.service;
 
 import com.semicolon.ecommerceTask.application.port.output.KeycloakAdminOutPort;
-import com.semicolon.ecommerceTask.domain.exception.AdminNotException;
+import com.semicolon.ecommerceTask.domain.exception.AdminNotFoundException;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil.KEYCLOAK_CREATION_FAILED;
@@ -24,9 +25,9 @@ public class UserRegistrationService {
     @Transactional
     public String registerUserInKeycloak(UserDomainObject user, String password) {
         Optional<UserDomainObject> foundUser = keycloakAdminOutPort.findUserByEmail(user.getEmail());
-        if (foundUser.isPresent()) {throw new AdminNotException(MessageUtil.ADMIN_ALREADY_EXISTS_IN_KEYCLOAK.formatted(user.getEmail()));}
+        if (foundUser.isPresent()) {throw new AdminNotFoundException(MessageUtil.ADMIN_ALREADY_EXISTS_IN_KEYCLOAK.formatted(user.getEmail()));}
         String keycloakId = keycloakAdminOutPort.createUser(user, password);
-        if (keycloakId == null) {throw new AdminNotException(KEYCLOAK_CREATION_FAILED);}
+        if (keycloakId == null) {throw new AdminNotFoundException(KEYCLOAK_CREATION_FAILED);}
         keycloakAdminOutPort.assignRealmRoles(keycloakId, Collections.singletonList(UserRole.BUYER));
         return keycloakId;
     }

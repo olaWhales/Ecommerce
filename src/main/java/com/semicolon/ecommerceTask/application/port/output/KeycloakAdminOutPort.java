@@ -11,5 +11,4 @@ public interface KeycloakAdminOutPort {
     void deleteUser(String keycloakId);
     Optional<UserDomainObject> findUserByEmail(String email);
     void assignRealmRoles(String keycloakId, List<UserRole> roleNames);
-    void removeRealmRole(String keycloakId, List<UserRole> roleNames);
 }

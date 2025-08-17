@@ -2,10 +2,8 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.keycloack;
 
 import com.semicolon.ecommerceTask.application.port.output.AuthOutPort;
 import com.semicolon.ecommerceTask.domain.model.User;
-import com.semicolon.ecommerceTask.domain.exception.AuthenticationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +20,6 @@ import static com.semicolon.ecommerceTask.infrastructure.adapter.utilities.Messa
 
 @Component
 public class KeycloakAuthAdapter implements AuthOutPort {
-
     private static final Logger logger = LoggerFactory.getLogger(KeycloakAuthAdapter.class);
 
     @Value("${keycloak.auth-server-url}")
@@ -46,7 +43,6 @@ public class KeycloakAuthAdapter implements AuthOutPort {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "password");
         body.add("client_id", clientId);
@@ -54,17 +50,13 @@ public class KeycloakAuthAdapter implements AuthOutPort {
         body.add("username", username);
         body.add("password", password);
         body.add("scope", "openid profile email");
-
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
 
         try {
-//            logger.debug("Attempting to authenticate user: {} with URL: {} and body: {}", username, url, body);
             String response = restTemplate.postForObject(url, request, String.class);
-//            logger.debug("Authentication response: {}", response);
             Map<String, Object> jsonResponse = objectMapper.readValue(response, Map.class);
             return (String) jsonResponse.get(ACCESS_TOKEN);
         } catch (Exception e) {
-//            logger.error("Authentication failed for user: {} - Error: {}", username, e.getMessage(), e);
             throw new IllegalArgumentException(KEYCLOAK_CREATION_FAILED + e.getMessage());
         }
     }
@@ -78,13 +70,12 @@ public class KeycloakAuthAdapter implements AuthOutPort {
 
         try {
             ResponseEntity<String> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    request,
-                    String.class
+                url,
+                HttpMethod.GET,
+                request,
+                String.class
             );
             String responseBody = response.getBody();
-//            logger.debug("Userinfo response: {}", responseBody);
 
             Map<String, Object> userInfo = objectMapper.readValue(responseBody, Map.class);
             String username = (String) userInfo.get(PREFERRED_USERNAME);

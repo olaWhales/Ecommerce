@@ -230,7 +230,7 @@
 //import com.semicolon.ecommerceTask.domain.model.ProductDomainObject;
 //import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.manageProductDto.ProductUploadDto;
 //import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.manageProductDto.ProductUpdateDto;
-//import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.ProductPersistenceMapper;
+//import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.productManagentsMapper.ProductPersistenceMapper;
 //import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.http.HttpStatus;

@@ -5,23 +5,36 @@ public class MessageUtil {
     public static final String INVALID_AUTHENTICATION_PRINCIPAL = "Invalid authentication principal";
     public static final String AUTHENTICATED_USER_ID_MISSING = "Authentication user id is missing";
     public static final String AUTHENTICATED_USER_NOT_FOUND = "Authenticated user not found ";
-    public static String ADMIN_ALREADY_EXISTS_IN_KEYCLOAK = "Admin already exist in keycloak";
-    public static String ADMIN_ALREADY_EXISTS = "Admin with email %s already exists";
-    public static String NO_PENDING_REGISTRATION = "No pending registration for email %s";
-    public static String TOKEN_EXPIRED = "Registration token has expired";
-    public static String KEYCLOAK_CREATION_FAILED = "Failed to create admin in Keycloak";
-    public static String FAILED_TO_CREATE_SUPERADMIN_IN_KEYCLOAK = "Failed to create superAdmin in Keycloak";
-    public static String SUPER_CONFIG_PROPERTY_ARE_MISSING_IN_APPLICATION_PROPERTIES = "Superadmin configuration properties are missing in application.properties";
-    public static String ADMIN_NOT_FOUND = "Admin with email %s not found";
-    public static String ADMIN_INITIATION_SUCCESSFUL_VERIFICATION_EMAIL_SENT_TO_ = "Admin initiation successful. Verification email sent to %s";
-    public static String INVALID_EMAIL = "Invalid email address format";
-    public static String REGISTRATION_EMAIL_SENT_TO = "Registration email sent to %s";
-    public static String ADMIN_WITH_EMAIL_DELETED_SUCCESSFUL = "Admin with email %s deleted successfully";
-    public static String FIRST_NAME_REQUIRED = "First name is required";
-    public static String LAST_NAME_REQUIRED = "Last name is required";
-    public static String INVALID_PASSWORD = "Password must be at least 8 characters long, with at least one uppercase letter, one lowercase letter, one number, and one special character";
-    public static String EMAIL_SUBJECT = "Complete Your Admin Registration";
-    public static String EMAIL_BODY = """
+    public static final String CATEGORY_NOT_FOUND = "Category not found";
+    public static final String PRODUCT_UPLOAD_SUCCESSFULLY = "Product uploaded successfully";
+    public static final String CATEGORY_ALREADY_EXISTS = "Category already exist";
+    public static final String SELLER_NOT_FOUND = "Seller not found ";
+    public static final String ADMIN_REGISTRATION_INITIATED_AN_EMAIL_HAS_BEEN_SENT_TO = "Admin registration initiated. An email has been sent to ";
+    public static final String PROCEED_TO_COMPLETE_YOUR_REGISTRATION = "Proceed to complete your registration.";
+    public static final String REGISTRATION_COMPLETED_YOU_CAN_NOW_LOGIN = "Registration complete. You can now log in.";
+    public static final String ADMIN_WITH_EMAIL = "Admin with email ";
+    public static final String DELETED = " deleted.";
+    public static final String SELLER_NOT_FOUND_WITH_ID = "Seller not found with id ";
+    public static final String CATEGORY_CREATED_SUCCESSFULLY = "Category created successfully";
+    public static final String PRODUCT_CREATED_SUCCESSFULLY = "Product created successfully";
+    public static final String YOUR_REGISTRATION_HAS_SUCCESSFULLY_REGISTERED = ", your registration has successfully registered";
+    public static final String ADMIN_ALREADY_EXISTS_IN_KEYCLOAK = "Admin already exist in keycloak";
+    public static final String ADMIN_ALREADY_EXISTS = "Admin with email %s already exists";
+    public static final String NO_PENDING_REGISTRATION = "No pending registration for email %s";
+    public static final String TOKEN_EXPIRED = "Registration token has expired";
+    public static final String KEYCLOAK_CREATION_FAILED = "Failed to create admin in Keycloak";
+    public static final String FAILED_TO_CREATE_SUPERADMIN_IN_KEYCLOAK = "Failed to create superAdmin in Keycloak";
+    public static final String SUPER_CONFIG_PROPERTY_ARE_MISSING_IN_APPLICATION_PROPERTIES = "Superadmin configuration properties are missing in application.properties";
+    public static final String ADMIN_NOT_FOUND = "Admin with email %s not found";
+    public static final String ADMIN_INITIATION_SUCCESSFUL_VERIFICATION_EMAIL_SENT_TO_ = "Admin initiation successful. Verification email sent to %s";
+    public static final String INVALID_EMAIL = "Invalid email address format";
+    public static final String REGISTRATION_EMAIL_SENT_TO = "Registration email sent to %s";
+    public static final String ADMIN_WITH_EMAIL_DELETED_SUCCESSFUL = "Admin with email %s deleted successfully";
+    public static final String FIRST_NAME_REQUIRED = "First name is required";
+    public static final String LAST_NAME_REQUIRED = "Last name is required";
+    public static final String INVALID_PASSWORD = "Password must be at least 8 characters long, with at least one uppercase letter, one lowercase letter, one number, and one special character";
+    public static final String EMAIL_SUBJECT = "Complete Your Admin Registration";
+    public static final String EMAIL_BODY = """
             Click the link to complete your registration:\s
             http://localhost:8081/admin/register?token=%s&email=%s
             This link expires in 24 hours.
@@ -51,6 +64,7 @@ public class MessageUtil {
 
     public static String USER_DATA_CANNOT_BE_NULL = "User data cannot be null";
     public static String CUSTOMER_NOT_FOUND = "Customer not found ";
+    public static String FAILED_TO_EMPTY_FILE = "Failed to store empty file";
     public static String A_SELLER_REGISTRATION_REQUEST_IS_ALREADY_PENDING = "A seller registration request is already pending for %s";
     public static String SELLER_REGISTRATION_REQUEST_SUBMITTED_SUCCESSFULLY = "Seller registration request submitted successfully for %s. It is now pending admin approval.";
     public static String PRODUCT_NOT_FOUND = "Product not found";

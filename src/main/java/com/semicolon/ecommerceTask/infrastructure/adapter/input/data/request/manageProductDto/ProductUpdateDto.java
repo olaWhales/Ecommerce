@@ -1,5 +1,6 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.manageProductDto;
 
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.CategoryRegRequest;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,4 +31,8 @@ public class ProductUpdateDto {
 
     @NotBlank(message = "Image URL is required")
     private String imageUrl;
+
+
+    @NotNull(message = "Category is required")
+    private CategoryRegRequest category;
 }

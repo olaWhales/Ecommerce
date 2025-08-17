@@ -7,10 +7,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface SellerFormSubmissionPersistenceOutPort {
+    Optional<SellerFormSubmissionDomain> findByKeycloakUserId(String keycloakUserId);
     SellerFormSubmissionDomain savePendingRegistration(SellerFormSubmissionDomain registration);
     Optional<SellerFormSubmissionDomain> findByEmail(String email);
     Optional<SellerFormSubmissionDomain> findById(UUID id);
-    List<SellerFormSubmissionDomain> findAllPendingRegistrations();
     SellerFormSubmissionDomain save(SellerFormSubmissionDomain submission);
+    List<SellerFormSubmissionDomain> findAllPendingRegistrations();
     void deletePendingRegistration(String email);
 }
+

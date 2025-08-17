@@ -1,6 +1,6 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.controllers;
 
-import com.semicolon.ecommerceTask.domain.exception.AdminNotException;
+import com.semicolon.ecommerceTask.domain.exception.AdminNotFoundException;
 import com.semicolon.ecommerceTask.domain.exception.ValidationException;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.ErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleValidationException(ValidationException ex) {
-        log.warn("Validation error occurred: {}", ex.getMessage());
         return ErrorResponseDto.builder()
             .message("Validation Error: " + ex.getMessage())
             .status(HttpStatus.BAD_REQUEST.value())
@@ -30,7 +29,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponseDto handleGenericException(Exception ex) {
-        log.error("An unexpected error occurred: ", ex);
         return ErrorResponseDto.builder()
             .message("An unexpected error occurred. Please try again later.")
             .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
@@ -38,24 +36,18 @@ public class GlobalExceptionHandler {
             .build();
     }
 
-    @ExceptionHandler(AdminNotException.class)
-    public ResponseEntity<ErrorResponseDto> handleAdminException(AdminNotException ex) {
+    @ExceptionHandler(AdminNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleAdminException(AdminNotFoundException ex) {
         HttpStatus status;
-
-        if (ex.getMessage().contains("not found")) {
-            status = HttpStatus.NOT_FOUND;
-        } else if (ex.getMessage().contains("already exists")) {
-            status = HttpStatus.CONFLICT;
-        } else {
-            status = HttpStatus.BAD_REQUEST;
-        }
+        if (ex.getMessage().contains("not found")) {status = HttpStatus.NOT_FOUND;
+        } else if (ex.getMessage().contains("already exists")) {status = HttpStatus.CONFLICT;
+        } else {status = HttpStatus.BAD_REQUEST;}
         log.warn("Admin error occurred with status {}: {}", status, ex.getMessage());
         ErrorResponseDto errorResponse = ErrorResponseDto.builder()
-                .message("Admin Error: " + ex.getMessage())
-                .status(status.value())
-                .timestamp(LocalDateTime.now().toString())
-                .build();
-
+            .message("Admin Error: " + ex.getMessage())
+            .status(status.value())
+            .timestamp(LocalDateTime.now().toString())
+            .build();
         return new ResponseEntity<>(errorResponse, status);
     }
 
@@ -63,7 +55,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleOptimisticLockingFailure(ObjectOptimisticLockingFailureException ex) {
         log.error("Optimistic locking failure: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("The record was modified by another user. Please try again.");
+            .body("The record was modified by another user. Please try again.");
     }
 
 //    @ExceptionHandler(Exception.class)

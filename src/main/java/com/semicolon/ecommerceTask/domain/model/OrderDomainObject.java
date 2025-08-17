@@ -12,26 +12,14 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
-@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDomainObject {
-//    @Id
     private UUID id;
-
-    @NotNull
-    @ManyToOne
     private UserEntity user;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
     private OrderStatus status;
-
-    @NotNull
-    @DecimalMin("0.0")
     private BigDecimal totalAmount;
-
-    @NotNull
     private LocalDateTime dateCreated;
 
 }

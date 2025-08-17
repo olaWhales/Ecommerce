@@ -1,8 +1,6 @@
-// UserPersistenceMapper.java
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper;
 
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.UserRegistrationRequest;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserEntity;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
 import org.mapstruct.Mapper;
@@ -11,7 +9,6 @@ import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-
 
 @Mapper(componentModel = "spring")
 @Component
@@ -32,4 +29,6 @@ public interface UserPersistenceMapper {
     default List<UserRole> mapRolesFromDomain(List<UserRole> roles) {
         return roles != null ? roles : List.of();
     }
+
+
 }

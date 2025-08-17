@@ -2,9 +2,8 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence;
 
 import com.semicolon.ecommerceTask.application.port.output.persistence.ProductPersistenceOutPort;
 import com.semicolon.ecommerceTask.domain.model.ManageProductDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.manageProductDto.ProductUploadDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.ProductEntity;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.ProductPersistenceMapper;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.productManagentsMapper.ProductPersistenceMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repository.ManageProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,17 +20,14 @@ public class ManageProductPersistenceAdapter implements ProductPersistenceOutPor
 
     @Override
     public Optional<ManageProductDomainObject> findById(UUID id) {
-        return productRepository.findById(id).map(mapper::toDomain);
+        return productRepository.findById(id).map(mapper::toProductDomain);
     }
 
     @Override
-    public ManageProductDomainObject save(ManageProductDomainObject product) {
-        return null;
-    }
-
-    public ManageProductDomainObject save(ProductUploadDto product) {
-        ProductEntity entity = mapper.toEntity(product);
-        return mapper.toDomain(productRepository.save(entity));
+    public ManageProductDomainObject save(ManageProductDomainObject domain) {
+        ProductEntity entity = mapper.toProductEntity(domain);
+        ProductEntity save = productRepository.save(entity);
+        return mapper.toProductDomain(save);
     }
 
     @Override

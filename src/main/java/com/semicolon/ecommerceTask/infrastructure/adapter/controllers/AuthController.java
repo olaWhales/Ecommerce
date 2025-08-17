@@ -2,7 +2,7 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.controllers;
 
 import com.semicolon.ecommerceTask.application.port.input.LoginUseCase;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.LoginRequestDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.LoginResponseDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.LoginResponse;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +16,12 @@ public class AuthController {
     private final LoginUseCase loginUseCase;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto request) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequestDto request) {
         String token = loginUseCase.login(request.getUsername(), request.getPassword());
-        LoginResponseDto response = LoginResponseDto.builder()
-                .message(MessageUtil.LOGIN_SUCCESS + request.getUsername() + "!")
-                .token(token)
-                .build();
+        LoginResponse response = LoginResponse.builder()
+            .message(MessageUtil.LOGIN_SUCCESS + request.getUsername() + "!")
+            .token(token)
+            .build();
         return ResponseEntity.ok(response);
     }
 }

@@ -12,21 +12,10 @@ public class ValidationUtil {
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*?])(?=\\S+$).{8,}$");
 
     public static void validateEmail(String email) {
-        if (email == null || email.trim().isEmpty() || !EMAIL_PATTERN.matcher(email).matches()) {
-            throw new ValidationException(MessageUtil.INVALID_EMAIL);
-        }
+        if (email == null || email.trim().isEmpty() || !EMAIL_PATTERN.matcher(email).matches()) {throw new ValidationException(MessageUtil.INVALID_EMAIL);}
     }
-
     public static void validatePassword(String password) {
-        if (password == null || !PASSWORD_PATTERN.matcher(password).matches()) {
-            throw new ValidationException(MessageUtil.INVALID_PASSWORD);
-        }
+        if (password == null || !PASSWORD_PATTERN.matcher(password).matches()) {throw new ValidationException(MessageUtil.INVALID_PASSWORD);}
     }
 
-//    public boolean isValidEmail(String email, Pattern emailPattern) {
-//        if (email == null || emailPattern == null) {
-//            throw new ValidationException("Email pattern is wrong ");
-//        }
-//        return isValidEmail(email, emailPattern);
-//    }
 }

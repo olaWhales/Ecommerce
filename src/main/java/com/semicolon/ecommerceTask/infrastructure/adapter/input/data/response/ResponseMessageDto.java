@@ -8,6 +8,4 @@ import lombok.*;
 @NoArgsConstructor
 public class ResponseMessageDto {
     private String message;
-    private String token;
-    private String email;
 }

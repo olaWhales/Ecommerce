@@ -1,13 +1,15 @@
 package com.semicolon.ecommerceTask.domain.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class ManageProductDomainObject {
     private UUID id;
     private String name;

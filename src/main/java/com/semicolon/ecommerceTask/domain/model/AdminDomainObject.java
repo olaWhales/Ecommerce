@@ -5,9 +5,8 @@ import lombok.*;
 
 import java.util.List;
 
+@Builder(toBuilder = true)
 @Getter
-@Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdminDomainObject {

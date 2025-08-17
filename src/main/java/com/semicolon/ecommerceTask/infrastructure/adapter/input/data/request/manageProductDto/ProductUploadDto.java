@@ -1,6 +1,5 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.manageProductDto;
 
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.CategoryRequestDto;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +8,7 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -33,6 +33,6 @@ public class ProductUploadDto {
 
 
     @NotNull(message = "Category is required")
-    private CategoryRequestDto category;
-
+//    private CategoryRequestDto category;
+    private UUID categoryId;
 }

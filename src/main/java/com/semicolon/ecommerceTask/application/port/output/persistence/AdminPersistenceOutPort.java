@@ -13,10 +13,8 @@ public interface AdminPersistenceOutPort {
     void deleteAdmin(String email);
     Optional<AdminDomainObject> findByEmail(String email);
     List<AdminDomainObject> findAllAdmins();
-    // New and updated methods for pending registrations
     void createPendingRegistration(String email, String token, LocalDateTime expiration);
     Optional<PendingRegistrationDomainObject> findPendingRegistrationByEmail(String email);
     void updatePendingRegistration(String email, String token, LocalDateTime expiration);
-    void deletePendingRegistration(String email); // Re-added this method
-
+    void deletePendingRegistration(String email);
 }

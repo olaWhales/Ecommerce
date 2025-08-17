@@ -1,15 +1,13 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper;
 
 import com.semicolon.ecommerceTask.domain.model.SellerFormSubmissionDomain;
-import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.CustomerRegistrationDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.SellerRegistrationFormDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.userEntity.SellerFormSubmissionEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.SellerRegistrationFormRequest;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.sellerRegistrationResponse.SellerFormSubmissionResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.temporaryPendingRegistrationEntity.SellerFormSubmissionEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.util.List;
-import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public interface SellerFormSubmissionMapper {
@@ -33,14 +31,17 @@ public interface SellerFormSubmissionMapper {
     SellerFormSubmissionEntity toEntity(SellerFormSubmissionDomain domainObject);
 
     @Mapping(target = "id" , ignore = true)
-//    @Mapping(target = "customerEmail" , source = "customerEmail")
     @Mapping(target = "details" , source = "details")
     @Mapping(target = "businessName", source = "businessName")
     @Mapping(target = "submissionDate" , ignore = true)
     @Mapping(target = "keycloakUserId" , ignore = true)
     @Mapping(target = "version" , ignore = true)
-    SellerFormSubmissionDomain toDomainFromDto(SellerRegistrationFormDto dto);
+    SellerFormSubmissionDomain toDomainFromDto(SellerRegistrationFormRequest dto);
 
+    @Mapping(target = "message", constant = "Your registration has been submitted successfully. You will be notified once your application is approved.")
+    @Mapping(target = "registrationId", source = "id")
+    @Mapping(target = "keycloakUserId", source = "keycloakUserId")
+    SellerFormSubmissionResponse toResponse(SellerFormSubmissionDomain domain);
 
     @Mapping(target = "id" , ignore = true)
     @Mapping(target = "customerEmail", source = "customerEmail")
@@ -49,21 +50,9 @@ public interface SellerFormSubmissionMapper {
     @Mapping(target = "version" , constant = "0L")
     SellerFormSubmissionDomain enrichDomainFromTemplate(
             SellerFormSubmissionDomain template,
-//            UUID registrationId,
             String customerEmail,
             String keycloakUserId
             );
-
-
-//    @Mapping(target = "customerEmail" , source = "customerEmail")
-//    @Mapping(target = "businessName" , source = "businessName")
-//    @Mapping(target = "" , source = "")
-//    UserDomainObject toUserDomainObject (SellerFormSubmissionEntity sellerFormSubmissionEntity);
-//
-//    @Mapping(target = "customerEmail" , source = "customerEmail")
-//    @Mapping(target = "businessName" , source = "businessEmail")
-//    SellerFormSubmissionEntity toSellerSubmissionFormEntity(CustomerRegistrationDto userDomainObject);
-
 
     List<SellerFormSubmissionDomain> toDomainObjectList(List<SellerFormSubmissionEntity> entities);
 }

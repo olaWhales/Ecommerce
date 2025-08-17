@@ -37,21 +37,19 @@ public class KeycloakUserAdapter implements KeycloakUserPort {
             throw new IllegalArgumentException(USER_DATA_CANNOT_BE_NULL);
         }
         List<UserRepresentation> existingUsers = keycloak.realm(properties.getRealm()).users()
-                .search(userDomainObject.getEmail(), null, null, null, 0, 1);
+            .search(userDomainObject.getEmail(), null, null, null, 0, 1);
         if (!existingUsers.isEmpty()) {
             String existingUserId = existingUsers.get(0).getId();
             assignRoles(existingUserId, userDomainObject.getRoles());
-            return existingUserId; // Return existing user ID
+            return existingUserId;
         }
 
         UserRepresentation userRepresentation = new UserRepresentation();
-        // Set username as a combination or use email
-        userRepresentation.setUsername(userDomainObject.getEmail()); // Using email as username
+        userRepresentation.setUsername(userDomainObject.getEmail());
         userRepresentation.setEmail(userDomainObject.getEmail());
         userRepresentation.setEnabled(true);
-        userRepresentation.setEmailVerified(false); // Require email verification
+        userRepresentation.setEmailVerified(false);
 
-        // Set firstName and lastName as attributes
         Map<String, List<String>> attributes = new HashMap<>();
         if (userDomainObject.getFirstName() != null) {
             attributes.put(FIRSTNAME, Collections.singletonList(userDomainObject.getFirstName()));
@@ -69,10 +67,8 @@ public class KeycloakUserAdapter implements KeycloakUserPort {
 
         try (Response response = keycloak.realm(properties.getRealm()).users().create(userRepresentation)) {
             if (response.getStatus() == 409) {
-//                logger.info("User or email {} already exists in Keycloak", userDomainObject.getEmail());
                 return USER_ALREADY_EXIST_IN_KEYCLOAK;
             } else if (response.getStatus() != 201) {
-//                logger.error("Keycloak user creation failed: Status {}, Info: {}", response.getStatus(), response.getStatusInfo());
                 throw new IllegalArgumentException(KEYCLOAK_USER_CREATION_FAILED + response.getStatusInfo());
             }
 

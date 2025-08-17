@@ -1,6 +1,7 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.fileStorage;
 
 import com.semicolon.ecommerceTask.application.port.output.FileStorageOutPort;
+import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,17 +22,10 @@ public class FileStorageAdapter implements FileStorageOutPort {
 
     @Override
     public String storeFile(MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            throw new IOException("Failed to store empty file");
-        }
-
-        // Validate file type (e.g., images only)
+        if (file.isEmpty()) {throw new IOException(MessageUtil.FAILED_TO_EMPTY_FILE);}
         String contentType = file.getContentType();
         assert contentType != null;
-        if (!contentType.startsWith("image/")) {
-            throw new IOException("Only image files are allowed");
-        }
-
+        if (!contentType.startsWith("image/")) {throw new IOException("Only image files are allowed");}
         Path uploadPath = Paths.get(uploadDir).toAbsolutePath();
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
@@ -41,13 +35,11 @@ public class FileStorageAdapter implements FileStorageOutPort {
             String originalFileName = file.getOriginalFilename();
             String fileExtension = originalFileName != null && originalFileName.contains(".")
                     ? originalFileName.substring(originalFileName.lastIndexOf("."))
-                    : ".jpg"; // Default extension if none
+                    : ".jpg";
             String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
 
             Path filePath = uploadPath.resolve(uniqueFileName);
             Files.copy(inputStream, filePath);
-
-            log.info("File uploaded to: {}", filePath);
             return "/uploads/" + uniqueFileName;
         } catch (IOException e) {
             log.error("Could not upload file: {}", file.getOriginalFilename(), e);

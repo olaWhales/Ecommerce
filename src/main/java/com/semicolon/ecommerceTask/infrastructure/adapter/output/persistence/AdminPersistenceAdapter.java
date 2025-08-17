@@ -4,7 +4,7 @@ import com.semicolon.ecommerceTask.application.port.output.persistence.AdminPers
 import com.semicolon.ecommerceTask.domain.model.AdminDomainObject;
 import com.semicolon.ecommerceTask.domain.model.PendingRegistrationDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserEntity;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.userEntity.PendingAdminRegistrationEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.temporaryPendingRegistrationEntity.PendingAdminRegistrationEntity;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.AdminMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.PendingRegistrationMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repository.JpaUserRepository;

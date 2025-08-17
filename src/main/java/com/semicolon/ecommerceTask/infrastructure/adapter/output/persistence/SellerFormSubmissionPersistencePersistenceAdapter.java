@@ -2,7 +2,7 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence;
 
 import com.semicolon.ecommerceTask.application.port.output.persistence.SellerFormSubmissionPersistenceOutPort;
 import com.semicolon.ecommerceTask.domain.model.SellerFormSubmissionDomain;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.userEntity.SellerFormSubmissionEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.temporaryPendingRegistrationEntity.SellerFormSubmissionEntity;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.SellerFormSubmissionMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repository.SellerFormSubmissionRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,24 +20,25 @@ import java.util.stream.Collectors;
 public class SellerFormSubmissionPersistencePersistenceAdapter implements SellerFormSubmissionPersistenceOutPort {
     private final SellerFormSubmissionRepository sellerFormSubmissionRepository;
     private final SellerFormSubmissionMapper sellerFormSubmissionMapper;
-//    @Override
-//    public SellerFormSubmissionDomain savePendingRegistration(SellerFormSubmissionDomain registration) {
-//        SellerFormSubmissionEntity entity = sellerFormSubmissionMapper.toEntity(registration);
-//        SellerFormSubmissionEntity savedEntity = sellerFormSubmissionRepository.save(entity);
-//        return sellerFormSubmissionMapper.toDomainObject(savedEntity);
-//    }
-@Override
-public SellerFormSubmissionDomain savePendingRegistration(SellerFormSubmissionDomain registration) {
-    log.info("Saving registration: id={}, email={}, keycloakUserId={}",
-            registration.getId(), registration.getCustomerEmail(), registration.getKeycloakUserId());
-    SellerFormSubmissionEntity entity = sellerFormSubmissionMapper.toEntity(registration);
-    log.info("Mapped entity: id={}, email={}, keycloakUserId={}",
-            entity.getId(), entity.getCustomerEmail(), entity.getKeycloakUserId());
-    SellerFormSubmissionEntity savedEntity = sellerFormSubmissionRepository.save(entity);
-    log.info("Saved entity: id={}, email={}, keycloakUserId={}",
-            savedEntity.getId(), savedEntity.getCustomerEmail(), savedEntity.getKeycloakUserId());
-    return sellerFormSubmissionMapper.toDomainObject(savedEntity);
-}
+
+    @Override
+    public Optional<SellerFormSubmissionDomain> findByKeycloakUserId(String keycloakUserId) {
+        return sellerFormSubmissionRepository.findByKeycloakUserId(keycloakUserId)
+                .map(sellerFormSubmissionMapper::toDomainObject);
+    }
+
+    @Override
+    public SellerFormSubmissionDomain savePendingRegistration(SellerFormSubmissionDomain registration) {
+        log.info("Saving registration: id={}, email={}, keycloakUserId={}",
+                registration.getId(), registration.getCustomerEmail(), registration.getKeycloakUserId());
+        SellerFormSubmissionEntity entity = sellerFormSubmissionMapper.toEntity(registration);
+        log.info("Mapped entity: id={}, email={}, keycloakUserId={}",
+                entity.getId(), entity.getCustomerEmail(), entity.getKeycloakUserId());
+        SellerFormSubmissionEntity savedEntity = sellerFormSubmissionRepository.save(entity);
+        log.info("Saved entity: id={}, email={}, keycloakUserId={}",
+                savedEntity.getId(), savedEntity.getCustomerEmail(), savedEntity.getKeycloakUserId());
+        return sellerFormSubmissionMapper.toDomainObject(savedEntity);
+    }
 
     @Override
     public Optional<SellerFormSubmissionDomain> findByEmail(String email) {

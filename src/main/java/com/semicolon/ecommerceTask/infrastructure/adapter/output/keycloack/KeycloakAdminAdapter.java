@@ -134,7 +134,6 @@ public class KeycloakAdminAdapter implements KeycloakAdminOutPort {
         passwordCred.setType(CredentialRepresentation.PASSWORD);
         passwordCred.setValue(password);
         passwordCred.setTemporary(false);
-
         keycloakAdminClient.realm(realm).users().get(keycloakId).resetPassword(passwordCred);
         return keycloakId;
     }
@@ -146,48 +145,44 @@ public class KeycloakAdminAdapter implements KeycloakAdminOutPort {
 
     @Override
     public Optional<UserDomainObject> findUserByEmail(String email) {
-        log.info("KeycloakAdminAdapter: Searching for user with email '{}' in realm '{}'", email, realm);
         return getUserPresentation(email).map(adminMapper::mapToUserRepresentation);
     }
 
     private Optional<UserRepresentation> getUserPresentation(String email) {
         return keycloakAdminClient.realm(realm)
-                .users()
-                .searchByEmail(email, Boolean.TRUE)
-                .stream()
-                .findFirst();
+            .users()
+            .searchByEmail(email, Boolean.TRUE)
+            .stream()
+            .findFirst();
     }
 
     @Override
     public void assignRealmRoles(String keycloakId, List<UserRole> roleNames) {
         List<String> roleNameStrings = roleNames.stream()
-                .map(UserRole::name)
-                .toList();
-
+            .map(UserRole::name)
+            .toList();
         List<RoleRepresentation> roles = keycloakAdminClient.realm(realm).roles().list();
-
         List<RoleRepresentation> realmRoles = roles.stream()
-                .filter(role -> roleNameStrings.contains(role.getName()))
-                .toList();
-
+            .filter(role -> roleNameStrings.contains(role.getName()))
+            .toList();
         UserResource userResource = keycloakAdminClient.realm(realm).users().get(keycloakId);
         userResource.roles().realmLevel().add(realmRoles);
     }
 
-    @Override
-    public void removeRealmRole(String keycloakId, List<UserRole> roleNames) {
-        List<String> roleNameStrings = roleNames.stream()
-                .map(UserRole::name)
-                .toList();
-
-        List<RoleRepresentation> roles = keycloakAdminClient.realm(realm).roles().list();
-
-        List<RoleRepresentation> realmRoles = roles.stream()
-                .filter(role -> roleNameStrings.contains(role.getName()))
-                .toList();
-
-        UserResource userResource = keycloakAdminClient.realm(realm).users().get(keycloakId);
-        userResource.roles().realmLevel().remove(realmRoles);
-    }
+//    @Override
+//    public void removeRealmRole(String keycloakId, List<UserRole> roleNames) {
+//        List<String> roleNameStrings = roleNames.stream()
+//            .map(UserRole::name)
+//            .toList();
+//
+//        List<RoleRepresentation> roles = keycloakAdminClient.realm(realm).roles().list();
+//
+//        List<RoleRepresentation> realmRoles = roles.stream()
+//            .filter(role -> roleNameStrings.contains(role.getName()))
+//            .toList();
+//
+//        UserResource userResource = keycloakAdminClient.realm(realm).users().get(keycloakId);
+//        userResource.roles().realmLevel().remove(realmRoles);
+//    }
 
 }
