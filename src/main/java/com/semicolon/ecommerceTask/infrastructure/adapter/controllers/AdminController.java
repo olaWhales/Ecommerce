@@ -2,9 +2,13 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.controllers;
 
 import com.semicolon.ecommerceTask.application.port.input.AdminActionOnSellerUseCase;
 import com.semicolon.ecommerceTask.application.port.input.AdminUseCase;
+import com.semicolon.ecommerceTask.domain.model.AdminDomainObject;
+import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminInitiationRequest;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminRegistrationRequest;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.AdminResponse;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.ResponseMessageDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.AdminMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +21,7 @@ public class AdminController {
 
     private final AdminUseCase adminUseCase;
     private final AdminActionOnSellerUseCase adminActionOnSellerUseCase;
+    private final AdminMapper adminMapper;
 
     @PostMapping("/initiate")
 //    @PreAuthorize("hasRole('SUPERADMIN')")
@@ -30,10 +35,26 @@ public class AdminController {
         return new ResponseMessageDto(MessageUtil.PROCEED_TO_COMPLETE_YOUR_REGISTRATION);
     }
 
+//    @PostMapping("/register")
+//    public String completeAdminRegistration(@RequestBody AdminRegistrationRequest dto) {
+//        adminUseCase.completeAdminRegistration(dto);
+//        return MessageUtil.REGISTRATION_COMPLETED_YOU_CAN_NOW_LOGIN;
+//    }
+//    @PostMapping("/register")
+//    public String completeAdminRegistration(@RequestBody AdminRegistrationRequest dto) {
+//        UserDomainObject user = adminMapper.toUserDomainObject(dto);
+//        AdminDomainObject admin = adminMapper.toAdminDomainObject(dto);
+//        adminUseCase.completeAdminRegistration(admin, user, dto.getPassword());
+//        return MessageUtil.REGISTRATION_COMPLETED_YOU_CAN_NOW_LOGIN;
+//    }
+// Controller (maps to response DTO)
+
     @PostMapping("/register")
-    public String completeAdminRegistration(@RequestBody AdminRegistrationRequest dto) {
-        adminUseCase.completeAdminRegistration(dto);
-        return MessageUtil.REGISTRATION_COMPLETED_YOU_CAN_NOW_LOGIN;
+    public AdminResponse completeAdminRegistration(@RequestBody AdminRegistrationRequest dto) {
+        UserDomainObject user = adminMapper.toUserDomainObject(dto);
+        AdminDomainObject admin = adminMapper.toAdminDomainObject(dto);
+        AdminDomainObject finalAdmin = adminUseCase.completeAdminRegistration(admin, user, dto.getPassword());
+        return adminMapper.toResponseDto(finalAdmin);
     }
 
     @DeleteMapping("/delete")
@@ -42,5 +63,4 @@ public class AdminController {
         adminUseCase.deleteAdmin(email);
         return MessageUtil.ADMIN_WITH_EMAIL + email + MessageUtil.DELETED;
     }
-
 }

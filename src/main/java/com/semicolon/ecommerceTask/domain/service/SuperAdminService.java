@@ -37,12 +37,9 @@ public class SuperAdminService implements CreateSuperAdminUseCase {
         String superAdminFirstName = properties.getFirstname();
         String superAdminLastName = properties.getLastname();
         String superAdminPassword = properties.getPassword();
-
         if (superAdminEmail == null || superAdminFirstName == null || superAdminLastName == null || superAdminPassword == null) {
-            throw new IllegalArgumentException(MessageUtil.SUPER_CONFIG_PROPERTY_ARE_MISSING_IN_APPLICATION_PROPERTIES);}
-        if (userPersistenceOutPort.existsByEmail(superAdminEmail)) {
-            return;
-        }
+            throw new IllegalArgumentException(MessageUtil.SUPERADMIN_CONFIGURATION_PROPERTY_ARE_MISSING_IN_APPLICATION_PROPERTIES);}
+        if (userPersistenceOutPort.existsByEmail(superAdminEmail)) return;
         UserDomainObject superAdmin = superAdminMapper.toDomain(
             superAdminFirstName,
             superAdminLastName,
@@ -52,9 +49,7 @@ public class SuperAdminService implements CreateSuperAdminUseCase {
         String keycloakId;
         try {
             keycloakId = keycloakUserAdapter.createUser(superAdmin);
-            if (keycloakId == null) {
-                return;
-            }
+            if (keycloakId == null) return;
         } catch (Exception exception) {throw new IllegalArgumentException(MessageUtil.FAILED_TO_CREATE_SUPERADMIN_IN_KEYCLOAK + exception.getMessage(), exception);}
         UserDomainObject updatedSuperAdmin = superAdminMapper.updateWithKeycloak(superAdmin, superAdminPassword, keycloakId);
         userPersistenceOutPort.saveUser(updatedSuperAdmin);

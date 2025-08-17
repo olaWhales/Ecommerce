@@ -24,7 +24,7 @@ public class MessageUtil {
     public static final String TOKEN_EXPIRED = "Registration token has expired";
     public static final String KEYCLOAK_CREATION_FAILED = "Failed to create admin in Keycloak";
     public static final String FAILED_TO_CREATE_SUPERADMIN_IN_KEYCLOAK = "Failed to create superAdmin in Keycloak";
-    public static final String SUPER_CONFIG_PROPERTY_ARE_MISSING_IN_APPLICATION_PROPERTIES = "Superadmin configuration properties are missing in application.properties";
+    public static final String SUPERADMIN_CONFIGURATION_PROPERTY_ARE_MISSING_IN_APPLICATION_PROPERTIES = "Superadmin configuration properties are missing in application.properties";
     public static final String ADMIN_NOT_FOUND = "Admin with email %s not found";
     public static final String ADMIN_INITIATION_SUCCESSFUL_VERIFICATION_EMAIL_SENT_TO_ = "Admin initiation successful. Verification email sent to %s";
     public static final String INVALID_EMAIL = "Invalid email address format";

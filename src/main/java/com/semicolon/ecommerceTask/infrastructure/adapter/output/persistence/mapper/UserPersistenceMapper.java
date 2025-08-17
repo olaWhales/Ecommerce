@@ -29,6 +29,4 @@ public interface UserPersistenceMapper {
     default List<UserRole> mapRolesFromDomain(List<UserRole> roles) {
         return roles != null ? roles : List.of();
     }
-
-
 }

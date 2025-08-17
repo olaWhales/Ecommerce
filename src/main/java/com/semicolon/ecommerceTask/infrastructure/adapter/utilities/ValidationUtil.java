@@ -1,21 +1,43 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.utilities;
 
-import com.semicolon.ecommerceTask.domain.exception.ValidationException;
-import org.springframework.stereotype.Component;
+import com.semicolon.ecommerceTask.domain.exception.NameNotFoundException;
 
-import java.util.regex.Pattern;
-
-@Component
 public class ValidationUtil {
 
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*?])(?=\\S+$).{8,}$");
-
     public static void validateEmail(String email) {
-        if (email == null || email.trim().isEmpty() || !EMAIL_PATTERN.matcher(email).matches()) {throw new ValidationException(MessageUtil.INVALID_EMAIL);}
-    }
-    public static void validatePassword(String password) {
-        if (password == null || !PASSWORD_PATTERN.matcher(password).matches()) {throw new ValidationException(MessageUtil.INVALID_PASSWORD);}
+        if (email == null || email.trim().isEmpty() || !email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            throw new NameNotFoundException(MessageUtil.INVALID_EMAIL);
+        }
     }
 
+    public static void validatePassword(String password) {
+        if (password == null || !password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*?])(?=\\S+$).{8,}$")) {
+            throw new NameNotFoundException(MessageUtil.INVALID_PASSWORD);
+        }
+    }
+
+    public static void validateFirstName(String firstName) {
+        if (firstName == null || firstName.trim().isEmpty()) {
+            throw new NameNotFoundException(MessageUtil.FIRST_NAME_REQUIRED);
+        }
+    }
+
+    public static void validateLastName(String lastName) {
+        if (lastName == null || lastName.trim().isEmpty()) {
+            throw new NameNotFoundException(MessageUtil.LAST_NAME_REQUIRED);
+        }
+    }
+
+    public static void validateRegistrationInput(String email, String firstName, String lastName, String password) {
+        validateEmail(email);
+        validateFirstName(firstName);
+        validateLastName(lastName);
+        validatePassword(password);
+    }
+
+    public static void validateUpdateInput(String email, String firstName, String lastName) {
+        validateEmail(email);
+        validateFirstName(firstName);
+        validateLastName(lastName);
+    }
 }
