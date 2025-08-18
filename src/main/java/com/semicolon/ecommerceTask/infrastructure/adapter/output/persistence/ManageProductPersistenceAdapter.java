@@ -2,9 +2,9 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence;
 
 import com.semicolon.ecommerceTask.application.port.output.persistence.ProductPersistenceOutPort;
 import com.semicolon.ecommerceTask.domain.model.ManageProductDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.ProductEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.ProductEntity;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.productManagentsMapper.ProductPersistenceMapper;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repository.ManageProductRepository;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repositories.ManageProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

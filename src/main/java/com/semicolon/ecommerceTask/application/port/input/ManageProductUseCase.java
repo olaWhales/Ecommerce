@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface ManageProductUseCase {
     ManageProductDomainObject createProduct(ManageProductDomainObject manageProductDomainObject, MultipartFile imageFile, String sellerId) throws IOException;
-    ManageProductDomainObject updateProduct(UUID productId, ManageProductDomainObject manageProductDomainObject, UUID sellerId);
-    void deleteProduct(UUID productId, UUID sellerId);
+    ManageProductDomainObject updateProduct(UUID productId, ManageProductDomainObject manageProductDomainObject, String sellerId);
+    void deleteProduct(UUID productId, String sellerId);
 }
 

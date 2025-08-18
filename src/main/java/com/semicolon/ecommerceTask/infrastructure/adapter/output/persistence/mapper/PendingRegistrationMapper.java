@@ -1,7 +1,7 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper;
 
 import com.semicolon.ecommerceTask.domain.model.PendingRegistrationDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.temporaryPendingRegistrationEntity.PendingAdminRegistrationEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.temporaryPendingRegistrationEntity.PendingAdminRegistrationEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

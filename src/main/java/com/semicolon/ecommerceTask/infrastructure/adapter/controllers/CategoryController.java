@@ -2,8 +2,8 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.controllers;
 
 import com.semicolon.ecommerceTask.application.port.input.CategoryUseCase;
 import com.semicolon.ecommerceTask.domain.model.CategoryDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.CategoryCreationDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.CategoryRegResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.CategoryCreationDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.CategoryRegResponse;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.CategoryMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import lombok.RequiredArgsConstructor;

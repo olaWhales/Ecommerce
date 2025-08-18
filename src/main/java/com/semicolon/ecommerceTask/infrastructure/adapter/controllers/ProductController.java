@@ -4,8 +4,8 @@ import com.semicolon.ecommerceTask.application.port.input.ManageProductUseCase;
 import com.semicolon.ecommerceTask.application.port.output.persistence.CategoryPersistenceOutPort;
 import com.semicolon.ecommerceTask.domain.model.CategoryDomainObject;
 import com.semicolon.ecommerceTask.domain.model.ManageProductDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.manageProductDto.ProductUploadDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.ProductRegResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.manageProductDto.ProductUploadDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.ProductRegResponse;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.productManagentsMapper.ProductDtoMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import jakarta.validation.Valid;
@@ -50,7 +50,7 @@ public class ProductController {
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable UUID productId) {
         UUID sellerId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
-        manageProductUseCase.deleteProduct(productId, sellerId);
+        manageProductUseCase.deleteProduct(productId, String.valueOf(sellerId));
         return ResponseEntity.noContent().build();
     }
     }

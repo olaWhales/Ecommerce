@@ -3,7 +3,7 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence;
 import com.semicolon.ecommerceTask.application.port.output.PendingRegistrationOutPort;
 import com.semicolon.ecommerceTask.domain.model.PendingRegistrationDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.PendingRegistrationMapper;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repository.PendingRegistrationRepository;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repositories.PendingRegistrationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -2,7 +2,7 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.controllers;
 
 import com.semicolon.ecommerceTask.domain.exception.AdminNotFoundException;
 import com.semicolon.ecommerceTask.domain.exception.ValidationException;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.ErrorResponseDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.ErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

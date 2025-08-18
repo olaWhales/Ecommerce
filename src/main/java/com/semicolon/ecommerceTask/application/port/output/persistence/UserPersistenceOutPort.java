@@ -1,7 +1,7 @@
 package com.semicolon.ecommerceTask.application.port.output.persistence;
 
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserEntity;
 
 import java.util.Optional;
 

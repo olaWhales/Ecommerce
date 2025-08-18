@@ -3,8 +3,8 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.controllers;
 import com.semicolon.ecommerceTask.application.port.input.SellerUseCase;
 import com.semicolon.ecommerceTask.domain.model.SellerFormSubmissionDomain;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.SellerRegistrationFormRequest;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.sellerRegistrationResponse.SellerFormSubmissionResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.SellerRegistrationFormRequest;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.sellerRegistrationResponse.SellerFormSubmissionResponse;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.SellerFormSubmissionMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +29,6 @@ public class SellerController {
         SellerFormSubmissionDomain sellerRegistrationFormDto = sellerFormSubmissionMapper.toDomainFromDto(dto);
         SellerFormSubmissionDomain savedDomain = sellerUseCase.requestSellerRegistration(sellerRegistrationFormDto);
         SellerFormSubmissionResponse response = sellerFormSubmissionMapper.toResponse(savedDomain);
-
-//        SellerFormSubmissionResponse response = sellerUseCase.requestSellerRegistration(sellerRegistrationFormDto);
         return ResponseEntity.ok(response);
     }
 }

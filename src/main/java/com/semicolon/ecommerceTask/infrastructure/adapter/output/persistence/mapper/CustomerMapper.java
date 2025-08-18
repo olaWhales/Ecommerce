@@ -2,8 +2,9 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.ma
 
 import com.semicolon.ecommerceTask.domain.model.CustomerDomainObject;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.UserDomainObjectResponse;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.DefaultRegistrationRequest;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.UserDomainObjectResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -27,5 +28,7 @@ public interface CustomerMapper {
     @Mapping(target = "lastName", source = "lastName")
     @Mapping(target = "email", source = "email")
     UserDomainObjectResponse toResponseDto(UserDomainObject domainObject);
+
+    DefaultRegistrationRequest toRegistrationRequest(CustomerDomainObject domainObject);
 
 }

@@ -1,9 +1,9 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper;
 
 import com.semicolon.ecommerceTask.domain.model.CategoryDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.CategoryCreationDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.CategoryRegResponse;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.CategoryEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.CategoryCreationDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.CategoryRegResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.CategoryEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

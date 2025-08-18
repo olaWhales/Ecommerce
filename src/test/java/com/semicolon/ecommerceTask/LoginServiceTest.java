@@ -3,7 +3,7 @@ package com.semicolon.ecommerceTask;
 import com.semicolon.ecommerceTask.application.port.output.AuthOutPort;
 import com.semicolon.ecommerceTask.domain.model.User;
 import com.semicolon.ecommerceTask.domain.exception.AuthenticationException;
-import com.semicolon.ecommerceTask.domain.service.LoginService;
+import com.semicolon.ecommerceTask.domain.services.LoginService;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

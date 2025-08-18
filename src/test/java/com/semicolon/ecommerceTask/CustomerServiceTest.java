@@ -6,11 +6,11 @@ import com.semicolon.ecommerceTask.application.port.output.persistence.UserPersi
 import com.semicolon.ecommerceTask.domain.exception.AdminNotFoundException;
 import com.semicolon.ecommerceTask.domain.exception.NameNotFoundException;
 import com.semicolon.ecommerceTask.domain.model.CustomerDomainObject;
-import com.semicolon.ecommerceTask.domain.service.CustomerService;
-import com.semicolon.ecommerceTask.domain.service.UserRegistrationService;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.DefaultRegistrationRequest;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.UserDomainObjectResponse;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.domain.services.CustomerService;
+import com.semicolon.ecommerceTask.domain.services.UserRegistrationService;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.DefaultRegistrationRequest;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.UserDomainObjectResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.CustomerMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -120,13 +120,13 @@ class CustomerServiceTest {
 
     @Test
     @DisplayName("Should throw ValidationException for invalid email format")
-    void registerCustomer_invalidEmail_throwsException() {
+    void defaultUserRegistration_invalidEmail_throwsException() {
         // Given
         validDto.setEmail("invalid-email");
 
         // When & Then
         NameNotFoundException exception = assertThrows(NameNotFoundException.class, () ->
-                customerService.registerCustomer(validDto));
+                customerService.defaultUserRegistration(validDto));
 
         assertEquals(MessageUtil.INVALID_EMAIL, exception.getMessage());
         verify(userRegistrationService, never()).registerUserInKeycloak(any(), any());
@@ -135,13 +135,13 @@ class CustomerServiceTest {
 
     @Test
     @DisplayName("Should throw ValidationException for blank first name")
-    void registerCustomer_blankFirstName_throwsException() {
+    void defaultUserRegistration_blankFirstName_throwsException() {
         // Given
         validDto.setFirstName("");
 
         // When & Then
         NameNotFoundException exception = assertThrows(NameNotFoundException.class, () ->
-                customerService.registerCustomer(validDto));
+                customerService.defaultUserRegistration(validDto));
 
         assertEquals(MessageUtil.FIRST_NAME_REQUIRED, exception.getMessage());
         verify(userPersistenceOutPort, never()).saveUser(any());
@@ -149,12 +149,12 @@ class CustomerServiceTest {
 
     @Test
     @DisplayName("Should throw ValidationException for blank last name")
-    void registerCustomer_blankLastName_throwsException() {
+    void defaultUserRegistration_blankLastName_throwsException() {
         // Given
         validDto.setLastName(" ");
 
         NameNotFoundException exception = assertThrows(NameNotFoundException.class, () ->
-                customerService.registerCustomer(validDto));
+                customerService.defaultUserRegistration(validDto));
 
         assertEquals(MessageUtil.LAST_NAME_REQUIRED, exception.getMessage());
         verify(userPersistenceOutPort, never()).saveUser(any());
@@ -162,13 +162,13 @@ class CustomerServiceTest {
 
     @Test
     @DisplayName("Should throw ValidationException for invalid password format")
-    void registerCustomer_invalidPassword_throwsException() {
+    void defaultUserRegistration_invalidPassword_throwsException() {
         // Given
         validDto.setPassword("weak");
 
         // When & Then
         NameNotFoundException exception = assertThrows(NameNotFoundException.class, () ->
-                customerService.registerCustomer(validDto));
+                customerService.defaultUserRegistration(validDto));
 
         assertEquals(MessageUtil.INVALID_PASSWORD, exception.getMessage());
         verify(userPersistenceOutPort, never()).saveUser(any());
@@ -176,14 +176,14 @@ class CustomerServiceTest {
 
     @Test
     @DisplayName("Should throw AdminException if user already exists in Keycloak")
-    void registerCustomer_userAlreadyExists_throwsException() {
+    void defaultUserRegistration_userAlreadyExists_throwsException() {
         // Given
         when(userRegistrationService.registerUserInKeycloak(any(), anyString()))
                 .thenThrow(new AdminNotFoundException(MessageUtil.ADMIN_ALREADY_EXISTS_IN_KEYCLOAK));
 
         // When & Then
         AdminNotFoundException exception = assertThrows(AdminNotFoundException.class, () ->
-                customerService.registerCustomer(validDto));
+                customerService.defaultUserRegistration(validDto));
 
         assertEquals(MessageUtil.ADMIN_ALREADY_EXISTS_IN_KEYCLOAK, exception.getMessage());
         verify(userPersistenceOutPort, never()).saveUser(any());
@@ -191,14 +191,14 @@ class CustomerServiceTest {
 
     @Test
     @DisplayName("Should throw AdminException if Keycloak user creation fails")
-    void registerCustomer_keycloakCreationFails_throwsException() {
+    void defaultUserRegistration_keycloakCreationFails_throwsException() {
         // Given
         when(userRegistrationService.registerUserInKeycloak(any(), anyString()))
                 .thenThrow(new AdminNotFoundException(MessageUtil.KEYCLOAK_CREATION_FAILED));
 
         // When & Then
         AdminNotFoundException exception = assertThrows(AdminNotFoundException.class, () ->
-                customerService.registerCustomer(validDto));
+                customerService.defaultUserRegistration(validDto));
 
         assertEquals(MessageUtil.KEYCLOAK_CREATION_FAILED, exception.getMessage());
         verify(userPersistenceOutPort, never()).saveUser(any());

@@ -2,9 +2,9 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.ma
 
 import com.semicolon.ecommerceTask.domain.model.CategoryDomainObject;
 import com.semicolon.ecommerceTask.domain.model.ManageProductDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.manageProductDto.ProductUpdateDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.manageProductDto.ProductUploadDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.ProductRegResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.manageProductDto.ProductUpdateDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.manageProductDto.ProductUploadDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.ProductRegResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

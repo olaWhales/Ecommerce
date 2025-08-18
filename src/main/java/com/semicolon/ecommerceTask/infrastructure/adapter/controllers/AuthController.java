@@ -1,8 +1,8 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.controllers;
 
 import com.semicolon.ecommerceTask.application.port.input.LoginUseCase;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.LoginRequestDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.LoginResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.LoginRequestDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.LoginResponse;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

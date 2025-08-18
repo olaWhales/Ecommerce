@@ -2,8 +2,8 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.controllers;
 
 import com.semicolon.ecommerceTask.application.port.input.AdminActionOnSellerUseCase;
 import com.semicolon.ecommerceTask.domain.model.ActionOnSellerApproveDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.ActionOnSellerApprovalRequest;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.ActionOnSellerApprovalResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.ActionOnSellerApprovalRequest;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.ActionOnSellerApprovalResponse;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.AdminActionOnSellerFormMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +26,7 @@ public class ActionOnSellerController {
 
     @PostMapping("/actions-on-seller-registration/{registrationId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('SUPERADMIN')")
-    public ResponseEntity<ActionOnSellerApprovalResponse> handleSellerRegistration(
-            @PathVariable UUID registrationId, @Valid @RequestBody ActionOnSellerApprovalRequest request) {
+    public ResponseEntity<ActionOnSellerApprovalResponse> handleSellerRegistration(@PathVariable UUID registrationId, @Valid @RequestBody ActionOnSellerApprovalRequest request) {
         ActionOnSellerApproveDomainObject domainObject = mapper.toDomain(request);
         String message = adminActionOnSellerUseCase.approveSeller(registrationId, domainObject);
         ActionOnSellerApprovalResponse action = ActionOnSellerApprovalResponse.builder()
@@ -37,3 +36,5 @@ public class ActionOnSellerController {
         return ResponseEntity.ok(action);
     }
 }
+
+

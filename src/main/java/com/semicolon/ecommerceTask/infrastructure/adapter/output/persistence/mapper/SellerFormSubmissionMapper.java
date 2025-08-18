@@ -1,9 +1,9 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper;
 
 import com.semicolon.ecommerceTask.domain.model.SellerFormSubmissionDomain;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.SellerRegistrationFormRequest;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.sellerRegistrationResponse.SellerFormSubmissionResponse;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.temporaryPendingRegistrationEntity.SellerFormSubmissionEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.SellerRegistrationFormRequest;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.sellerRegistrationResponse.SellerFormSubmissionResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.temporaryPendingRegistrationEntity.SellerFormSubmissionEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

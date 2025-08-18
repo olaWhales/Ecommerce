@@ -2,13 +2,13 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.ma
 
 import com.semicolon.ecommerceTask.domain.model.AdminDomainObject;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminInitiationRequest;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminRegistrationRequest;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.adminRequestDto.AdminUpdateDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.AdminResponse;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserEntity;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.temporaryPendingRegistrationEntity.PendingAdminRegistrationEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.adminRequestDto.AdminInitiationRequest;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.adminRequestDto.AdminRegistrationRequest;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.adminRequestDto.AdminUpdateDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.AdminResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.temporaryPendingRegistrationEntity.PendingAdminRegistrationEntity;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

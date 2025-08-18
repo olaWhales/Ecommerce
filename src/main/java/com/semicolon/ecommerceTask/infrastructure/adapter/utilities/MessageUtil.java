@@ -18,7 +18,7 @@ public class MessageUtil {
     public static final String CATEGORY_CREATED_SUCCESSFULLY = "Category created successfully";
     public static final String PRODUCT_CREATED_SUCCESSFULLY = "Product created successfully";
     public static final String YOUR_REGISTRATION_HAS_SUCCESSFULLY_REGISTERED = ", your registration has successfully registered";
-    public static final String ADMIN_ALREADY_EXISTS_IN_KEYCLOAK = "Admin already exist in keycloak";
+    public static final String ADMIN_ALREADY_EXISTS_IN_KEYCLOAK = "Admin with email '%s' already exists in Keycloak";
     public static final String ADMIN_ALREADY_EXISTS = "Admin with email %s already exists";
     public static final String NO_PENDING_REGISTRATION = "No pending registration for email %s";
     public static final String TOKEN_EXPIRED = "Registration token has expired";
@@ -57,12 +57,16 @@ public class MessageUtil {
     public static String FIRSTNAME = "firstName";
     public static String LASTNAME = "lastName";
     public static String ROLE = "roles";
-    public static String FAILED_TO_ASSIGN_ROLE_USER = "Failed to assign role {} to user {}: {}";
-    public static String EXCEPTION_DURING_USER_CREATION = "Exception during user creation";
-    public static String KEYCLOAK_USER_CREATION_FAILED = "Keycloak user creation failed: ";
-    public static String USER_ALREADY_EXIST_IN_KEYCLOAK = "User or email already exists in Keycloak";
+    public static String DOT = ".";
+    public static final String FAILED_TO_ASSIGN_ROLE_USER = "Failed to assign role {} to user {}: {}";
+    public static final String EXCEPTION_DURING_USER_CREATION = "Exception during user creation";
+    public static final String KEYCLOAK_USER_CREATION_FAILED = "Keycloak user creation failed: ";
+    public static String ONLY_IMAGE_FILES_ARE_ALLOWED = "Only image files are allowed";
+    public static String COULD_NOT_UPLOAD_FILE = "Could not upload file: ";
+    public static final String PENDING_REGISTRATION_NOT_FOUND_FOR_UPDATE = "Pending registration not found for update";
 
     public static String USER_DATA_CANNOT_BE_NULL = "User data cannot be null";
+    public static final String USER_ALREADY_EXIST_IN_KEYCLOAK = "User already exit in keycloak";
     public static String CUSTOMER_NOT_FOUND = "Customer not found ";
     public static String FAILED_TO_EMPTY_FILE = "Failed to store empty file";
     public static String A_SELLER_REGISTRATION_REQUEST_IS_ALREADY_PENDING = "A seller registration request is already pending for %s";

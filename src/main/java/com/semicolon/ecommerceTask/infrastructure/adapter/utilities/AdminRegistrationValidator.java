@@ -45,7 +45,7 @@ public class AdminRegistrationValidator {
     public LocalDateTime computeExpiration() {return LocalDateTime.now().plusHours(REGISTRATION_TOKEN_VALIDITY_HOURS);}
     public void assignAdminRole(String keycloakId) {
         keycloakAdminOutPort.assignRealmRoles(keycloakId,
-                Collections.singletonList(com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole.ADMIN)
+                Collections.singletonList(com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole.ADMIN)
         );
     }
 }

@@ -25,7 +25,7 @@ public class FileStorageAdapter implements FileStorageOutPort {
         if (file.isEmpty()) {throw new IOException(MessageUtil.FAILED_TO_EMPTY_FILE);}
         String contentType = file.getContentType();
         assert contentType != null;
-        if (!contentType.startsWith("image/")) {throw new IOException("Only image files are allowed");}
+        if (!contentType.startsWith("image/")) {throw new IOException(MessageUtil.ONLY_IMAGE_FILES_ARE_ALLOWED);}
         Path uploadPath = Paths.get(uploadDir).toAbsolutePath();
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
@@ -33,17 +33,16 @@ public class FileStorageAdapter implements FileStorageOutPort {
 
         try (InputStream inputStream = file.getInputStream()) {
             String originalFileName = file.getOriginalFilename();
-            String fileExtension = originalFileName != null && originalFileName.contains(".")
-                    ? originalFileName.substring(originalFileName.lastIndexOf("."))
-                    : ".jpg";
+            String fileExtension = originalFileName != null && originalFileName.contains(MessageUtil.DOT)
+                ? originalFileName.substring(originalFileName.lastIndexOf(MessageUtil.DOT))
+                : ".jpg";
             String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
-
             Path filePath = uploadPath.resolve(uniqueFileName);
             Files.copy(inputStream, filePath);
             return "/uploads/" + uniqueFileName;
         } catch (IOException e) {
-            log.error("Could not upload file: {}", file.getOriginalFilename(), e);
-            throw new IOException("Could not upload file: " + file.getOriginalFilename(), e);
+//            log.error("Could not upload file: {}", file.getOriginalFilename(), e);
+            throw new IOException(MessageUtil.COULD_NOT_UPLOAD_FILE + file.getOriginalFilename(), e);
         }
     }
 }

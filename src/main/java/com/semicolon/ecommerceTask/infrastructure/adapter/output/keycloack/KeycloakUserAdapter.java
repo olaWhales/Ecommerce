@@ -2,8 +2,9 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.keycloack;
 
 import com.semicolon.ecommerceTask.application.port.output.KeycloakUserPort;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.configuration.keyCloakProperties.KeycloakAdminProperties;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.configurations.keyCloakProperties.KeycloakAdminProperties;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.admin.client.Keycloak;
@@ -67,16 +68,16 @@ public class KeycloakUserAdapter implements KeycloakUserPort {
 
         try (Response response = keycloak.realm(properties.getRealm()).users().create(userRepresentation)) {
             if (response.getStatus() == 409) {
-                return USER_ALREADY_EXIST_IN_KEYCLOAK;
+                return MessageUtil.USER_ALREADY_EXIST_IN_KEYCLOAK;
             } else if (response.getStatus() != 201) {
-                throw new IllegalArgumentException(KEYCLOAK_USER_CREATION_FAILED + response.getStatusInfo());
+                throw new IllegalArgumentException(MessageUtil.KEYCLOAK_USER_CREATION_FAILED + response.getStatusInfo());
             }
 
             String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
             assignRoles(userId, userDomainObject.getRoles());
             return userId;
         } catch (Exception e) {
-            logger.error(EXCEPTION_DURING_USER_CREATION, e);
+            logger.error(MessageUtil.EXCEPTION_DURING_USER_CREATION, e);
             throw e;
         }
     }
@@ -90,7 +91,7 @@ public class KeycloakUserAdapter implements KeycloakUserPort {
                     keycloak.realm(properties.getRealm()).users().get(userId).roles()
                         .realmLevel().add(Collections.singletonList(roleRepresentation));
                 } catch (Exception e) {
-                    logger.warn(FAILED_TO_ASSIGN_ROLE_USER, role.name(), userId, e.getMessage());
+                    logger.warn(MessageUtil.FAILED_TO_ASSIGN_ROLE_USER, role.name(), userId, e.getMessage());
                 }
             });
         }

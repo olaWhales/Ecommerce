@@ -2,7 +2,7 @@ package com.semicolon.ecommerceTask;
 
 import com.semicolon.ecommerceTask.application.port.output.persistence.SellerFormSubmissionPersistenceOutPort;
 import com.semicolon.ecommerceTask.domain.model.SellerDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.response.SellerResponseDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.SellerResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

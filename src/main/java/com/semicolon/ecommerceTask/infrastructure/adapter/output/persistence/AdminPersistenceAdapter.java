@@ -3,12 +3,13 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence;
 import com.semicolon.ecommerceTask.application.port.output.persistence.AdminPersistenceOutPort;
 import com.semicolon.ecommerceTask.domain.model.AdminDomainObject;
 import com.semicolon.ecommerceTask.domain.model.PendingRegistrationDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.UserEntity;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entity.temporaryPendingRegistrationEntity.PendingAdminRegistrationEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.temporaryPendingRegistrationEntity.PendingAdminRegistrationEntity;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.AdminMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.PendingRegistrationMapper;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repository.JpaUserRepository;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repository.PendingRegistrationRepository;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repositories.JpaUserRepository;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.repositories.PendingRegistrationRepository;
+import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -70,7 +71,7 @@ public class AdminPersistenceAdapter implements AdminPersistenceOutPort {
     @Override
     public void updatePendingRegistration(String email, String token, LocalDateTime expiration) {
         PendingAdminRegistrationEntity entity = pendingRegistrationRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalStateException("Pending registration not found for update"));
+                .orElseThrow(() -> new IllegalStateException(MessageUtil.PENDING_REGISTRATION_NOT_FOUND_FOR_UPDATE));
 
         entity.setToken(token);
         entity.setExpiration(expiration);
@@ -79,6 +80,6 @@ public class AdminPersistenceAdapter implements AdminPersistenceOutPort {
 
     @Override
     public void deletePendingRegistration(String email) {
-        pendingRegistrationRepository.deleteByEmail(email); // <-- Changed deleteById to deleteByEmail
+        pendingRegistrationRepository.deleteByEmail(email);
     }
 }

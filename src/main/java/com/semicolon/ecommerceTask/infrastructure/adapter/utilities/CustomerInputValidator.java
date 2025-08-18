@@ -1,7 +1,7 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.utilities;
 
 import com.semicolon.ecommerceTask.domain.exception.NameNotFoundException;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.request.DefaultRegistrationRequest;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.DefaultRegistrationRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
