@@ -29,8 +29,8 @@ public class ProductUpdateDto {
     @PositiveOrZero(message = "Stock quantity cannot be negative")
     private int inStockQuantity;
 
-    @NotBlank(message = "Image URL is required")
-    private String imageUrl;
+//    @NotBlank(message = "Image URL is required")
+//    private String imageUrl;
 
 
     @NotNull(message = "Category is required")

@@ -40,7 +40,7 @@ public class AdminController {
         UserDomainObject user = adminMapper.toUserDomainObject(dto);
         AdminDomainObject admin = adminMapper.toAdminDomainObject(dto);
         AdminDomainObject finalAdmin = adminUseCase.completeAdminRegistration(admin, user, dto.getPassword());
-        return adminMapper.toResponseDto(finalAdmin);
+        return adminMapper.toAdminResponseWithFullNameAndMessage(finalAdmin, MessageUtil.ADMIN_REGISTRATION_SUCCESSFUL);
     }
 
     @DeleteMapping("/delete")

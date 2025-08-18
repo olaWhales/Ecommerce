@@ -12,3 +12,5 @@ public class EcommerceTaskApplication {
 		SpringApplication.run(EcommerceTaskApplication.class, args);
 	}
 }
+
+

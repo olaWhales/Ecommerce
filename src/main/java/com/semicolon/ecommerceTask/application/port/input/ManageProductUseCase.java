@@ -12,3 +12,5 @@ public interface ManageProductUseCase {
     void deleteProduct(UUID productId, String sellerId);
 }
 
+
+

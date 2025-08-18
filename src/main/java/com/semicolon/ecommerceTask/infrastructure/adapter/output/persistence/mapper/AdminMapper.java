@@ -38,10 +38,8 @@ public interface AdminMapper {
     @Mapping(target = "lastName", source = "lastName")
     AdminUpdateDto toUpdateDto(String email, String firstName, String lastName);
 
-    @Mapping(target = "email", source = "email")
     @Mapping(target = "firstName", source = "firstName")
     @Mapping(target = "lastName", source = "lastName")
-    @Mapping(target = "roles", source = "roles")
     AdminResponse toResponseDto(AdminDomainObject admin);
 
     List<AdminResponse> toResponseDtoList(List<AdminDomainObject> admins);
@@ -66,4 +64,8 @@ public interface AdminMapper {
     PendingAdminRegistrationEntity toPendingEntity(String email, String token, LocalDateTime expiration);
 
     UserDomainObject mapToUserRepresentation(UserRepresentation userRepresentation);
+
+    @Mapping(target = "message", source = "message")
+    @Mapping(target = "fullName", expression = "java(admin.getFirstName() + ' ' + admin.getLastName())")
+    AdminResponse toAdminResponseWithFullNameAndMessage(AdminDomainObject admin, String message);
 }

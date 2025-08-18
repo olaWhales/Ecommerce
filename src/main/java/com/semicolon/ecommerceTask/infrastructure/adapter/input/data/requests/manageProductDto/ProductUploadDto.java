@@ -33,6 +33,5 @@ public class ProductUploadDto {
 
 
     @NotNull(message = "Category is required")
-//    private CategoryRequestDto category;
     private UUID categoryId;
 }

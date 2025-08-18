@@ -5,7 +5,9 @@ import com.semicolon.ecommerceTask.application.port.output.FileStorageOutPort;
 import com.semicolon.ecommerceTask.application.port.output.persistence.CategoryPersistenceOutPort;
 import com.semicolon.ecommerceTask.application.port.output.persistence.ProductPersistenceOutPort;
 import com.semicolon.ecommerceTask.application.port.output.persistence.SellerFormSubmissionPersistenceOutPort;
+import com.semicolon.ecommerceTask.domain.model.CategoryDomainObject;
 import com.semicolon.ecommerceTask.domain.model.ManageProductDomainObject;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.productManagentsMapper.ProductDtoMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.productManagentsMapper.ProductPersistenceMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import com.semicolon.ecommerceTask.domain.exception.ValidationException;
@@ -28,6 +30,7 @@ public class ManageProductService implements ManageProductUseCase {
     private final SellerFormSubmissionPersistenceOutPort sellerFormSubmissionPersistenceOutPort;
     private final CategoryPersistenceOutPort categoryPersistenceOutPort;
     private final ProductPersistenceMapper mapper;
+    private final ProductDtoMapper dtoMapper;
 
     @Transactional
     @Override
@@ -48,25 +51,28 @@ public class ManageProductService implements ManageProductUseCase {
     @Transactional
     @Override
     public ManageProductDomainObject updateProduct(UUID productId, ManageProductDomainObject manageProductDomainObject, String sellerId) {
-        ManageProductDomainObject existingProduct = productPersistenceOutPort.findById(productId).orElseThrow(() -> new RuntimeException(MessageUtil.PRODUCT_NOT_FOUND));
+        ManageProductDomainObject existingProduct = productPersistenceOutPort.findById(productId)
+                .orElseThrow(() -> new RuntimeException(MessageUtil.PRODUCT_NOT_FOUND));
         if (!existingProduct.getSellerId().equals(sellerId)) {throw new RuntimeException(MessageUtil.USER_IS_NOT_AUTHORIZED_TO_UPDATE_THIS_PRODUCT);}
-        ManageProductDomainObject updated = ManageProductDomainObject.builder()
-            .id(existingProduct.getId())
-            .name(manageProductDomainObject.getName())
-            .description(manageProductDomainObject.getDescription())
-            .price(manageProductDomainObject.getPrice())
-            .inStockQuantity(manageProductDomainObject.getInStockQuantity())
-            .sellerId(sellerId)
-            .imageUrl(existingProduct.getImageUrl())
-            .build();
-        return productPersistenceOutPort.save(updated);
+        CategoryDomainObject categoryDomainObject = categoryPersistenceOutPort.findById(manageProductDomainObject.getCategoryDomainObject().getId())
+                .orElseThrow(() -> new RuntimeException(MessageUtil.CATEGORY_NOT_FOUND));
+        existingProduct.setName(manageProductDomainObject.getName());
+        existingProduct.setDescription(manageProductDomainObject.getDescription());
+        existingProduct.setPrice(manageProductDomainObject.getPrice());
+        existingProduct.setInStockQuantity(manageProductDomainObject.getInStockQuantity());
+        existingProduct.setCategoryDomainObject(categoryDomainObject);
+        return productPersistenceOutPort.save(existingProduct);
     }
 
     @Transactional
     @Override
     public void deleteProduct(UUID productId, String sellerId) {
-        productPersistenceOutPort.findById(productId).orElseThrow(() -> new RuntimeException(MessageUtil.PRODUCT_NOT_FOUND));
-        throw new RuntimeException(MessageUtil.USER_IS_NOT_AUTHORIZED_TO_DELETE_THIS_PRODUCT);
+        ManageProductDomainObject productToDelete = productPersistenceOutPort.findById(productId)
+                .orElseThrow(()-> new IllegalArgumentException(MessageUtil.PRODUCT_NOT_FOUND));
+            if(!productToDelete.getSellerId().equals(sellerId)){
+                throw new IllegalArgumentException(MessageUtil.USER_IS_NOT_AUTHORIZED_TO_DELETE_THIS_PRODUCT);
+            }
+            productPersistenceOutPort.deleteById(productId);
     }
 
 //    private String extractSellerId() {

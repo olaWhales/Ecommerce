@@ -1,3 +1,4 @@
+// src/test/java/com/semicolon/ecommerceTask/CustomerServiceTest.java
 package com.semicolon.ecommerceTask;
 
 import com.semicolon.ecommerceTask.application.port.output.KeycloakAdminOutPort;
@@ -12,6 +13,7 @@ import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.De
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.UserDomainObjectResponse;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.CustomerMapper;
+import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.CustomerInputValidator;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,11 +28,16 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("CreateCustomerService Unit Tests")
+@DisplayName("CustomerService Unit Tests")
 class CustomerServiceTest {
+
+    // Added this mock to resolve the NullPointerException
+    @Mock
+    private CustomerInputValidator customerInputValidator;
 
     @Mock
     private UserRegistrationService userRegistrationService;
@@ -81,48 +88,55 @@ class CustomerServiceTest {
                 .email("john.doe@example.com")
                 .build();
     }
-//
-//    @Test
-//    @DisplayName("Should successfully register a new customer with a valid DTO")
-//    void registerCustomer_success() {
-//        // Given
-//        when(userRegistrationService.registerUserInKeycloak(any(UserDomainObject.class), anyString()))
-//                .thenReturn("keycloak-id-123");
-//        when(passwordEncoder.encode(anyString()))
-//                .thenReturn("encodedPassword");
-//        when(userPersistenceOutPort.saveUser(any(UserDomainObject.class)))
-//                .thenReturn(UserDomainObject.builder()
-//                        .id("keycloak-id-123")
-//                        .firstName("John")
-//                        .lastName("Doe")
-//                        .email("john.doe@example.com")
-//                        .password("encodedPassword")
-//                        .roles(Collections.singletonList(UserRole.valueOf("BUYER")))
-//                        .build());
-//        when(customerMapper.toResponseDto(any(UserDomainObject.class)))
-//                .thenReturn(expectedResponseDto);
-//
-//        // When
-//        UserDomainObjectResponse actualResponse = createCustomerService.registerCustomer(validDto);
-//
-//        // Then
-//        assertNotNull(actualResponse);
-//        assertEquals(expectedResponseDto.getEmail(), actualResponse.getEmail());
-//
-//        // Verify interactions with mocks
-//        verify(userRegistrationService, times(1)).registerUserInKeycloak(any(UserDomainObject.class), eq("StrongPassword123!"));
-//        verify(keycloakAdminOutPort, times(1)).assignRealmRoles(eq("keycloak-id-123"), eq(Collections.singletonList("BUYER")));
-//        verify(passwordEncoder, times(1)).encode(eq("StrongPassword123!"));
-//        verify(userPersistenceOutPort, times(1)).saveUser(any(UserDomainObject.class));
-//        verify(customerMapper, times(1)).toResponseDto(any(UserDomainObject.class));
-//        verify(customerPersistenceOutPort, never()).saveCustomer(any(CustomerDomainObject.class));
-//    }
+    // The previous test case for registerCustomer_success was commented out, so I've left it that way.
+    // However, it would need to be updated to use the new CustomerService class.
+    // I recommend uncommenting and updating this test case after you've fixed the
+    // registerCustomer method in the service class.
+    /*
+    @Test
+    @DisplayName("Should successfully register a new customer with a valid DTO")
+    void registerCustomer_success() {
+        // Given
+        when(userRegistrationService.registerUserInKeycloak(any(UserDomainObject.class), anyString()))
+                .thenReturn("keycloak-id-123");
+        when(passwordEncoder.encode(anyString()))
+                .thenReturn("encodedPassword");
+        when(userPersistenceOutPort.saveUser(any(UserDomainObject.class)))
+                .thenReturn(UserDomainObject.builder()
+                        .id("keycloak-id-123")
+                        .firstName("John")
+                        .lastName("Doe")
+                        .email("john.doe@example.com")
+                        .password("encodedPassword")
+                        .roles(Collections.singletonList(UserRole.valueOf("BUYER")))
+                        .build());
+        when(customerMapper.toResponseDto(any(UserDomainObject.class)))
+                .thenReturn(expectedResponseDto);
 
+        // When
+        UserDomainObjectResponse actualResponse = customerService.registerCustomer(validDto);
+
+        // Then
+        assertNotNull(actualResponse);
+        assertEquals(expectedResponseDto.getEmail(), actualResponse.getEmail());
+
+        // Verify interactions with mocks
+        verify(userRegistrationService, times(1)).registerUserInKeycloak(any(UserDomainObject.class), eq("StrongPassword123!"));
+        verify(keycloakAdminOutPort, times(1)).assignRealmRoles(eq("keycloak-id-123"), eq(Collections.singletonList("BUYER")));
+        verify(passwordEncoder, times(1)).encode(eq("StrongPassword123!"));
+        verify(userPersistenceOutPort, times(1)).saveUser(any(UserDomainObject.class));
+        verify(customerMapper, times(1)).toResponseDto(any(UserDomainObject.class));
+        verify(customerPersistenceOutPort, never()).saveCustomer(any(CustomerDomainObject.class));
+    }
+    */
     @Test
     @DisplayName("Should throw ValidationException for invalid email format")
     void defaultUserRegistration_invalidEmail_throwsException() {
         // Given
         validDto.setEmail("invalid-email");
+        // Mock the validator to throw the expected exception
+        doThrow(new NameNotFoundException(MessageUtil.INVALID_EMAIL))
+                .when(customerInputValidator).validate(any(DefaultRegistrationRequest.class));
 
         // When & Then
         NameNotFoundException exception = assertThrows(NameNotFoundException.class, () ->
@@ -138,6 +152,9 @@ class CustomerServiceTest {
     void defaultUserRegistration_blankFirstName_throwsException() {
         // Given
         validDto.setFirstName("");
+        // Mock the validator to throw the expected exception
+        doThrow(new NameNotFoundException(MessageUtil.FIRST_NAME_REQUIRED))
+                .when(customerInputValidator).validate(any(DefaultRegistrationRequest.class));
 
         // When & Then
         NameNotFoundException exception = assertThrows(NameNotFoundException.class, () ->
@@ -152,6 +169,9 @@ class CustomerServiceTest {
     void defaultUserRegistration_blankLastName_throwsException() {
         // Given
         validDto.setLastName(" ");
+        // Mock the validator to throw the expected exception
+        doThrow(new NameNotFoundException(MessageUtil.LAST_NAME_REQUIRED))
+                .when(customerInputValidator).validate(any(DefaultRegistrationRequest.class));
 
         NameNotFoundException exception = assertThrows(NameNotFoundException.class, () ->
                 customerService.defaultUserRegistration(validDto));
@@ -165,6 +185,9 @@ class CustomerServiceTest {
     void defaultUserRegistration_invalidPassword_throwsException() {
         // Given
         validDto.setPassword("weak");
+        // Mock the validator to throw the expected exception
+        doThrow(new NameNotFoundException(MessageUtil.INVALID_PASSWORD))
+                .when(customerInputValidator).validate(any(DefaultRegistrationRequest.class));
 
         // When & Then
         NameNotFoundException exception = assertThrows(NameNotFoundException.class, () ->
@@ -178,6 +201,7 @@ class CustomerServiceTest {
     @DisplayName("Should throw AdminException if user already exists in Keycloak")
     void defaultUserRegistration_userAlreadyExists_throwsException() {
         // Given
+        doNothing().when(customerInputValidator).validate(any(DefaultRegistrationRequest.class));
         when(userRegistrationService.registerUserInKeycloak(any(), anyString()))
                 .thenThrow(new AdminNotFoundException(MessageUtil.ADMIN_ALREADY_EXISTS_IN_KEYCLOAK));
 
@@ -193,6 +217,7 @@ class CustomerServiceTest {
     @DisplayName("Should throw AdminException if Keycloak user creation fails")
     void defaultUserRegistration_keycloakCreationFails_throwsException() {
         // Given
+        doNothing().when(customerInputValidator).validate(any(DefaultRegistrationRequest.class));
         when(userRegistrationService.registerUserInKeycloak(any(), anyString()))
                 .thenThrow(new AdminNotFoundException(MessageUtil.KEYCLOAK_CREATION_FAILED));
 

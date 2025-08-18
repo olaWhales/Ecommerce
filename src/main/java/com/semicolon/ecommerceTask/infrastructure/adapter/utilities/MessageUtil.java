@@ -39,6 +39,9 @@ public class MessageUtil {
             http://localhost:8081/admin/register?token=%s&email=%s
             This link expires in 24 hours.
            \s""";
+    public static final String ADMIN_REGISTRATION_SUCCESSFUL = "Admin registration successful";
+    public static final String PRODUCT_UPDATED_SUCCESSFULLY = "Product updated successfully";
+    public static final String PRODUCT_DELETED_SUCCESSFULLY = "Product deleted successfully";
     public static String INVALID_CREDENTIALS = "Invalid username or password";
     public static String USER_NOT_FOUND = "User not found";
     public static String LOGIN_SUCCESS = "Welcome back ";

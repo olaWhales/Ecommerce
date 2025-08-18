@@ -14,12 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -34,7 +34,8 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<ProductRegResponse> createProduct(@Valid @ModelAttribute ProductUploadDto dto, @AuthenticationPrincipal Jwt principal) throws IOException {
+    public ResponseEntity<ProductRegResponse> createProduct(@Valid @ModelAttribute ProductUploadDto dto,
+                                                            @AuthenticationPrincipal Jwt principal) throws IOException {
         if (principal == null || principal.getClaimAsString("sub") == null) {throw new SecurityException(MessageUtil.AUTHENTICATED_USER_NOT_FOUND);}
         String sellerId = principal.getClaimAsString("sub");
         CategoryDomainObject categoryDomainObject = categoryPersistenceOutPort.findById(dto.getCategoryId())
@@ -46,11 +47,38 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productRegResponse);
     }
 
+    @PutMapping("/update/{productId}")
     @PreAuthorize("hasRole('SELLER')")
-    @DeleteMapping("/{productId}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable UUID productId) {
-        UUID sellerId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
-        manageProductUseCase.deleteProduct(productId, String.valueOf(sellerId));
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ProductRegResponse> updateProduct(@PathVariable UUID productId,
+                                                            @RequestBody ProductUploadDto dto,
+                                                            @AuthenticationPrincipal Jwt principal) throws IOException {
+        if (principal == null || principal.getClaimAsString("sub") == null) {throw new SecurityException(MessageUtil.AUTHENTICATED_USER_NOT_FOUND);}
+        String sellerId = principal.getClaimAsString("sub");
+        CategoryDomainObject categoryDomainObject = categoryPersistenceOutPort.findById(dto.getCategoryId())
+                .orElseThrow(() -> new RuntimeException(MessageUtil.CATEGORY_NOT_FOUND));
+        ManageProductDomainObject domain = dtoMapper.toDomain(dto, categoryDomainObject);
+        ManageProductDomainObject updatedProduct = manageProductUseCase.updateProduct(productId, domain, sellerId);
+        ProductRegResponse response = dtoMapper.toResponse(updatedProduct);
+        response.setMessage(MessageUtil.PRODUCT_UPDATED_SUCCESSFULLY);
+        return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/delete/{productId}")
+    @PreAuthorize("hasRole('SELLER')")
+    public String deleteProduct(@PathVariable UUID productId,
+                                              @AuthenticationPrincipal Jwt principal) {
+        if(principal == null || principal.getClaimAsString("sub") == null){ throw new SecurityException(MessageUtil.AUTHENTICATED_USER_NOT_FOUND);}
+        String sellerId = principal.getClaimAsString("sub");
+        manageProductUseCase.deleteProduct(productId, sellerId);
+        return MessageUtil.PRODUCT_DELETED_SUCCESSFULLY;
     }
+
+    // New Endpoint to fetch all categories for the frontend dropdown
+    @GetMapping("/categories")
+    @PreAuthorize("hasRole('SELLER')") // Sellers need to be authenticated to get this list
+    public ResponseEntity<List<CategoryDomainObject>> getAllCategories() {
+        List<CategoryDomainObject> categories = categoryPersistenceOutPort.findAll();
+        return ResponseEntity.ok(categories);
+    }
+}
+
