@@ -2,10 +2,12 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.controllers;
 
 import com.semicolon.ecommerceTask.application.port.input.ManageProductUseCase;
 import com.semicolon.ecommerceTask.application.port.output.persistence.CategoryPersistenceOutPort;
+import com.semicolon.ecommerceTask.domain.exception.ValidationException;
 import com.semicolon.ecommerceTask.domain.model.CategoryDomainObject;
 import com.semicolon.ecommerceTask.domain.model.ManageProductDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.manageProductDto.ProductUploadDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.ProductRegResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.ProductGetResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.ProductRegistrationResponse;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.productManagentsMapper.ProductDtoMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import jakarta.validation.Valid;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -34,31 +37,31 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<ProductRegResponse> createProduct(@Valid @ModelAttribute ProductUploadDto dto,
-                                                            @AuthenticationPrincipal Jwt principal) throws IOException {
+    public ResponseEntity<ProductRegistrationResponse> createProduct(@Valid @ModelAttribute ProductUploadDto dto,
+                                                                     @AuthenticationPrincipal Jwt principal) throws IOException {
         if (principal == null || principal.getClaimAsString("sub") == null) {throw new SecurityException(MessageUtil.AUTHENTICATED_USER_NOT_FOUND);}
         String sellerId = principal.getClaimAsString("sub");
         CategoryDomainObject categoryDomainObject = categoryPersistenceOutPort.findById(dto.getCategoryId())
                 .orElseThrow(() -> new RuntimeException(MessageUtil.CATEGORY_NOT_FOUND));
         ManageProductDomainObject domain = dtoMapper.toDomain(dto, categoryDomainObject);
         ManageProductDomainObject savedProduct = manageProductUseCase.createProduct(domain, dto.getImageFile(), sellerId);
-        ProductRegResponse productRegResponse = dtoMapper.toResponse(savedProduct);
-        productRegResponse.setMessage(MessageUtil.PRODUCT_CREATED_SUCCESSFULLY);
-        return ResponseEntity.status(HttpStatus.CREATED).body(productRegResponse);
+        ProductRegistrationResponse productRegistrationResponse = dtoMapper.toResponse(savedProduct);
+        productRegistrationResponse.setMessage(MessageUtil.PRODUCT_CREATED_SUCCESSFULLY);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productRegistrationResponse);
     }
 
     @PutMapping("/update/{productId}")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<ProductRegResponse> updateProduct(@PathVariable UUID productId,
-                                                            @RequestBody ProductUploadDto dto,
-                                                            @AuthenticationPrincipal Jwt principal) throws IOException {
+    public ResponseEntity<ProductRegistrationResponse> updateProduct(@PathVariable UUID productId,
+                                                                     @RequestBody ProductUploadDto dto,
+                                                                     @AuthenticationPrincipal Jwt principal) throws IOException {
         if (principal == null || principal.getClaimAsString("sub") == null) {throw new SecurityException(MessageUtil.AUTHENTICATED_USER_NOT_FOUND);}
         String sellerId = principal.getClaimAsString("sub");
         CategoryDomainObject categoryDomainObject = categoryPersistenceOutPort.findById(dto.getCategoryId())
                 .orElseThrow(() -> new RuntimeException(MessageUtil.CATEGORY_NOT_FOUND));
         ManageProductDomainObject domain = dtoMapper.toDomain(dto, categoryDomainObject);
         ManageProductDomainObject updatedProduct = manageProductUseCase.updateProduct(productId, domain, sellerId);
-        ProductRegResponse response = dtoMapper.toResponse(updatedProduct);
+        ProductRegistrationResponse response = dtoMapper.toResponse(updatedProduct);
         response.setMessage(MessageUtil.PRODUCT_UPDATED_SUCCESSFULLY);
         return ResponseEntity.ok(response);
     }
@@ -66,19 +69,51 @@ public class ProductController {
     @DeleteMapping("/delete/{productId}")
     @PreAuthorize("hasRole('SELLER')")
     public String deleteProduct(@PathVariable UUID productId,
-                                              @AuthenticationPrincipal Jwt principal) {
+                                @AuthenticationPrincipal Jwt principal) {
         if(principal == null || principal.getClaimAsString("sub") == null){ throw new SecurityException(MessageUtil.AUTHENTICATED_USER_NOT_FOUND);}
         String sellerId = principal.getClaimAsString("sub");
         manageProductUseCase.deleteProduct(productId, sellerId);
         return MessageUtil.PRODUCT_DELETED_SUCCESSFULLY;
     }
 
-    // New Endpoint to fetch all categories for the frontend dropdown
+    @GetMapping("/find-by-id/{productId}")
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
+    public ResponseEntity<ProductGetResponse> getProduct(@PathVariable UUID productId,
+                                                         @AuthenticationPrincipal Jwt principal) {
+        if (principal == null || principal.getClaimAsString("sub") == null) {throw new ValidationException(MessageUtil.AUTHENTICATED_USER_NOT_FOUND);}
+        String sellerId = principal.getClaimAsString("sub");
+        ManageProductDomainObject product = manageProductUseCase.getProductById(productId, sellerId);
+        ProductGetResponse response = dtoMapper.toProductResponseDto(product);
+        return ResponseEntity.ok(response);
+    }
+
+
     @GetMapping("/categories")
-    @PreAuthorize("hasRole('SELLER')") // Sellers need to be authenticated to get this list
+    @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<List<CategoryDomainObject>> getAllCategories() {
         List<CategoryDomainObject> categories = categoryPersistenceOutPort.findAll();
         return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping("/my-products")
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<List<ProductGetResponse>> getMyProducts(@AuthenticationPrincipal Jwt principal) {
+        String sellerId = principal.getClaimAsString("sub");
+        List<ManageProductDomainObject> products = manageProductUseCase.getAllProductsBySellerId(sellerId);
+        List<ProductGetResponse> responseDtos = products.stream()
+                .map(dtoMapper::toProductResponseDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(responseDtos);
+    }
+
+    @GetMapping("/admin/by-seller/{sellerId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ProductGetResponse>> getAllProductsBySellerId(@PathVariable String sellerId) {
+        List<ManageProductDomainObject> products = manageProductUseCase.getAllProductsBySellerId(sellerId);
+        List<ProductGetResponse> responseDtos = products.stream()
+                .map(dtoMapper::toProductResponseDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(responseDtos);
     }
 }
 

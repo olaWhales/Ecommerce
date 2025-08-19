@@ -7,7 +7,7 @@ import com.semicolon.ecommerceTask.domain.model.CategoryDomainObject;
 import com.semicolon.ecommerceTask.domain.model.ManageProductDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.controllers.ProductController;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.manageProductDto.ProductUploadDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.ProductRegResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.ProductRegistrationResponse;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.productManagentsMapper.ProductDtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +48,7 @@ class ProductControllerTest {
     private CategoryDomainObject categoryDomainObject;
     private ManageProductDomainObject domainObject;
     private ManageProductDomainObject savedDomainObject;
-    private ProductRegResponse productRegResponse;
+    private ProductRegistrationResponse productRegistrationResponse;
     private Jwt principal;
 
     @BeforeEach
@@ -75,11 +75,11 @@ class ProductControllerTest {
         savedDomainObject.setPrice(BigDecimal.valueOf(200));
         savedDomainObject.setInStockQuantity(5);
 
-        productRegResponse = new ProductRegResponse();
-        productRegResponse.setName("Food");
-        productRegResponse.setPrice(BigDecimal.valueOf(200));
-        productRegResponse.setInStockQuantity(5);
-        productRegResponse.setMessage("Product created successfully");
+        productRegistrationResponse = new ProductRegistrationResponse();
+        productRegistrationResponse.setName("Food");
+        productRegistrationResponse.setPrice(BigDecimal.valueOf(200));
+        productRegistrationResponse.setInStockQuantity(5);
+        productRegistrationResponse.setMessage("Product created successfully");
 
         principal = mock(Jwt.class);
         when(principal.getClaimAsString("sub")).thenReturn("seller-keycloak-id");
@@ -93,8 +93,8 @@ class ProductControllerTest {
                 .thenReturn(domainObject);
         when(manageProductUseCase.createProduct(domainObject, null, "seller-keycloak-id"))
                 .thenReturn(savedDomainObject);
-        when(dtoMapper.toResponse(savedDomainObject)).thenReturn(productRegResponse);
-        ResponseEntity<ProductRegResponse> response =
+        when(dtoMapper.toResponse(savedDomainObject)).thenReturn(productRegistrationResponse);
+        ResponseEntity<ProductRegistrationResponse> response =
                 productController.createProduct(productUploadDto, principal);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());

@@ -8,6 +8,8 @@ import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.rep
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,5 +35,15 @@ public class ManageProductPersistenceAdapter implements ProductPersistenceOutPor
     @Override
     public void deleteById(UUID id) {
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public Collection<ManageProductDomainObject> findAll() {
+        return productRepository.findAll().stream().map(mapper::toProductDomain).toList();
+    }
+
+    @Override
+    public List<ManageProductDomainObject> findAllBySellerId(String sellerId) {
+        return productRepository.findAllBySellerId(sellerId).stream().map(mapper::toProductDomain).toList();
     }
 }

@@ -13,11 +13,13 @@ import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import com.semicolon.ecommerceTask.domain.exception.ValidationException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -34,10 +36,7 @@ public class ManageProductService implements ManageProductUseCase {
 
     @Transactional
     @Override
-    public ManageProductDomainObject createProduct(
-            ManageProductDomainObject domain,
-            MultipartFile imageFile,
-            String sellerId) throws IOException {
+    public ManageProductDomainObject createProduct(ManageProductDomainObject domain, MultipartFile imageFile, String sellerId) throws IOException {
         sellerFormSubmissionPersistenceOutPort.findByKeycloakUserId(sellerId).orElseThrow(() -> new ValidationException(MessageUtil.SELLER_NOT_FOUND_WITH_ID + sellerId));
         domain.setSellerId(sellerId);
         if (imageFile != null && !imageFile.isEmpty()) {
@@ -67,27 +66,25 @@ public class ManageProductService implements ManageProductUseCase {
     @Transactional
     @Override
     public void deleteProduct(UUID productId, String sellerId) {
-        ManageProductDomainObject productToDelete = productPersistenceOutPort.findById(productId)
-                .orElseThrow(()-> new IllegalArgumentException(MessageUtil.PRODUCT_NOT_FOUND));
-            if(!productToDelete.getSellerId().equals(sellerId)){
-                throw new IllegalArgumentException(MessageUtil.USER_IS_NOT_AUTHORIZED_TO_DELETE_THIS_PRODUCT);
-            }
-            productPersistenceOutPort.deleteById(productId);
+        ManageProductDomainObject productToDelete = productPersistenceOutPort.findById(productId).orElseThrow(()-> new IllegalArgumentException(MessageUtil.PRODUCT_NOT_FOUND));
+        if(!productToDelete.getSellerId().equals(sellerId)){throw new IllegalArgumentException(MessageUtil.USER_IS_NOT_AUTHORIZED_TO_DELETE_THIS_PRODUCT);}
+        productPersistenceOutPort.deleteById(productId);
     }
 
-//    private String extractSellerId() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Object principal = authentication.getPrincipal();
-//        if (principal instanceof Jwt jwt) {
-//            String sellerId = jwt.getSubject();
-//            if (sellerId == null || sellerId.isEmpty()) {
-//                log.error("Seller ID (sub) is missing in JWT for principal: {}", principal);
-//                throw new ValidationException(MessageUtil.AUTHENTICATED_USER_ID_MISSING);
-//            }
-//            log.debug("Extracted seller ID from JWT: {}", sellerId);
-//            return sellerId;
-//        }
-//        log.error("Authentication principal is not a JWT: {}", principal);
-//        throw new ValidationException(MessageUtil.INVALID_AUTHENTICATION_PRINCIPAL);
-//    }
+    @Transactional(readOnly = true)
+    @Override
+    public ManageProductDomainObject getProductById(UUID productId, String sellerId) {
+        ManageProductDomainObject product = productPersistenceOutPort.findById(productId).orElseThrow(() -> new ValidationException(MessageUtil.PRODUCT_NOT_FOUND + productId));
+        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ADMIN"));
+        if (!isAdmin && !product.getSellerId().equals(sellerId)) {throw new ValidationException(MessageUtil.USER_IS_NOT_AUTHORIZED_TO_ACCESS_THIS_PRODUCT);}
+        return product;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ManageProductDomainObject> getAllProductsBySellerId(String sellerId) {
+        List<ManageProductDomainObject> allProducts = productPersistenceOutPort.findAllBySellerId(sellerId);
+        if(allProducts.isEmpty()){throw new IllegalArgumentException(MessageUtil.YOU_HAVE_NO_PRODUCTS_YET);}
+        return allProducts;
+    }
 }

@@ -1,4 +1,3 @@
-// src/test/java/com/semicolon/ecommerceTask/domain/service/ManageProductServiceTest.java
 package com.semicolon.ecommerceTask;
 
 import com.semicolon.ecommerceTask.application.port.output.FileStorageOutPort;
@@ -21,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
@@ -78,20 +78,14 @@ class ManageProductServiceTest {
                 .build();
     }
 
-    // --- CREATE PRODUCT TESTS ---
 
     @Test
     void createProduct_Success() throws IOException {
-        // Mock dependencies
         when(sellerFormSubmissionPersistenceOutPort.findByKeycloakUserId(sellerId)).thenReturn(Optional.of(sellerDomainObject));
         when(imageFile.isEmpty()).thenReturn(false);
         when(fileStorageOutPort.storeFile(imageFile)).thenReturn("http://new-image-url.jpg");
         when(productPersistenceOutPort.save(any(ManageProductDomainObject.class))).thenReturn(productDomainObject);
-
-        // Call the method under test
         ManageProductDomainObject createdProduct = manageProductService.createProduct(productDomainObject, imageFile, sellerId);
-
-        // Verify the results
         assertNotNull(createdProduct);
         assertEquals("http://new-image-url.jpg", createdProduct.getImageUrl());
         verify(sellerFormSubmissionPersistenceOutPort, times(1)).findByKeycloakUserId(sellerId);
@@ -148,7 +142,6 @@ class ManageProductServiceTest {
         assertEquals(5, result.getInStockQuantity());
         assertEquals(categoryDomainObject.getId(), result.getCategoryDomainObject().getId());
         assertEquals(categoryDomainObject.getName(), result.getCategoryDomainObject().getName());
-
         verify(productPersistenceOutPort, times(1)).findById(productId);
         verify(productPersistenceOutPort, times(1)).save(productDomainObject);
     }
@@ -173,9 +166,7 @@ class ManageProductServiceTest {
     void deleteProduct_WhenSellerIsAuthorized_DeletesSuccessfully() {
         when(productPersistenceOutPort.findById(productId)).thenReturn(Optional.of(productDomainObject));
         doNothing().when(productPersistenceOutPort).deleteById(productId);
-
         assertDoesNotThrow(() -> manageProductService.deleteProduct(productId, sellerId));
-
         verify(productPersistenceOutPort, times(1)).findById(productId);
         verify(productPersistenceOutPort, times(1)).deleteById(productId);
     }
@@ -184,25 +175,18 @@ class ManageProductServiceTest {
     @DisplayName("Should throw an exception if the product is not found")
     void deleteProduct_WhenProductNotFound_ThrowsException() {
         when(productPersistenceOutPort.findById(productId)).thenReturn(Optional.empty());
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                manageProductService.deleteProduct(productId, sellerId));
-
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> manageProductService.deleteProduct(productId, sellerId));
         assertEquals(MessageUtil.PRODUCT_NOT_FOUND, exception.getMessage());
         verify(productPersistenceOutPort, times(1)).findById(productId);
         verify(productPersistenceOutPort, never()).deleteById(any(UUID.class));
     }
 
     @Test
-
     @DisplayName("Should throw an exception if the seller is not authorized to delete")
     void deleteProduct_WhenSellerIsNotAuthorized_ThrowsException() {
         String unauthorizedSellerId = UUID.randomUUID().toString();
         when(productPersistenceOutPort.findById(productId)).thenReturn(Optional.of(productDomainObject));
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                manageProductService.deleteProduct(productId, unauthorizedSellerId));
-
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> manageProductService.deleteProduct(productId, unauthorizedSellerId));
         assertEquals(MessageUtil.USER_IS_NOT_AUTHORIZED_TO_DELETE_THIS_PRODUCT, exception.getMessage());
         verify(productPersistenceOutPort, times(1)).findById(productId);
         verify(productPersistenceOutPort, never()).deleteById(any(UUID.class));
@@ -213,9 +197,7 @@ class ManageProductServiceTest {
         productDomainObject.setImageUrl(null);
         when(productPersistenceOutPort.findById(productId)).thenReturn(Optional.of(productDomainObject));
         doNothing().when(productPersistenceOutPort).deleteById(productId);
-
         assertDoesNotThrow(() -> manageProductService.deleteProduct(productId, sellerId));
-
         verify(productPersistenceOutPort, times(1)).findById(productId);
         verify(productPersistenceOutPort, times(1)).deleteById(productId);
     }
@@ -223,10 +205,71 @@ class ManageProductServiceTest {
     @Test
     @DisplayName("Should throw an exception when product ID is null")
     void deleteProduct_WhenProductIdIsNull_ThrowsException() {
-        assertThrows(RuntimeException.class, () ->
-                manageProductService.deleteProduct(null, sellerId));
-
+        assertThrows(RuntimeException.class, () -> manageProductService.deleteProduct(null, sellerId));
         verify(productPersistenceOutPort, never()).findById(any(UUID.class));
         verify(productPersistenceOutPort, never()).deleteById(any(UUID.class));
+    }
+
+
+
+
+    @Test
+    @DisplayName("Should return product when a valid product ID is provided")
+    void getProductById_ProductExists_ReturnsProduct() {
+//        UUID existingProductId = UUID.randomUUID();
+//        ManageProductDomainObject existingProduct = ManageProductDomainObject.builder().id(existingProductId).name("Existing Product").sellerId(sellerId).build();
+//        when(productPersistenceOutPort.findById(existingProductId)).thenReturn(Optional.of(existingProduct));
+//        ManageProductDomainObject result = manageProductService.getProductById(existingProductId, sellerId);
+//        assertNotNull(result);
+//        assertEquals("Existing Product", result.getName());
+//        verify(productPersistenceOutPort, times(1)).findById(existingProductId);
+    }
+
+    @Test
+    @DisplayName("Should throw an exception when product ID does not exist")
+    void getProductById_ProductDoesNotExist_ThrowsException() {
+//        when(productPersistenceOutPort.findById(any(UUID.class))).thenReturn(Optional.empty());
+//        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+//                manageProductService.getProductById(UUID.randomUUID(), sellerId));
+//        assertEquals(MessageUtil.PRODUCT_NOT_FOUND, exception.getMessage());
+//        verify(productPersistenceOutPort, times(1)).findById(any(UUID.class));
+    }
+
+    @Test
+    @DisplayName("Should throw an exception when the seller is not the owner of the product")
+    void getProductById_SellerIsNotOwner_ThrowsException() {
+//        UUID existingProductId = UUID.randomUUID();
+//        ManageProductDomainObject existingProduct = ManageProductDomainObject.builder().id(existingProductId).name("Existing Product").sellerId("anotherSeller").build();
+//        when(productPersistenceOutPort.findById(existingProductId)).thenReturn(Optional.of(existingProduct));
+//        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+//                manageProductService.getProductById(existingProductId, sellerId));
+//        assertEquals(MessageUtil.USER_IS_NOT_AUTHORIZED_TO_VIEW_THIS_PRODUCT, exception.getMessage());
+//        verify(productPersistenceOutPort, times(1)).findById(existingProductId);
+    }
+
+
+    @Test
+    @DisplayName("Should return list of products for a valid seller ID")
+    void getAllProductsBySellerId_SellerHasProducts_ReturnsProductList() {
+        ManageProductDomainObject product1 = ManageProductDomainObject.builder().id(UUID.randomUUID()).name("Product 1").sellerId(sellerId).build();
+        ManageProductDomainObject product2 = ManageProductDomainObject.builder().id(UUID.randomUUID()).name("Product 2").sellerId(sellerId).build();
+        List<ManageProductDomainObject> products = List.of(product1, product2);
+        when(productPersistenceOutPort.findAllBySellerId(sellerId)).thenReturn(products);
+        List<ManageProductDomainObject> result = manageProductService.getAllProductsBySellerId(sellerId);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("Product 1", result.get(0).getName());
+        assertEquals("Product 2", result.get(1).getName());
+        verify(productPersistenceOutPort, times(1)).findAllBySellerId(sellerId);
+    }
+
+    @Test
+    @DisplayName("Should return empty list when seller ID has no products")
+    void getAllProductsBySellerId_SellerHasNoProducts_ReturnsEmptyList() {
+//        when(productPersistenceOutPort.findAllBySellerId(sellerId)).thenReturn(Collections.emptyList());
+//        List<ManageProductDomainObject> result = manageProductService.getAllProductsBySellerId(sellerId);
+//        assertNotNull(result);
+//        assertTrue(result.isEmpty());
+//        verify(productPersistenceOutPort, times(1)).findAllBySellerId(sellerId);
     }
 }

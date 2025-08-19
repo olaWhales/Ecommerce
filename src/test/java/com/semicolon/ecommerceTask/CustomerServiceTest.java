@@ -35,7 +35,6 @@ import static org.mockito.Mockito.*;
 @DisplayName("CustomerService Unit Tests")
 class CustomerServiceTest {
 
-    // Added this mock to resolve the NullPointerException
     @Mock
     private CustomerInputValidator customerInputValidator;
 

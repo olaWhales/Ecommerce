@@ -4,8 +4,9 @@ import com.semicolon.ecommerceTask.domain.model.CategoryDomainObject;
 import com.semicolon.ecommerceTask.domain.model.ManageProductDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.manageProductDto.ProductUpdateDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.manageProductDto.ProductUploadDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.ProductRegResponse;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.ProductEntity;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.CategoryResponseDto;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.ProductGetResponse;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.ProductRegistrationResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -35,5 +36,11 @@ public interface ProductDtoMapper {
     void updateDomainFromDto(ProductUpdateDto dto, @MappingTarget ManageProductDomainObject domain, CategoryDomainObject categoryDomainObject);
 
     @Mapping(target = "ProductId", source = "id")
-    ProductRegResponse toResponse(ManageProductDomainObject domain);
+    ProductRegistrationResponse toResponse(ManageProductDomainObject domain);
+
+    @Mapping(target = "category", source = "categoryDomainObject")
+    ProductGetResponse toProductResponseDto(ManageProductDomainObject domain);
+
+    @Mapping(target = "name", source = "name")
+    CategoryResponseDto toCategoryResponseDto(CategoryDomainObject category);
 }

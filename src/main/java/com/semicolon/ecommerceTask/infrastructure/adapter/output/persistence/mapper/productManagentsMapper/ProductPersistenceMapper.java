@@ -10,10 +10,11 @@ import org.mapstruct.Mapping;
 public interface ProductPersistenceMapper {
 
     @Mapping(target = "categoryDomainObject", source = "categoryEntity")
-    ManageProductDomainObject toProductDomain(ProductEntity entity);
+    ManageProductDomainObject   toProductDomain(ProductEntity entity);
 
     @Mapping(target = "categoryEntity", source = "categoryDomainObject")
     @Mapping(target = "id", ignore = true)
     ProductEntity toProductEntity(ManageProductDomainObject domain);
 
 }
+

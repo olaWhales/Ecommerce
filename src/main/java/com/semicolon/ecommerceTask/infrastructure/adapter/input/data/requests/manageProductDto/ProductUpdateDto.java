@@ -1,6 +1,6 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.manageProductDto;
 
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.CategoryRegRequest;
+import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.CategoryCreationDto;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,10 +29,6 @@ public class ProductUpdateDto {
     @PositiveOrZero(message = "Stock quantity cannot be negative")
     private int inStockQuantity;
 
-//    @NotBlank(message = "Image URL is required")
-//    private String imageUrl;
-
-
     @NotNull(message = "Category is required")
-    private CategoryRegRequest category;
+    private CategoryCreationDto category;
 }
