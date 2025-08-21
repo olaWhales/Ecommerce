@@ -10,4 +10,6 @@ public class SellerFormSubmissionResponse {
     private String message;
     private UUID registrationId;
     private String keycloakUserId;
+
+
 }

@@ -15,7 +15,6 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class UserPersistenceAdaptor implements UserPersistenceOutPort {
-
     private final JpaUserRepository jpaUserRepository;
     private final UserPersistenceMapper userPersistenceMapper;
 
@@ -58,8 +57,8 @@ public class UserPersistenceAdaptor implements UserPersistenceOutPort {
     public Optional<UserEntity> findByEmail(String email) {return jpaUserRepository.findByEmail(email);}
 
     @Override
-    public UserDomainObject findById(String userId) {
-        return userPersistenceMapper.toDomain(jpaUserRepository.findById(userId).orElseThrow(()-> new RuntimeException(MessageUtil.USER_NOT_FOUND)));
+    public Optional<UserDomainObject> findById(String userId) {
+        return Optional.ofNullable(userPersistenceMapper.toDomain(jpaUserRepository.findById(userId).orElseThrow(() -> new RuntimeException(MessageUtil.USER_NOT_FOUND))));
     }
 
     @Override

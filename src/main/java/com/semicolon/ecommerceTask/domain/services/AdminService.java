@@ -9,7 +9,7 @@ import com.semicolon.ecommerceTask.domain.model.AdminDomainObject;
 import com.semicolon.ecommerceTask.domain.model.PendingRegistrationDomainObject;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.AdminResponse;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.AdminMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.PendingRegistrationMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.AdminRegistrationValidator;

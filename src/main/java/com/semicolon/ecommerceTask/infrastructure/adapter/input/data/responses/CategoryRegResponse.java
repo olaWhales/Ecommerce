@@ -14,4 +14,5 @@ public class CategoryRegResponse {
     private String name;
     private String message;
 
+
 }

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class CustomerPersistenceAdapter implements CustomerPersistenceOutPort {
-
     private final JpaUserRepository customerRepository;
     private final CustomerMapper customerMapper;
 

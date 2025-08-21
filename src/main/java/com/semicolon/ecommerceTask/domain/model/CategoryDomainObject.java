@@ -11,4 +11,6 @@ import java.util.UUID;
 public class CategoryDomainObject {
     private UUID id;
     private String name;
+
+
 }

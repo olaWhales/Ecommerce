@@ -1,0 +1,15 @@
+package com.semicolon.ecommerceTask.application.port.input;
+
+import com.semicolon.ecommerceTask.domain.model.CartItemDomainObject;
+import com.semicolon.ecommerceTask.domain.model.ManageProductDomainObject;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public interface CartUseCase {
+    CartItemDomainObject addProductToCart(ManageProductDomainObject product, int quantity, String userId);
+    List<CartItemDomainObject> getCartItems(String userId);
+    Optional<CartItemDomainObject> updateCartItemQuantity(UUID cartItemId, int newQuantity);
+    void removeCartItem(UUID cartItemId);
+}

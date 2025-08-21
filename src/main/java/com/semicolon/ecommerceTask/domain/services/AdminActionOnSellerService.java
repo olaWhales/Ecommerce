@@ -9,7 +9,7 @@ import com.semicolon.ecommerceTask.domain.exception.UserNotFoundException;
 import com.semicolon.ecommerceTask.domain.model.ActionOnSellerApproveDomainObject;
 import com.semicolon.ecommerceTask.domain.model.SellerFormSubmissionDomain;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.AdminActionOnSellerFormMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -42,7 +43,11 @@ public class AdminActionOnSellerService implements AdminActionOnSellerUseCase {
                 submission.getKeycloakUserId(),
                 Collections.singletonList(UserRole.SELLER)
             );
-            UserDomainObject user = userPersistenceOutPort.findById(submission.getKeycloakUserId());
+            Optional<UserDomainObject> userOptional = userPersistenceOutPort.findById(submission.getKeycloakUserId());
+            if(userOptional.isEmpty()){
+                throw new UserNotFoundException(MessageUtil.USER_NOT_FOUND);
+            }
+            UserDomainObject user = userOptional.get();
             List<UserRole> currentRoles = user.getRoles();
             if (!currentRoles.contains(UserRole.SELLER)) {
                 currentRoles.add(UserRole.SELLER);

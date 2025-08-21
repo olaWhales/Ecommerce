@@ -3,7 +3,7 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.keycloack;
 import com.semicolon.ecommerceTask.application.port.output.KeycloakUserPort;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.configurations.keyCloakProperties.KeycloakAdminProperties;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +34,7 @@ public class KeycloakUserAdapter implements KeycloakUserPort {
 
     @Override
     public String createUser(UserDomainObject userDomainObject) {
-        if (userDomainObject.getEmail() == null || userDomainObject.getPassword() == null) {
-            throw new IllegalArgumentException(USER_DATA_CANNOT_BE_NULL);
-        }
+        if (userDomainObject.getEmail() == null || userDomainObject.getPassword() == null) {throw new IllegalArgumentException(USER_DATA_CANNOT_BE_NULL);}
         List<UserRepresentation> existingUsers = keycloak.realm(properties.getRealm()).users()
             .search(userDomainObject.getEmail(), null, null, null, 0, 1);
         if (!existingUsers.isEmpty()) {
@@ -44,13 +42,11 @@ public class KeycloakUserAdapter implements KeycloakUserPort {
             assignRoles(existingUserId, userDomainObject.getRoles());
             return existingUserId;
         }
-
         UserRepresentation userRepresentation = new UserRepresentation();
         userRepresentation.setUsername(userDomainObject.getEmail());
         userRepresentation.setEmail(userDomainObject.getEmail());
         userRepresentation.setEnabled(true);
         userRepresentation.setEmailVerified(false);
-
         Map<String, List<String>> attributes = new HashMap<>();
         if (userDomainObject.getFirstName() != null) {
             attributes.put(FIRSTNAME, Collections.singletonList(userDomainObject.getFirstName()));
@@ -65,14 +61,10 @@ public class KeycloakUserAdapter implements KeycloakUserPort {
         credential.setValue(userDomainObject.getPassword());
         credential.setTemporary(false);
         userRepresentation.setCredentials(Collections.singletonList(credential));
-
         try (Response response = keycloak.realm(properties.getRealm()).users().create(userRepresentation)) {
             if (response.getStatus() == 409) {
                 return MessageUtil.USER_ALREADY_EXIST_IN_KEYCLOAK;
-            } else if (response.getStatus() != 201) {
-                throw new IllegalArgumentException(MessageUtil.KEYCLOAK_USER_CREATION_FAILED + response.getStatusInfo());
-            }
-
+            } else if (response.getStatus() != 201) {throw new IllegalArgumentException(MessageUtil.KEYCLOAK_USER_CREATION_FAILED + response.getStatusInfo());}
             String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
             assignRoles(userId, userDomainObject.getRoles());
             return userId;

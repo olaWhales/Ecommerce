@@ -8,4 +8,9 @@ import lombok.Setter;
 @Builder
 public class ActionOnSellerApproveDomainObject {
     private Boolean isApprove ;
+
+
+    public Boolean getApprove() {
+        return isApprove;
+    }
 }

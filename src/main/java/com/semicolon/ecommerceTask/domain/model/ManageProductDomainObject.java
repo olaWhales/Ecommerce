@@ -19,6 +19,8 @@ public class ManageProductDomainObject {
     private String sellerId;
     private String imageUrl;
     private CategoryDomainObject categoryDomainObject;
+
+
 }
 
 

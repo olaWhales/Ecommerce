@@ -89,7 +89,7 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.keycloack;
 
 import com.semicolon.ecommerceTask.application.port.output.KeycloakAdminOutPort;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.AdminMapper;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
@@ -109,7 +109,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class KeycloakAdminAdapter implements KeycloakAdminOutPort {
-
     private final Keycloak keycloakAdminClient;
 
     @Value("${keycloak.admin.realm}")
@@ -167,21 +166,4 @@ public class KeycloakAdminAdapter implements KeycloakAdminOutPort {
         UserResource userResource = keycloakAdminClient.realm(realm).users().get(keycloakId);
         userResource.roles().realmLevel().add(realmRoles);
     }
-
-//    @Override
-//    public void removeRealmRole(String keycloakId, List<UserRole> roleNames) {
-//        List<String> roleNameStrings = roleNames.stream()
-//            .map(UserRole::name)
-//            .toList();
-//
-//        List<RoleRepresentation> roles = keycloakAdminClient.realm(realm).roles().list();
-//
-//        List<RoleRepresentation> realmRoles = roles.stream()
-//            .filter(role -> roleNameStrings.contains(role.getName()))
-//            .toList();
-//
-//        UserResource userResource = keycloakAdminClient.realm(realm).users().get(keycloakId);
-//        userResource.roles().realmLevel().remove(realmRoles);
-//    }
-
 }

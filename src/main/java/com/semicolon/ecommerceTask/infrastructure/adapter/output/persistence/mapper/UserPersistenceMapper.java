@@ -2,7 +2,7 @@ package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.ma
 
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserEntity;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

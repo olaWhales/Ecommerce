@@ -12,9 +12,8 @@ public interface UserPersistenceOutPort {
     UserDomainObject save(UserDomainObject user);
     boolean existsByEmail(String mail);
     Optional<UserEntity> findByEmail(String id);
-    UserDomainObject findById(String userId);
-    UserDomainObject findUserByEmail(String email);// <-- Add this method
-
+    Optional<UserDomainObject> findById(String userId);
+    UserDomainObject findUserByEmail(String email);
 }
 
 

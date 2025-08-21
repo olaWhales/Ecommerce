@@ -21,4 +21,6 @@ public class SellerFormSubmissionDomain {
     private String keycloakUserId;
     @Builder.Default
     private Long version = 0L;
+
+
 }

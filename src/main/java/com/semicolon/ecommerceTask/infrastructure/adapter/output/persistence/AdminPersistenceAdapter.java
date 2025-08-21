@@ -54,24 +54,23 @@ public class AdminPersistenceAdapter implements AdminPersistenceOutPort {
 
     @Override
     public void createPendingRegistration(String email, String token, LocalDateTime expiration) {
-        PendingAdminRegistrationEntity entity = PendingAdminRegistrationEntity.builder()
-            .email(email)
-            .token(token)
-            .expiration(expiration)
-            .build();
+        PendingAdminRegistrationEntity entity = new PendingAdminRegistrationEntity();
+        entity.setEmail(email);
+        entity.setToken(token);
+        entity.setExpiration(expiration);
         pendingRegistrationRepository.save(entity);
     }
 
     @Override
     public Optional<PendingRegistrationDomainObject> findPendingRegistrationByEmail(String email) {
         return pendingRegistrationRepository.findByEmail(email)
-                .map(pendingRegistrationMapper::toDomain);
+            .map(pendingRegistrationMapper::toDomain);
     }
 
     @Override
     public void updatePendingRegistration(String email, String token, LocalDateTime expiration) {
         PendingAdminRegistrationEntity entity = pendingRegistrationRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalStateException(MessageUtil.PENDING_REGISTRATION_NOT_FOUND_FOR_UPDATE));
+            .orElseThrow(() -> new IllegalStateException(MessageUtil.PENDING_REGISTRATION_NOT_FOUND_FOR_UPDATE));
 
         entity.setToken(token);
         entity.setExpiration(expiration);

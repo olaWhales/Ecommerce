@@ -12,4 +12,6 @@ public class ActionOnSellerApprovalRequest {
 
     @NotNull(message = "Approval decision must be provided")
     private Boolean isApprove;
+
+
 }

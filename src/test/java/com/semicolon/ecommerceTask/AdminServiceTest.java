@@ -11,7 +11,7 @@
 //import com.semicolon.ecommerceTask.domain.services.AdminService;
 //import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.adminRequestDto.AdminRegistrationRequest;
 //import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.AdminResponse;
-//import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
+//import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
 //import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.AdminMapper;
 //import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.PendingRegistrationMapper;
 //import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;

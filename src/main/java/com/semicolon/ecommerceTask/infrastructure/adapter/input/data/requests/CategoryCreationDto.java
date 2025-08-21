@@ -11,4 +11,6 @@ import lombok.AllArgsConstructor;
 public class CategoryCreationDto {
     @NotBlank(message = "Category name is required")
     private String name;
+
+
 }

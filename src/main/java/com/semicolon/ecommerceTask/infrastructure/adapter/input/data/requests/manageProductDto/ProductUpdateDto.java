@@ -31,4 +31,7 @@ public class ProductUpdateDto {
 
     @NotNull(message = "Category is required")
     private CategoryCreationDto category;
+
+
+
 }

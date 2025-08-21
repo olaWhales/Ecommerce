@@ -13,7 +13,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class PendingRegistrationPersistenceAdapter implements PendingRegistrationOutPort {
-
     private final PendingRegistrationRepository repository;
     private final PendingRegistrationMapper mapper;
 

@@ -15,4 +15,6 @@ public class OrderItemDomainObject {
     private ManageProductDomainObject productEntity;
     private BigDecimal unitPrice;
     private int quantity;
+
+
 }

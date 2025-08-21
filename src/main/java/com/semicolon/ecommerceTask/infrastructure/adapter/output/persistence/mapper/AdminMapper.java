@@ -7,7 +7,7 @@ import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.ad
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.adminRequestDto.AdminUpdateDto;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.AdminResponse;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserEntity;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.temporaryPendingRegistrationEntity.PendingAdminRegistrationEntity;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mapstruct.Mapper;

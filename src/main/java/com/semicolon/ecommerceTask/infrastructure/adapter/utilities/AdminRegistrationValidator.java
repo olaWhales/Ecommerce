@@ -5,6 +5,7 @@ import com.semicolon.ecommerceTask.application.port.output.persistence.AdminPers
 import com.semicolon.ecommerceTask.domain.exception.AdminNotFoundException;
 import com.semicolon.ecommerceTask.domain.model.PendingRegistrationDomainObject;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,6 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class AdminRegistrationValidator {
-
     private final AdminPersistenceOutPort adminPersistenceOutPort;
     private final KeycloakAdminOutPort keycloakAdminOutPort;
 
@@ -29,7 +29,6 @@ public class AdminRegistrationValidator {
         }
     }
 
-    /** Retrieve pending registration and ensure it hasn’t expired. */
     public PendingRegistrationDomainObject getValidPendingRegistrationOrThrow(String email) {
         Optional<PendingRegistrationDomainObject> pendingOptional =
                 adminPersistenceOutPort.findPendingRegistrationByEmail(email);
@@ -45,7 +44,7 @@ public class AdminRegistrationValidator {
     public LocalDateTime computeExpiration() {return LocalDateTime.now().plusHours(REGISTRATION_TOKEN_VALIDITY_HOURS);}
     public void assignAdminRole(String keycloakId) {
         keycloakAdminOutPort.assignRealmRoles(keycloakId,
-                Collections.singletonList(com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole.ADMIN)
+                Collections.singletonList(UserRole.ADMIN)
         );
     }
 }

@@ -1,6 +1,6 @@
 package com.semicolon.ecommerceTask.domain.model;
 
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -22,4 +22,7 @@ public class PendingRegistrationDomainObject {
     private List<UserRole> role;
     private String details;
     private LocalDateTime createdDate;
+
+
+
 }

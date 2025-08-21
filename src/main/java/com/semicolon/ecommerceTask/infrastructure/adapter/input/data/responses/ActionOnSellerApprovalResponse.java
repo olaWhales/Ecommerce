@@ -8,4 +8,6 @@ import lombok.Getter;
 public class ActionOnSellerApprovalResponse {
     private boolean approved;
     private String message;
+
+
 }

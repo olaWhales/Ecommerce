@@ -3,7 +3,7 @@ package com.semicolon.ecommerceTask.domain.services;
 import com.semicolon.ecommerceTask.application.port.output.KeycloakAdminOutPort;
 import com.semicolon.ecommerceTask.domain.exception.AdminNotFoundException;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

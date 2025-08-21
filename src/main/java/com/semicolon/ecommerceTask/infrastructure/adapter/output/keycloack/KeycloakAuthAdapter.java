@@ -69,18 +69,11 @@ public class KeycloakAuthAdapter implements AuthOutPort {
         HttpEntity<String> request = new HttpEntity<>(headers);
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                request,
-                String.class
-            );
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
             String responseBody = response.getBody();
-
             Map<String, Object> userInfo = objectMapper.readValue(responseBody, Map.class);
             String username = (String) userInfo.get(PREFERRED_USERNAME);
             String email = (String) userInfo.get(EMAIL);
-
             @SuppressWarnings("unchecked")
             Map<String, Object> realmAccess = (Map<String, Object>) userInfo.get(REALM_ACCESS);
             List<String> roles = (realmAccess != null) ? (List<String>) realmAccess.get("roles") : List.of(USER);

@@ -17,6 +17,9 @@ public class SellerRegistrationFormRequest {
     private String details;
 
     private String userId;
+
+
+
 }
 
 

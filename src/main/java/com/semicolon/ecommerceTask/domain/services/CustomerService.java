@@ -7,7 +7,7 @@ import com.semicolon.ecommerceTask.application.port.output.persistence.UserPersi
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.DefaultRegistrationRequest;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.UserDomainObjectResponse;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.CustomerMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.CustomerInputValidator;
 import lombok.RequiredArgsConstructor;

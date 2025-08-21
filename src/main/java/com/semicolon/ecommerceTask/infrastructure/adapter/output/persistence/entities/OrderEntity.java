@@ -1,12 +1,9 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities;
 
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.OrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
@@ -14,7 +11,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderEntity {
@@ -38,4 +36,4 @@ public class OrderEntity {
     @NotNull
     private LocalDateTime dateCreated;
 
-}
+    }

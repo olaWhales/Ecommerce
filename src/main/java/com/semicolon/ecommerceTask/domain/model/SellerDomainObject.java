@@ -1,6 +1,6 @@
 package com.semicolon.ecommerceTask.domain.model;
 
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
 import lombok.*;
 
 import java.util.List;
@@ -15,4 +15,6 @@ public class SellerDomainObject {
     private String email;
     private String details;
     private List<UserRole> roles;
+
+
 }

@@ -1,18 +1,16 @@
 package com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities;
 
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.CartStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartEntity {
@@ -29,6 +27,6 @@ public class CartEntity {
     private LocalDateTime updatedAt;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    private CartStatus cartStatus;
+    @Enumerated
+    private CartStatus status;
 }

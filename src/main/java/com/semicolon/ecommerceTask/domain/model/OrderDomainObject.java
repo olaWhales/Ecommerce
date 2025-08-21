@@ -1,6 +1,6 @@
 package com.semicolon.ecommerceTask.domain.model;
 
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.OrderStatus;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.OrderStatus;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserEntity;
 import lombok.*;
 
@@ -18,5 +18,6 @@ public class OrderDomainObject {
     private OrderStatus status;
     private BigDecimal totalAmount;
     private LocalDateTime dateCreated;
+
 
 }

@@ -14,4 +14,7 @@ public class AdminInitiationRequest {
     @Email(message = "Invalid email")
     @NotBlank(message = "Admin email is required")
     private String adminEmail;
+
+
+
 }

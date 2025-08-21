@@ -16,4 +16,7 @@ public class AdminResponse {
     private String lastName;
     private String fullName;
     private String message ;
+
+
+
 }

@@ -11,7 +11,7 @@ import com.semicolon.ecommerceTask.domain.services.CustomerService;
 import com.semicolon.ecommerceTask.domain.services.UserRegistrationService;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.DefaultRegistrationRequest;
 import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.UserDomainObjectResponse;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.enumPackage.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
 import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.CustomerMapper;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.CustomerInputValidator;
 import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
