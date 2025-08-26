@@ -3,7 +3,7 @@ package com.semicolon.ecommerceTask.domain.services;
 import com.semicolon.ecommerceTask.application.port.input.CategoryUseCase;
 import com.semicolon.ecommerceTask.application.port.output.persistence.CategoryPersistenceOutPort;
 import com.semicolon.ecommerceTask.domain.model.CategoryDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
+import com.semicolon.ecommerceTask.infrastructure.utilities.MessageUtil;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

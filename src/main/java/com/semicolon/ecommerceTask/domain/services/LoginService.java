@@ -4,7 +4,7 @@ import com.semicolon.ecommerceTask.application.port.input.LoginUseCase;
 import com.semicolon.ecommerceTask.application.port.output.AuthOutPort;
 import com.semicolon.ecommerceTask.domain.exception.AuthenticationException;
 import com.semicolon.ecommerceTask.domain.model.User;
-import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
+import com.semicolon.ecommerceTask.infrastructure.utilities.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

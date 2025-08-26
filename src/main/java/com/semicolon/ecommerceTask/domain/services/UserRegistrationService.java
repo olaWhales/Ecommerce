@@ -3,8 +3,8 @@ package com.semicolon.ecommerceTask.domain.services;
 import com.semicolon.ecommerceTask.application.port.output.KeycloakAdminOutPort;
 import com.semicolon.ecommerceTask.domain.exception.AdminNotFoundException;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
-import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
+import com.semicolon.ecommerceTask.infrastructure.output.persistence.entities.enumPackages.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.utilities.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.Optional;
 
-import static com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil.KEYCLOAK_CREATION_FAILED;
+import static com.semicolon.ecommerceTask.infrastructure.utilities.MessageUtil.KEYCLOAK_CREATION_FAILED;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +30,8 @@ public class UserRegistrationService {
         keycloakAdminOutPort.assignRealmRoles(keycloakId, Collections.singletonList(UserRole.BUYER));
         return keycloakId;
     }
+
+
 //    @Transactional
 //    public UserDomainObject registerUserInKeycloakAndReturnObject(UserDomainObject user, String password) {
 //        Optional<UserDomainObject> foundUser = keycloakAdminOutPort.findUserByEmail(user.getEmail());

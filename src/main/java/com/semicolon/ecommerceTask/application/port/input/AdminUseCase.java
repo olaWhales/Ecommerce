@@ -2,8 +2,7 @@ package com.semicolon.ecommerceTask.application.port.input;
 
 import com.semicolon.ecommerceTask.domain.model.AdminDomainObject;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.AdminResponse;
-import org.springframework.transaction.annotation.Transactional;
+import com.semicolon.ecommerceTask.infrastructure.input.data.responses.AdminResponse;
 
 import java.util.List;
 

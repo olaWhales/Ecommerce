@@ -18,7 +18,7 @@ public class ManageProductDomainObject {
     private int inStockQuantity;
     private String sellerId;
     private String imageUrl;
-    private CategoryDomainObject categoryDomainObject;
+    private String categoryDomainObject;
 
 
 }

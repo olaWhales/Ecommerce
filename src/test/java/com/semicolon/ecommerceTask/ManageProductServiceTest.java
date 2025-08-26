@@ -9,7 +9,7 @@ import com.semicolon.ecommerceTask.domain.model.CategoryDomainObject;
 import com.semicolon.ecommerceTask.domain.model.ManageProductDomainObject;
 import com.semicolon.ecommerceTask.domain.model.SellerFormSubmissionDomain;
 import com.semicolon.ecommerceTask.domain.services.ManageProductService;
-import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
+import com.semicolon.ecommerceTask.infrastructure.utilities.MessageUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

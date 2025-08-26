@@ -1,6 +1,6 @@
 package com.semicolon.ecommerceTask.domain.model;
 
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.CartStatus;
+import com.semicolon.ecommerceTask.infrastructure.output.persistence.entities.enumPackages.CartStatus;
 
 import lombok.*;
 

@@ -1,7 +1,7 @@
 package com.semicolon.ecommerceTask.domain.model;
 
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.OrderStatus;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserEntity;
+import com.semicolon.ecommerceTask.infrastructure.output.persistence.entities.enumPackages.OrderStatus;
+import com.semicolon.ecommerceTask.infrastructure.output.persistence.entities.persistenceEntities.UserEntity;
 import lombok.*;
 
 import java.math.BigDecimal;

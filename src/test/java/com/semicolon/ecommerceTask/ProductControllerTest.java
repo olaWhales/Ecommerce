@@ -5,10 +5,10 @@ import com.semicolon.ecommerceTask.application.port.output.persistence.CategoryP
 import com.semicolon.ecommerceTask.domain.exception.ValidationException;
 import com.semicolon.ecommerceTask.domain.model.CategoryDomainObject;
 import com.semicolon.ecommerceTask.domain.model.ManageProductDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.controllers.ProductController;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.requests.manageProductDto.ProductUploadDto;
-import com.semicolon.ecommerceTask.infrastructure.adapter.input.data.responses.ProductRegistrationResponse;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.mapper.productManagentsMapper.ProductDtoMapper;
+import com.semicolon.ecommerceTask.infrastructure.controllers.ProductController;
+import com.semicolon.ecommerceTask.infrastructure.input.data.requests.manageProductDto.ProductUploadDto;
+import com.semicolon.ecommerceTask.infrastructure.input.data.responses.ProductRegistrationResponse;
+import com.semicolon.ecommerceTask.infrastructure.output.persistence.mapper.productManagentsMapper.ProductDtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

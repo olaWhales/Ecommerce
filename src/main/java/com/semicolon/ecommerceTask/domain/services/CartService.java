@@ -9,11 +9,10 @@ import com.semicolon.ecommerceTask.domain.model.CartDomainObject;
 import com.semicolon.ecommerceTask.domain.model.CartItemDomainObject;
 import com.semicolon.ecommerceTask.domain.model.ManageProductDomainObject;
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.CartItemEntity;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.CartStatus;
-import com.semicolon.ecommerceTask.infrastructure.adapter.utilities.MessageUtil;
+import com.semicolon.ecommerceTask.infrastructure.output.persistence.entities.enumPackages.CartStatus;
+import com.semicolon.ecommerceTask.infrastructure.output.persistence.entities.persistenceEntities.CartItemEntity;
+import com.semicolon.ecommerceTask.infrastructure.utilities.MessageUtil;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,13 +30,25 @@ public class CartService implements CartUseCase {
     private final UserPersistenceOutPort userPersistenceOutPort;
 
     @Override
-    public CartItemDomainObject addProductToCart(ManageProductDomainObject product, int quantity, String userId) {
+    public CartItemDomainObject addOrUpdateCartItem (ManageProductDomainObject productDomain, int quantity, String userId) {
         CartDomainObject cart = findOrCreateActiveCart(userId);
-        CartItemDomainObject newCartItem = new CartItemDomainObject();
-        newCartItem.setCartEntityId(cart.getId());
-        newCartItem.setProductId(product.getId()) ;
-        newCartItem.setQuantity(quantity);
-        return cartItemPersistenceOutPort.save(newCartItem);
+        Optional<CartItemDomainObject> existingCartItem = cartItemPersistenceOutPort.findByProductIdAndUserId(productDomain.getId(), userId);
+        Optional<ManageProductDomainObject> productOptional = productPersistenceOutPort.findById(productDomain.getId());
+        if (productOptional.isEmpty()) {throw new IllegalArgumentException(MessageUtil.PRODUCT_NOT_FOUND + productDomain.getId());}
+        ManageProductDomainObject product = productOptional.get();
+        int newTotalQuantity = existingCartItem.map(cartItem -> cartItem.getQuantity() + quantity).orElse(quantity);
+        if (newTotalQuantity > product.getInStockQuantity()) {throw new IllegalArgumentException(MessageUtil.NOT_ENOUGH_STOCK_AVAILABLE_FOR_PRODUCT_WITH_ID + product.getId());}
+        CartItemDomainObject cartItem;
+        if (existingCartItem.isPresent()) {
+            cartItem = existingCartItem.get();
+            cartItem.setQuantity(newTotalQuantity);
+        } else {
+            cartItem = new CartItemDomainObject();
+            cartItem.setProductId(productDomain.getId());
+            cartItem.setQuantity(quantity);
+            cartItem.setCartEntityId(cart.getId());
+        }
+        return cartItemPersistenceOutPort.save(cartItem);
     }
 
     @Override
@@ -48,16 +59,26 @@ public class CartService implements CartUseCase {
 }
 
     @Override
-    public Optional<CartItemDomainObject> updateCartItemQuantity(UUID cartItemId, int newQuantity) {
-        return cartItemPersistenceOutPort.findById(cartItemId)
-            .map(cartItem -> {
-                cartItem.setQuantity(newQuantity);
-                return cartItemPersistenceOutPort.save(cartItem);
-            });
+    public Optional<CartItemDomainObject> updateCartItemQuantity(UUID cartItemId, int newQuantity, String userId) {
+        Optional<CartItemDomainObject> cartItemDomainObject = cartItemPersistenceOutPort.findById(cartItemId);
+        if(cartItemDomainObject.isEmpty()){throw new IllegalArgumentException(MessageUtil.CART_ITEM_NOT_FOUND);}
+        CartItemDomainObject cartItem = cartItemDomainObject.get();
+        Optional<ManageProductDomainObject> productOptional = productPersistenceOutPort.findById(cartItem.getProductId());
+        if(productOptional.isEmpty()){throw new IllegalArgumentException(MessageUtil.PRODUCT_ASSOCIATED_WITH_CART_ITEM_NOT_FOUND);};
+        ManageProductDomainObject product = productOptional.get();
+        if (newQuantity <= 0) {
+            cartItemPersistenceOutPort.deleteById(cartItemId);
+            return Optional.empty();
+        }
+        if(newQuantity > product.getInStockQuantity()){throw new IllegalArgumentException(MessageUtil.NOT_ENOUGH_STOCK_AVAILABLE_FOR_PRODUCT_WITH_ID + product.getId());}
+        cartItem.setQuantity(newQuantity);
+        return Optional.of(cartItemPersistenceOutPort.save(cartItem));
     }
 
     @Override
-    public void removeCartItem(UUID cartItemId) {
+    public void removeCartItem(UUID cartItemId , String userId) {
+        Optional<CartItemEntity> cartItem = cartItemPersistenceOutPort.findByIdAndCartEntityUserId(cartItemId, userId);
+        if (cartItem.isEmpty()) {throw new IllegalArgumentException(MessageUtil.CART_ITEM_NOT_FOUND);}
         cartItemPersistenceOutPort.deleteById(cartItemId);
     }
 

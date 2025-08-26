@@ -1,6 +1,6 @@
 package com.semicolon.ecommerceTask.domain.model;
 
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.output.persistence.entities.enumPackages.UserRole;
 import lombok.*;
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.semicolon.ecommerceTask.application.port.output;
 
 import com.semicolon.ecommerceTask.domain.model.UserDomainObject;
-import com.semicolon.ecommerceTask.infrastructure.adapter.output.persistence.entities.UserRole;
+import com.semicolon.ecommerceTask.infrastructure.output.persistence.entities.enumPackages.UserRole;
 
 import java.util.List;
 import java.util.Optional;

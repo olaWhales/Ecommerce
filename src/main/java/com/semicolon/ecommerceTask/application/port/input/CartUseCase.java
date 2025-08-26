@@ -8,8 +8,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CartUseCase {
-    CartItemDomainObject addProductToCart(ManageProductDomainObject product, int quantity, String userId);
+    CartItemDomainObject addOrUpdateCartItem(ManageProductDomainObject product, int quantity, String userId);
     List<CartItemDomainObject> getCartItems(String userId);
-    Optional<CartItemDomainObject> updateCartItemQuantity(UUID cartItemId, int newQuantity);
-    void removeCartItem(UUID cartItemId);
+    Optional<CartItemDomainObject> updateCartItemQuantity(UUID cartItemId, int newQuantity, String userId);
+    void removeCartItem(UUID cartItemId , String sellerId);
 }

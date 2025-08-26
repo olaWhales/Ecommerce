@@ -16,6 +16,5 @@ public class CartItemDomainObject {
     private UUID productId;
     private int quantity ;
 
-
 }
 
