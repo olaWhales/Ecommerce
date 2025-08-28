@@ -10,6 +10,6 @@ public interface CartPersistenceOutPort {
     CartDomainObject save (CartDomainObject cart);
     Optional<CartDomainObject> findById (UUID id);
     Optional<CartDomainObject> findByUserIdAndStatus(String userId, CartStatus cartStatus);
-
+    void deleteById(UUID id);
 //    Optional<CartDomainObject> findByUserId(String userId);
 }

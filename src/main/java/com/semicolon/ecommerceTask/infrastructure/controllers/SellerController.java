@@ -25,7 +25,8 @@ public class SellerController {
     private final SellerFormSubmissionMapper sellerFormSubmissionMapper;
 
     @PostMapping("/request-registration")
-    public ResponseEntity<SellerFormSubmissionResponse> requestSellerRegistration(@AuthenticationPrincipal UserDomainObject user, @Valid @RequestBody SellerRegistrationFormRequest dto) {
+    public ResponseEntity<SellerFormSubmissionResponse> requestSellerRegistration(@AuthenticationPrincipal UserDomainObject user,
+                                                                                  @Valid @RequestBody SellerRegistrationFormRequest dto) {
         SellerFormSubmissionDomain sellerRegistrationFormDto = sellerFormSubmissionMapper.toDomainFromDto(dto);
         SellerFormSubmissionDomain savedDomain = sellerUseCase.requestSellerRegistration(sellerRegistrationFormDto);
         SellerFormSubmissionResponse response = sellerFormSubmissionMapper.toResponse(savedDomain);

@@ -1,5 +1,6 @@
 package com.semicolon.ecommerceTask.infrastructure.configurations.keyCloakProperties;
 
+import com.semicolon.ecommerceTask.infrastructure.utilities.MessageUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +11,7 @@ public class KeycloakConfig {
     @Bean
     public Keycloak keycloak(KeycloakAdminProperties properties) {
         if (properties.getRealm() == null || properties.getClientId() == null || properties.getClientSecret() == null) {
-            throw new IllegalArgumentException("Keycloak properties (realm, clientId, clientSecret) must not be null");
+            throw new IllegalArgumentException(MessageUtil.KEYCLOAK_PROPERTIES_MUST_NOT_BE_NULL);
         }
 
         return KeycloakBuilder.builder()

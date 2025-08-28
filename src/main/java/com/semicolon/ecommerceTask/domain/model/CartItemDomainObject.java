@@ -15,6 +15,7 @@ public class CartItemDomainObject {
     private UUID cartEntityId;
     private UUID productId;
     private int quantity ;
+    private BigDecimal unitPrice;
 
 }
 

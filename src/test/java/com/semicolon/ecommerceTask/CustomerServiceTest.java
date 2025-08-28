@@ -1,4 +1,3 @@
-// src/test/java/com/semicolon/ecommerceTask/CustomerServiceTest.java
 package com.semicolon.ecommerceTask;
 
 import com.semicolon.ecommerceTask.application.port.output.persistence.UserPersistenceOutPort;

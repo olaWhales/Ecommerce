@@ -5,6 +5,7 @@ import com.semicolon.ecommerceTask.domain.exception.AuthenticationException;
 import com.semicolon.ecommerceTask.domain.exception.NameNotFoundException;
 import com.semicolon.ecommerceTask.domain.exception.UserNotFoundException;
 import com.semicolon.ecommerceTask.domain.exception.ValidationException;
+import com.semicolon.ecommerceTask.infrastructure.utilities.MessageUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -100,7 +101,7 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST,
-                "Validation failed for one or more fields.",
+                MessageUtil.VALIDATION_FAILED,
                 errors
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -118,11 +119,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
-//         You can log the full exception stack trace here for debugging.
-//         log.error("An unexpected error occurred: ", ex);
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "An unexpected server error occurred. Please try again later.",
+                MessageUtil.AN_UNEXPECTED_SERVER_ERROR_OCCURRED_PLEASE_TRY_AGAIN_LATER,
                 null
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

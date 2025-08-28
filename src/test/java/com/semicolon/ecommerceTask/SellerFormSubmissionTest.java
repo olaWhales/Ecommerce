@@ -19,8 +19,6 @@ public class SellerFormSubmissionTest {
     private SellerResponseDto sellerResponseDto;
     private SellerDomainObject sellerDomainObject;
 
-//    @InjectMocks
-
     @Test
     public void testThatACustomerCanSubmitAForm(){
 

@@ -11,7 +11,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdminResponse {
-//    private String email;
     private String firstName;
     private String lastName;
     private String fullName;

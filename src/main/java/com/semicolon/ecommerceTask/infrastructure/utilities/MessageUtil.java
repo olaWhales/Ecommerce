@@ -93,4 +93,10 @@ public class MessageUtil {
     public static final String CART_ITEM_NOT_FOUND = "Cart item not found";
     public static final String SUCCESSFULLY_REMOVED_FROM_CART = "Successfully removed from Cart";
     public static final String USER_IS_NOT_AUTHORIZED_TO_DELETE_THIS_ITEM = "User not authorized to delete this item";
+    public static final String NO_ACTIVE_CART_FOUND = "No active cart found";
+    public static final String CART_EMPTY = "Cart is empty";
+    public static final String ORDER_NOT_FOUND = "Order not found";
+    public static final String AN_UNEXPECTED_SERVER_ERROR_OCCURRED_PLEASE_TRY_AGAIN_LATER = "An unexpected server error occurred. Please try again later.";
+    public static final String VALIDATION_FAILED = "Validation failed for one or more fields.";
+    public static final String KEYCLOAK_PROPERTIES_MUST_NOT_BE_NULL ="Keycloak properties (realm, clientId, clientSecret) must not be null";
 }

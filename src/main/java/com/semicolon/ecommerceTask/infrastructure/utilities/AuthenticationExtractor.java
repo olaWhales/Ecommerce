@@ -14,7 +14,7 @@ public class AuthenticationExtractor {
     public String extractCustomerEmail(Authentication authentication) {
         Object principal = authentication.getPrincipal();
         if (principal instanceof Jwt jwt) {
-            String email = jwt.getClaimAsString("email");
+            String email = jwt.getClaimAsString(MessageUtil.EMAIL);
             if (email == null || email.trim().isEmpty()) {throw new ValidationException(MessageUtil.AUTHENTICATED_USER_EMAIL_MISSING);}
             return email;
         } else if (principal instanceof UserDomainObject user) {

@@ -11,10 +11,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OrderItemDomainObject {
     private UUID id;
-    private OrderDomainObject orderEntity;
-    private ManageProductDomainObject productEntity;
+    private UUID orderId;
+    private UUID productId;
     private BigDecimal unitPrice;
     private int quantity;
-
-
 }

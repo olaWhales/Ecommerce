@@ -96,7 +96,6 @@ class ProductControllerTest {
         when(dtoMapper.toResponse(savedDomainObject)).thenReturn(productRegistrationResponse);
         ResponseEntity<ProductRegistrationResponse> response =
                 productController.createProduct(productUploadDto, principal);
-
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals("Food", response.getBody().getName());
         assertEquals("Product created successfully", response.getBody().getMessage());
@@ -124,10 +123,8 @@ class ProductControllerTest {
                 .thenReturn(domainObject);
         when(manageProductUseCase.createProduct(domainObject, null, "seller-keycloak-id"))
                 .thenThrow(new ValidationException("Invalid product data"));
-
         ValidationException ex = assertThrows(ValidationException.class,
                 () -> productController.createProduct(productUploadDto, principal));
-
         assertEquals("Invalid product data", ex.getMessage());
     }
 }

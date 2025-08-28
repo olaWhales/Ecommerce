@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Ecommerce" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.semicolon.ecommerceTask.EcommerceTaskApplication" />
+    <module name="ecommerceTask" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

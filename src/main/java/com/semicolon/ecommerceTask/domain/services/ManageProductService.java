@@ -43,7 +43,7 @@ public class ManageProductService implements ManageProductUseCase {
             String imageUrl = fileStorageOutPort.storeFile(imageFile);
             domain.setImageUrl(imageUrl);
         }
-        categoryPersistenceOutPort.validateCategoryExists(domain.getCategoryDomainObject());
+        categoryPersistenceOutPort.validateCategoryExists(String.valueOf(domain.getCategoryDomainObject()));
         return productPersistenceOutPort.save(domain);
     }
 
@@ -53,13 +53,13 @@ public class ManageProductService implements ManageProductUseCase {
         ManageProductDomainObject existingProduct = productPersistenceOutPort.findById(productId)
                 .orElseThrow(() -> new RuntimeException(MessageUtil.PRODUCT_NOT_FOUND));
         if (!existingProduct.getSellerId().equals(sellerId)) {throw new RuntimeException(MessageUtil.USER_IS_NOT_AUTHORIZED_TO_UPDATE_THIS_PRODUCT);}
-        CategoryDomainObject categoryDomainObject = categoryPersistenceOutPort.findById(UUID.fromString(manageProductDomainObject.getCategoryDomainObject()))
+        CategoryDomainObject categoryDomainObject = categoryPersistenceOutPort.findById(manageProductDomainObject.getCategoryDomainObject())
                 .orElseThrow(() -> new RuntimeException(MessageUtil.CATEGORY_NOT_FOUND));
         existingProduct.setName(manageProductDomainObject.getName());
         existingProduct.setDescription(manageProductDomainObject.getDescription());
         existingProduct.setPrice(manageProductDomainObject.getPrice());
         existingProduct.setInStockQuantity(manageProductDomainObject.getInStockQuantity());
-        existingProduct.setCategoryDomainObject(categoryDomainObject.getId().toString());
+        existingProduct.setCategoryDomainObject(categoryDomainObject.getId());
         return productPersistenceOutPort.save(existingProduct);
     }
 

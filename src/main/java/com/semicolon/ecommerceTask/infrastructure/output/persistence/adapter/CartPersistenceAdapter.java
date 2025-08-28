@@ -35,8 +35,10 @@ public class CartPersistenceAdapter implements CartPersistenceOutPort {
         return cartRepository.findByUserIdAndStatus(userId,cartStatus).stream().findFirst().map(cartMapper::toDomain);
     }
 
-//    @Override
-//    public Optional<CartDomainObject> findByUserId(String userId) {
-//        return Optional.empty();
-//    }
+    @Override
+    public void deleteById(UUID id) {
+        cartRepository.deleteById(id);
+    }
+
+
 }
