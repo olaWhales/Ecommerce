@@ -17,14 +17,9 @@ public class SellerRegistrationValidator {
     public void validateEmailAndDuplication(String email) {
         ValidationUtil.validateEmail(email);
         Optional<SellerFormSubmissionDomain> existing = sellerFormSubmissionPersistenceOutPort.findByEmail(email);
-        if (existing.isPresent()) {
-            throw new ValidationException(MessageUtil.A_SELLER_REGISTRATION_REQUEST_IS_ALREADY_PENDING.formatted(email)
-            );
-        }
+        if (existing.isPresent()) {throw new ValidationException(MessageUtil.A_SELLER_REGISTRATION_REQUEST_IS_ALREADY_PENDING.formatted(email));}
     }
     public void validateUserId(String keycloakUserId) {
-        if (keycloakUserId == null || keycloakUserId.trim().isEmpty()) {
-            throw new ValidationException(MessageUtil.AUTHENTICATED_USER_ID_MISSING);
-        }
+        if (keycloakUserId == null || keycloakUserId.trim().isEmpty()) {throw new ValidationException(MessageUtil.AUTHENTICATED_USER_ID_MISSING);}
     }
 }
