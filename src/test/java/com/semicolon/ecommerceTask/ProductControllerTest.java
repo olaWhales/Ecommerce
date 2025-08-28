@@ -7,7 +7,7 @@ import com.semicolon.ecommerceTask.domain.model.CategoryDomainObject;
 import com.semicolon.ecommerceTask.domain.model.ManageProductDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.controllers.ProductController;
 import com.semicolon.ecommerceTask.infrastructure.input.data.requests.manageProductDto.ProductUploadDto;
-import com.semicolon.ecommerceTask.infrastructure.input.data.responses.ProductRegistrationResponse;
+import com.semicolon.ecommerceTask.infrastructure.input.data.responses.productPackage.ProductRegistrationResponse;
 import com.semicolon.ecommerceTask.infrastructure.output.persistence.mapper.productManagentsMapper.ProductDtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

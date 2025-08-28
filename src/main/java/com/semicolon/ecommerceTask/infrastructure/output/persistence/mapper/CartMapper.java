@@ -3,7 +3,7 @@ package com.semicolon.ecommerceTask.infrastructure.output.persistence.mapper;
 import com.semicolon.ecommerceTask.domain.model.CartDomainObject;
 import com.semicolon.ecommerceTask.domain.model.CartItemDomainObject;
 import com.semicolon.ecommerceTask.infrastructure.input.data.responses.CartItemResponse;
-import com.semicolon.ecommerceTask.infrastructure.input.data.responses.ProductToCartResponse;
+import com.semicolon.ecommerceTask.infrastructure.input.data.responses.productPackage.ProductToCartResponse;
 import com.semicolon.ecommerceTask.infrastructure.output.persistence.entities.persistenceEntities.CartEntity;
 import com.semicolon.ecommerceTask.infrastructure.output.persistence.entities.persistenceEntities.CartItemEntity;
 import com.semicolon.ecommerceTask.infrastructure.output.persistence.entities.persistenceEntities.ProductEntity;

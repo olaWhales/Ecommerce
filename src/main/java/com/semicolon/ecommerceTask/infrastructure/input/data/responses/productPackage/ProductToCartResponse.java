@@ -1,4 +1,4 @@
-package com.semicolon.ecommerceTask.infrastructure.input.data.responses;
+package com.semicolon.ecommerceTask.infrastructure.input.data.responses.productPackage;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
